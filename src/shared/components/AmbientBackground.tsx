@@ -10,6 +10,13 @@ const hearts = [
   { id: 1, left: '88%', delay: 3.1, duration: 16, size: 26 },
   { id: 2, left: '18%', delay: 6.2, duration: 17, size: 20 },
   { id: 3, left: '76%', delay: 8.4, duration: 15, size: 24 },
+  { id: 4, left: '38%', delay: 4.7, duration: 18, size: 18 },
+  { id: 5, left: '61%', delay: 10.1, duration: 16.5, size: 21 },
+]
+
+const letterFloaters = [
+  { id: 0, letter: 'S', left: '7%', top: '8%', delay: 0.3, duration: 13, size: 42 },
+  { id: 1, letter: 'N', left: '82%', top: '9%', delay: 2.1, duration: 15, size: 44 },
 ]
 
 const butterflies = [
@@ -225,6 +232,42 @@ export function AmbientBackground() {
                 width: heart.size,
               }}
             />
+          </motion.div>
+        ))}
+
+        {letterFloaters.map((floater) => (
+          <motion.div
+            key={floater.id}
+            aria-hidden="true"
+            className="absolute font-serif font-black text-fuchsia-100/42 drop-shadow-[0_0_28px_rgba(216,180,254,0.58)]"
+            style={{
+              left: floater.left,
+              top: floater.top,
+              fontSize: floater.size,
+              lineHeight: 1,
+              textShadow:
+                '0 0 18px rgba(244,114,182,0.36), 0 0 38px rgba(168,85,247,0.28)',
+            }}
+            animate={{
+              y: [0, -18, 10, 0],
+              x: [0, floater.id % 2 === 0 ? 14 : -14, floater.id % 2 === 0 ? -10 : 10, 0],
+              opacity: [0.26, 0.5, 0.34, 0.26],
+              rotate: [
+                floater.id % 2 === 0 ? -9 : 9,
+                0,
+                floater.id % 2 === 0 ? 8 : -8,
+                floater.id % 2 === 0 ? -9 : 9,
+              ],
+              scale: [0.94, 1.08, 0.98, 0.94],
+            }}
+            transition={{
+              duration: floater.duration,
+              repeat: Infinity,
+              delay: floater.delay,
+              ease: 'easeInOut',
+            }}
+          >
+            {floater.letter}
           </motion.div>
         ))}
       </div>

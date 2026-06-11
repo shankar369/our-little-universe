@@ -20,11 +20,13 @@ Use this skill whenever changing this project.
 - App constants and section metadata live in `src/app`.
 - Editable personal content lives in `src/content`.
 - Feature UI lives in `src/features/<feature>`.
+- Routed sections live in `src/sections/<SectionName>` and each section folder must include a `README.md`.
 - Shared hooks, components, and utilities live in `src/shared`.
 - Motion constants and visual tokens live in `src/design`.
 
 ## Feature Guidance
 - Add new major sections as feature folders.
+- For routed sections, add a dedicated folder under `src/sections` and document purpose, route, data, and extension notes in that folder's `README.md`.
 - Add or update content types before adding content-heavy UI.
 - Register major phases in `src/app/experienceRegistry.ts`.
 - Lazy-load heavy future sections, especially the 3D photo universe.

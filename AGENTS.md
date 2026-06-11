@@ -11,6 +11,7 @@
 
 ## Architecture Rules
 - Put feature-specific UI in `src/features/<feature-name>/`.
+- Put routed user-facing sections in `src/sections/<SectionName>/`, with a `README.md` in every section folder.
 - Put reusable UI, hooks, and utilities in `src/shared/`.
 - Put editable personal content in `src/content/`.
 - Put app-level constants and section registries in `src/app/`.
@@ -19,6 +20,7 @@
 
 ## Extension Rules
 - Add each major future phase as a feature folder, for example `src/features/timeline`, `src/features/photo-universe`, or `src/features/quote-puzzles`.
+- Add each routed section under `src/sections`, and keep route-specific implementation details inside that section folder.
 - Register planned or live sections in `src/app/experienceRegistry.ts` so the project has one map of the experience.
 - Prefer typed content models before building new UI. If a section needs memories, puzzles, or photos, add types in `src/content/types.ts`.
 - Keep localStorage keys centralized in `src/app/appConfig.ts`.

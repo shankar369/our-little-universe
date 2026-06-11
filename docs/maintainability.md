@@ -17,12 +17,20 @@ References:
 - `src/content`: typed editable content for the personal story.
 - `src/design`: shared animation constants and future visual tokens.
 - `src/features`: self-contained user-facing sections or screens.
+- `src/sections`: routed app sections, each with local implementation and a section README.
 - `src/shared`: reusable components, hooks, and utilities.
+
+## Reusable Experience Primitives
+- Put reusable interaction primitives in `src/shared/components`.
+- Keep route-specific copy, orchestration, and layout in `src/sections`.
+- Shared photo primitives should accept typed content and callbacks; they should not import section data directly.
+- `PhotoShuffleStack`, `PhotoRevealDialog`, and `PhotoSphere` are shared contracts for future memory, puzzle, and gallery sections.
+- Preserve mobile-first gestures, 44px controls, reduced-motion behavior, and foreground/background separation whenever these primitives are reused.
 
 ## How To Add A New Section
 1. Add content types in `src/content/types.ts` if the section has new data.
 2. Add content values in `src/content/siteContent.ts` or a dedicated content file.
-3. Create a feature folder under `src/features`.
+3. Create a routed section folder under `src/sections` when the feature has its own route, including a `README.md`.
 4. Add the section metadata to `src/app/experienceRegistry.ts`.
 5. Wire the section into the app flow from `src/App.tsx` or a future journey controller.
 6. If the section is heavy, lazy-load it with `React.lazy`.
@@ -39,5 +47,6 @@ References:
 - Preserve foreground/background separation with glass or dark material surfaces for all important text and controls.
 - Keep the ambience refined. If visual density increases, remove decorative elements before increasing blur or opacity.
 - Lazy-load 3D and gallery-heavy features.
+- Keep Three.js scenes simple on mobile: capped DPR, simple materials, no DOM-per-photo labels, and no postprocessing until it is clearly worth the cost.
 - Compress photos before adding them.
 - Prefer tap/reveal interactions over scroll-heavy pinned animation on phones.

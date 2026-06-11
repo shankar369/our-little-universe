@@ -23,6 +23,34 @@ export type HeroContent = {
   note: string
 }
 
+export type MemoryTimelineItem = {
+  id: string
+  order: number
+  title: string
+  dateLabel: string
+  photo: string
+  quote: string
+  story: string
+  alt?: string
+}
+
+export type RevealPhotoItem = {
+  id: string
+  photo: string
+  heading: string
+  name: string
+  text: string
+  label?: string
+  quote?: string
+  story?: string
+  alt?: string
+}
+
+export type PhotoUniverseItem = RevealPhotoItem & {
+  order: number
+  orbitBand: 'inner' | 'middle' | 'outer'
+}
+
 export type SiteContent = {
   appTitle: string
   login: LoginContent

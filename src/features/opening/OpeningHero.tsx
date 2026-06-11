@@ -1,5 +1,6 @@
 import { Gift, Heart, Sparkles } from 'lucide-react'
 import { motion } from 'motion/react'
+import { Link } from 'react-router'
 import { siteContent } from '../../content/siteContent'
 import { riseIn, softEase } from '../../design/motion'
 
@@ -57,13 +58,13 @@ export function OpeningHero() {
                 transition={{ delay: 0.86, duration: 0.55 }}
                 className="mt-8 flex flex-col gap-3 sm:flex-row"
               >
-                <button
-                  type="button"
+                <Link
+                  to="/journey"
                   className="liquid-button flex h-14 min-w-44 items-center justify-center gap-2 whitespace-nowrap rounded-2xl px-6 text-base font-bold text-purple-950 transition hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fuchsia-100"
                 >
                   <Gift className="h-4 w-4" />
                   {siteContent.hero.cta}
-                </button>
+                </Link>
                 <div className="liquid-control rounded-2xl px-4 py-3 text-sm leading-6 text-violet-50/78">
                   {siteContent.hero.note}
                 </div>
