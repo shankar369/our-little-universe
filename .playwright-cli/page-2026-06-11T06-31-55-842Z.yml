@@ -1,0 +1,56 @@
+- generic [ref=e3]:
+  - generic:
+    - generic:
+      - generic:
+        - img
+      - generic:
+        - img
+      - generic:
+        - img
+      - generic:
+        - img
+      - generic:
+        - img
+      - generic:
+        - img
+      - generic:
+        - img
+      - generic:
+        - img
+      - generic:
+        - img
+      - generic:
+        - img
+      - generic:
+        - img
+  - main [ref=e6]:
+    - generic [ref=e7]:
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - img [ref=e12]
+          - text: A tiny birthday galaxy
+        - heading "Our Little Universe" [level=1] [ref=e15]:
+          - generic [ref=e16]: Our
+          - generic [ref=e17]: Little
+          - generic [ref=e18]: Universe
+        - paragraph [ref=e19]: A soft, sparkly place for the memories that kept choosing us.
+        - paragraph [ref=e20]: "Built like a secret scrapbook: a little dramatic, very purple, full of photos, puzzles, and moments waiting to be unlocked."
+        - generic [ref=e21]:
+          - button "Begin the journey" [ref=e22]: Begin the journey
+          - generic [ref=e26]: Phase 1 is the doorway. The memory timeline, photo globe, and puzzles come next.
+      - generic [ref=e27]:
+        - article [ref=e31]:
+          - img [ref=e34]
+          - generic [ref=e36]:
+            - heading "First Spark" [level=2] [ref=e37]
+            - paragraph [ref=e38]: The beginning of all this magic
+        - article [ref=e39]:
+          - img [ref=e42]
+          - generic [ref=e44]:
+            - heading "Favorite Chaos" [level=2] [ref=e45]
+            - paragraph [ref=e46]: Laughs that became evidence
+        - article [ref=e47]:
+          - img [ref=e50]
+          - generic [ref=e52]:
+            - heading "Birthday Wish" [level=2] [ref=e53]
+            - paragraph [ref=e54]: One more orbit around joy
