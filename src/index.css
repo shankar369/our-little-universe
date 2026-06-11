@@ -1,0 +1,115 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  --color-night: #06030b;
+  --color-plum: #15021f;
+  --color-orchid: #c084fc;
+  --color-blush: #f9a8d4;
+  --color-champagne: #fde68a;
+}
+
+@layer components {
+  .liquid-panel {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.055)),
+      rgba(12, 5, 24, 0.58);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+      0 28px 90px rgba(0, 0, 0, 0.52);
+    backdrop-filter: blur(28px) saturate(1.35);
+    -webkit-backdrop-filter: blur(28px) saturate(1.35);
+  }
+
+  .liquid-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.24), transparent 28%),
+      linear-gradient(120deg, rgba(255, 255, 255, 0.2), transparent 18%, transparent 76%, rgba(255, 255, 255, 0.1));
+    opacity: 0.58;
+  }
+
+  .liquid-control {
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06)),
+      rgba(255, 255, 255, 0.06);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.18),
+      0 12px 36px rgba(0, 0, 0, 0.24);
+    backdrop-filter: blur(18px) saturate(1.25);
+    -webkit-backdrop-filter: blur(18px) saturate(1.25);
+  }
+
+  .liquid-button {
+    background:
+      linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.2) 34%, rgba(255, 255, 255, 0.72)),
+      linear-gradient(90deg, #f0abfc, #fbcfe8 48%, #fde68a);
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.82),
+      inset 0 -8px 18px rgba(109, 40, 217, 0.16),
+      0 20px 54px rgba(217, 70, 239, 0.28);
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  color-scheme: dark;
+  font-family: var(--font-sans);
+  background: #06030b;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html {
+  min-width: 320px;
+  min-height: 100%;
+  background: #06030b;
+}
+
+body {
+  min-width: 320px;
+  min-height: 100svh;
+  margin: 0;
+  overflow-x: hidden;
+  background: #06030b;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  background: rgba(240, 171, 252, 0.35);
+  color: white;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
