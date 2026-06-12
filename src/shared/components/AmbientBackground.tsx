@@ -14,10 +14,58 @@ const hearts = [
   { id: 5, left: '61%', delay: 10.1, duration: 16.5, size: 21 },
 ]
 
-const letterFloaters = [
-  { id: 0, letter: 'S', left: '7%', top: '8%', delay: 0.3, duration: 13, size: 42 },
-  { id: 1, letter: 'N', left: '82%', top: '9%', delay: 2.1, duration: 15, size: 44 },
+type MonogramPart = 'N' | 'S' | 'heart'
+
+type MonogramFloater = {
+  id: number
+  parts: MonogramPart[]
+  left: string
+  top: string
+  delay: number
+  duration: number
+  size: number
+}
+
+const monogramFloaters: MonogramFloater[] = [
+  { id: 0, parts: ['N', 'heart', 'S'], left: '5%', top: '7%', delay: 0.3, duration: 14, size: 36 },
+  { id: 1, parts: ['N', 'heart', 'S'], left: '78%', top: '9%', delay: 2.4, duration: 16, size: 34 },
+  { id: 2, parts: ['N', 'heart', 'S'], left: '41%', top: '3%', delay: 5.1, duration: 15, size: 26 },
+  { id: 3, parts: ['N', 'heart', 'S'], left: '62%', top: '84%', delay: 4.2, duration: 17, size: 30 },
+  { id: 6, parts: ['N'], left: '22%', top: '24%', delay: 1.1, duration: 12.5, size: 30 },
+  { id: 7, parts: ['S'], left: '90%', top: '34%', delay: 6.4, duration: 13, size: 28 },
+  { id: 8, parts: ['N'], left: '54%', top: '72%', delay: 7.2, duration: 14, size: 24 },
+  { id: 9, parts: ['S'], left: '30%', top: '88%', delay: 5.8, duration: 15.5, size: 26 },
 ]
+
+function MonogramMark({ parts, size }: { parts: MonogramPart[]; size: number }) {
+  const heartSize = size * 0.5
+  const gap = size * 0.12
+
+  return (
+    <span
+      className="inline-flex items-center font-display font-light uppercase tracking-[0.22em] text-fuchsia-100/38"
+      style={{ gap }}
+    >
+      {parts.map((part, index) => {
+        if (part === 'heart') {
+          return (
+            <Heart
+              key={`${part}-${index}`}
+              className="shrink-0 fill-rose-200/20 text-rose-100/45 drop-shadow-[0_0_14px_rgba(244,114,182,0.42)]"
+              style={{ width: heartSize, height: heartSize }}
+            />
+          )
+        }
+
+        return (
+          <span key={`${part}-${index}`} className="leading-none" style={{ fontSize: size }}>
+            {part}
+          </span>
+        )
+      })}
+    </span>
+  )
+}
 
 const butterflies = [
   { id: 0, left: '86%', top: '15%', scale: 0.82, delay: 0.8 },
@@ -235,30 +283,28 @@ export function AmbientBackground() {
           </motion.div>
         ))}
 
-        {letterFloaters.map((floater) => (
+        {monogramFloaters.map((floater) => (
           <motion.div
             key={floater.id}
             aria-hidden="true"
-            className="absolute font-serif font-black text-fuchsia-100/42 drop-shadow-[0_0_28px_rgba(216,180,254,0.58)]"
+            className="absolute drop-shadow-[0_0_28px_rgba(216,180,254,0.52)]"
             style={{
               left: floater.left,
               top: floater.top,
-              fontSize: floater.size,
-              lineHeight: 1,
               textShadow:
-                '0 0 18px rgba(244,114,182,0.36), 0 0 38px rgba(168,85,247,0.28)',
+                '0 0 18px rgba(244,114,182,0.32), 0 0 38px rgba(168,85,247,0.22)',
             }}
             animate={{
-              y: [0, -18, 10, 0],
-              x: [0, floater.id % 2 === 0 ? 14 : -14, floater.id % 2 === 0 ? -10 : 10, 0],
-              opacity: [0.26, 0.5, 0.34, 0.26],
+              y: [0, -16, 8, 0],
+              x: [0, floater.id % 2 === 0 ? 12 : -12, floater.id % 2 === 0 ? -8 : 8, 0],
+              opacity: [0.22, 0.46, 0.3, 0.22],
               rotate: [
-                floater.id % 2 === 0 ? -9 : 9,
+                floater.id % 2 === 0 ? -7 : 7,
                 0,
-                floater.id % 2 === 0 ? 8 : -8,
-                floater.id % 2 === 0 ? -9 : 9,
+                floater.id % 2 === 0 ? 6 : -6,
+                floater.id % 2 === 0 ? -7 : 7,
               ],
-              scale: [0.94, 1.08, 0.98, 0.94],
+              scale: [0.94, 1.06, 0.98, 0.94],
             }}
             transition={{
               duration: floater.duration,
@@ -267,7 +313,7 @@ export function AmbientBackground() {
               ease: 'easeInOut',
             }}
           >
-            {floater.letter}
+            <MonogramMark parts={floater.parts} size={floater.size} />
           </motion.div>
         ))}
       </div>

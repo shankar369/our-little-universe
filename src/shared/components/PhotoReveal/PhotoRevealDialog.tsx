@@ -90,7 +90,7 @@ export function PhotoRevealDialog<TItem extends RevealPhotoItem>({
                 <div className="aspect-[4/4.25] overflow-hidden rounded-[1.15rem] sm:aspect-[16/10]">
                   <PhotoImage item={item} />
                 </div>
-                <blockquote className="px-3 py-3 text-center text-lg font-semibold leading-7 text-purple-950 sm:py-4 sm:text-xl">
+                <blockquote className="type-quote px-3 py-3 text-center text-lg font-semibold leading-7 text-purple-950 sm:py-4 sm:text-xl">
                   "{item.quote ?? item.text}"
                 </blockquote>
               </div>

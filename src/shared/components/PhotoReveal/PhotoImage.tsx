@@ -17,7 +17,7 @@ export function PhotoImage({ item, className = '' }: PhotoImageProps) {
       >
         <div className="px-5">
           <CalendarHeart className="mx-auto mb-3 h-10 w-10 text-purple-900/60" />
-          <p className="text-lg font-black leading-tight">{item.heading}</p>
+          <p className="font-display text-lg font-bold leading-tight">{item.heading}</p>
           {item.label ? (
             <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-purple-950/46">
               {item.label}
