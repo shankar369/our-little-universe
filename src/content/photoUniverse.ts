@@ -70,9 +70,9 @@ export const photoUniverseItems = universeNames.map((name, index) => {
     name,
     label,
     quote: 'A tiny photo planet waiting for the real memory to land here.',
-    text: 'Replace this placeholder with the note, joke, or soft little detail that belongs to this photo.',
+    text: 'One day this little orbit will hold a real picture and a softer line than we can write in advance.',
     story:
-      'This Photo Universe entry is ready for a real picture. Add the image to public/photoUniverse, keep the file name in this content file, and the sphere will turn it into a tappable memory.',
+      'For now it is a placeholder planet — warm, patient, and ready the moment the real photo arrives.',
     alt: `${name} placeholder photo universe memory`,
   }
 }) satisfies PhotoUniverseItem[]

@@ -4,6 +4,7 @@ import { OrbitControls, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import type { RevealPhotoItem } from '../../../content/types'
+import { publicAssetPath } from '../../lib/assetPath'
 
 const goldenAngle = Math.PI * (3 - Math.sqrt(5))
 
@@ -90,7 +91,7 @@ function usePhotoTexture(item: RevealPhotoItem, index: number) {
     const loader = new THREE.TextureLoader()
 
     loader.load(
-      item.photo,
+      publicAssetPath(item.photo),
       (loadedTexture) => {
         if (disposed) {
           loadedTexture.dispose()

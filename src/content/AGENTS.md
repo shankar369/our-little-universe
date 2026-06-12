@@ -13,7 +13,7 @@ All editable personal data. Types before values. No UI logic.
 ## Local Contracts
 
 - Type hierarchy: `RevealPhotoItem` base → `MemoryTimelineItem`, `PhotoUniverseItem`
-- Photo paths: `/memoryTimeline/...`, `/photoUniverse/...`
+- Photo paths: `/memoryTimeline/...`, `/photoUniverse/...` (logical public paths; `publicAssetPath()` in `src/shared/lib/assetPath.ts` prefixes the Vite base at runtime)
 - Use `satisfies` for type safety when defining content arrays
 - Keep secrets out of the repo; the login gate is client-side only
 

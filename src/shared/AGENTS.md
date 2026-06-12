@@ -18,6 +18,7 @@ Reusable UI, hooks, and utilities with no route or personal copy ownership.
 - `PhotoRevealDialog` and `PhotoShuffleStack` are shared contracts for memory and gallery sections; cards use the `.polaroid` surface
 - `AmbientBackground` takes `words?: string[]` (App passes `siteContent.ambientWords`); allowed layers are fixed in design-system.md §8
 - `usePersistentBoolean` + `storage.ts` centralize localStorage access
+- `publicAssetPath()` in `lib/assetPath.ts` prefixes photo URLs for gh-pages base path; use in any component that loads `public/` assets
 
 ## Work Guidance
 

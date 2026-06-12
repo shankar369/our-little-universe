@@ -9,7 +9,7 @@ export const memoryTimelineItems = [
     photo: '/memoryTimeline/memory-01.jpg',
     quote: 'Some moments arrive quietly and still change the whole sky.',
     story:
-      'This is a placeholder for the first memory. Replace the photo and words when the real story is ready, and the timeline will keep the same order and layout.',
+      'The first little spark is still waiting for its real photo, but the feeling is already here — quiet, bright, and impossible to unsee.',
     alt: 'A placeholder for the first little spark memory',
   },
   {

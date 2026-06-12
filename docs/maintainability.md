@@ -43,8 +43,8 @@ References:
 ## Performance Guardrails
 - Mobile is the primary target, and desktop must still receive a deliberately composed layout.
 - Keep particle counts low on small screens while keeping the ambience visible.
-- Preserve a recognizable background language across the app: glowing particles, hearts, butterflies, lightning glints, and purple light fields.
-- Preserve foreground/background separation with glass or dark material surfaces for all important text and controls.
+- Follow the Midnight Velvet design contract in [design-system.md](design-system.md): content on the night sky, glass only on cards/controls, semantic color tokens, warm-paper polaroids.
+- Preserve a recognizable ambient language: aurora drift, starfield particles, floating words, butterflies, and rising hearts — never so dense that text fights the background.
 - Keep the ambience refined. If visual density increases, remove decorative elements before increasing blur or opacity.
 - Lazy-load 3D and gallery-heavy features.
 - Keep Three.js scenes simple on mobile: capped DPR, simple materials, no DOM-per-photo labels, and no postprocessing until it is clearly worth the cost.

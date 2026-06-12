@@ -90,8 +90,8 @@ export function OpeningHero() {
               className="polaroid absolute w-32 rounded-[0.9rem] p-1.5 text-[#2b1048] sm:w-40 lg:w-48 lg:p-2"
               style={{
                 rotate: photo.rotate,
-                left: index === 0 ? '2%' : index === 1 ? '56%' : '28%',
-                top: index === 0 ? '2%' : index === 1 ? '14%' : '44%',
+                left: index === 0 ? '2%' : index === 1 ? '48%' : '24%',
+                top: index === 0 ? '2%' : index === 1 ? '12%' : '42%',
               }}
               animate={{
                 y: [0, index % 2 === 0 ? -10 : 10, 0],

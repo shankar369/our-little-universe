@@ -77,7 +77,7 @@ export function PhotoUniverse() {
             onOpenItem={setOpenIndex}
             className="h-[56svh] min-h-[22rem] w-full sm:h-[60svh] lg:h-[42rem]"
           />
-          <p className="type-quote relative z-10 text-center text-sm text-moon/80">
+          <p className="type-quote relative z-10 text-center text-sm text-moon/80 lg:text-left">
             drag to wander &middot; pinch to zoom &middot; tap a planet
           </p>
         </motion.div>

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { CalendarHeart } from 'lucide-react'
 import type { RevealPhotoItem } from '../../../content/types'
+import { publicAssetPath } from '../../lib/assetPath'
 
 type PhotoImageProps = {
   item: RevealPhotoItem
@@ -30,7 +31,7 @@ export function PhotoImage({ item, className = '' }: PhotoImageProps) {
 
   return (
     <img
-      src={item.photo}
+      src={publicAssetPath(item.photo)}
       alt={item.alt ?? item.heading}
       className={`h-full w-full object-cover ${className}`}
       onError={() => setHasError(true)}

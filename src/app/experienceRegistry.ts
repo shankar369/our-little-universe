@@ -28,14 +28,14 @@ export const experienceSections: ExperienceSection[] = [
     label: 'Memory Timeline',
     status: 'live',
     path: '/memory-timeline',
-    description: 'Chronological tap-to-reveal memory cards.',
+    description: 'Swipe a stack of forever moments, one polaroid at a time.',
   },
   {
     id: 'photo-universe',
     label: 'Photo Universe',
     status: 'live',
     path: '/photo-universe',
-    description: 'A mobile-friendly 3D globe of tappable photo memories.',
+    description: 'Wander a galaxy of tiny photo planets and tap one open.',
   },
   {
     id: 'quote-puzzles',

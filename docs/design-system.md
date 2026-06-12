@@ -102,6 +102,8 @@ Photos: `.polaroid` (warm paper frame) is the only photo treatment.
 - Missing images must degrade beautifully: pastel gradient + heart + serif heading
   (`PhotoImage` fallback, `createFallbackTexture` in `PhotoSphere`).
 - Compress real photos before adding to `public/`.
+- Content stores logical paths (`/memoryTimeline/...`); components must load them via
+  `publicAssetPath()` so gh-pages base URLs resolve correctly.
 
 ## 8. Decorative Elements (AmbientBackground)
 
