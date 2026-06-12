@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
-import { OrbitControls, Stars } from '@react-three/drei'
+import { OrbitControls, Sparkles } from '@react-three/drei'
 import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import type { RevealPhotoItem } from '../../../content/types'
@@ -17,34 +17,63 @@ function createFallbackTexture(item: RevealPhotoItem, index: number) {
     return new THREE.CanvasTexture(canvas)
   }
 
-  const hue = (285 + index * 17) % 360
-  const gradient = context.createLinearGradient(0, 0, 512, 640)
-  gradient.addColorStop(0, `hsl(${hue} 85% 88%)`)
-  gradient.addColorStop(0.46, `hsl(${(hue + 28) % 360} 84% 80%)`)
-  gradient.addColorStop(1, 'hsl(43 92% 78%)')
-  context.fillStyle = gradient
+  // Soft pastel sky
+  const hue = (272 + index * 19) % 360
+  const sky = context.createLinearGradient(0, 0, 256, 640)
+  sky.addColorStop(0, `hsl(${hue} 70% 90%)`)
+  sky.addColorStop(0.55, `hsl(${(hue + 26) % 360} 72% 84%)`)
+  sky.addColorStop(1, 'hsl(40 80% 86%)')
+  context.fillStyle = sky
   context.fillRect(0, 0, 512, 640)
 
-  context.fillStyle = 'rgba(255,255,255,0.28)'
-  context.fillRect(30, 30, 452, 580)
-  context.fillStyle = 'rgba(41, 10, 70, 0.2)'
-  context.fillRect(52, 54, 408, 462)
+  // Dreamy glow
+  const glow = context.createRadialGradient(256, 250, 30, 256, 250, 300)
+  glow.addColorStop(0, 'rgba(255,255,255,0.75)')
+  glow.addColorStop(1, 'rgba(255,255,255,0)')
+  context.fillStyle = glow
+  context.fillRect(0, 0, 512, 640)
 
-  context.fillStyle = 'rgba(42, 7, 69, 0.92)'
-  context.font = '800 44px Inter, Arial, sans-serif'
+  // Tiny stars
+  context.fillStyle = 'rgba(255,255,255,0.85)'
+  for (let i = 0; i < 26; i += 1) {
+    const sx = (i * 97 + index * 53) % 512
+    const sy = (i * 151 + index * 31) % 420
+    const sr = 1 + ((i + index) % 3)
+    context.beginPath()
+    context.arc(sx, sy, sr, 0, Math.PI * 2)
+    context.fill()
+  }
+
+  // Heart
+  context.fillStyle = 'rgba(94, 26, 134, 0.5)'
+  context.save()
+  context.translate(256, 268)
+  context.scale(2.6, 2.6)
+  context.beginPath()
+  context.moveTo(0, 10)
+  context.bezierCurveTo(-14, -2, -8, -16, 0, -8)
+  context.bezierCurveTo(8, -16, 14, -2, 0, 10)
+  context.closePath()
+  context.fill()
+  context.restore()
+
+  // Caption
   context.textAlign = 'center'
   context.textBaseline = 'middle'
+  context.fillStyle = 'rgba(43, 16, 72, 0.9)'
+  context.font = 'italic 600 42px Georgia, serif'
   const words = item.heading.split(' ')
   const firstLine = words.slice(0, Math.ceil(words.length / 2)).join(' ')
   const secondLine = words.slice(Math.ceil(words.length / 2)).join(' ')
-  context.fillText(firstLine, 256, 248, 360)
+  context.fillText(firstLine, 256, secondLine ? 420 : 444, 420)
   if (secondLine) {
-    context.fillText(secondLine, 256, 302, 360)
+    context.fillText(secondLine, 256, 472, 420)
   }
 
-  context.font = '700 24px Inter, Arial, sans-serif'
-  context.fillStyle = 'rgba(42, 7, 69, 0.58)'
-  context.fillText(item.label ?? item.name, 256, 555, 380)
+  context.font = '600 22px Arial, sans-serif'
+  context.fillStyle = 'rgba(43, 16, 72, 0.5)'
+  const label = (item.label ?? item.name).toUpperCase()
+  context.fillText(label.split('').join('\u200a'), 256, 552, 420)
 
   const texture = new THREE.CanvasTexture(canvas)
   texture.colorSpace = THREE.SRGBColorSpace
@@ -106,6 +135,7 @@ type PhotoSphereCardProps<TItem extends RevealPhotoItem> = {
   index: number
   count: number
   radius: number
+  reducedMotion: boolean
   onOpenItem: (index: number) => void
 }
 
@@ -114,6 +144,7 @@ function PhotoSphereCard<TItem extends RevealPhotoItem>({
   index,
   count,
   radius,
+  reducedMotion,
   onOpenItem,
 }: PhotoSphereCardProps<TItem>) {
   const cardRef = useRef<THREE.Group>(null)
@@ -140,8 +171,15 @@ function PhotoSphereCard<TItem extends RevealPhotoItem>({
     }
   }
 
-  useFrame(() => {
-    cardRef.current?.lookAt(camera.position)
+  useFrame(({ clock }) => {
+    if (!cardRef.current) {
+      return
+    }
+
+    // Each card breathes gently along its own rhythm.
+    const bob = reducedMotion ? 0 : Math.sin(clock.elapsedTime * 0.55 + index * 1.7) * 0.045
+    cardRef.current.position.set(position.x, position.y + bob, position.z)
+    cardRef.current.lookAt(camera.position)
   })
 
   return (
@@ -168,9 +206,9 @@ function PhotoSphereCard<TItem extends RevealPhotoItem>({
         <planeGeometry args={[1, 1]} />
         <meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
-      <mesh position={[0, 0, -0.035]} scale={[1.08 * scale, 1.34 * scale, 1]}>
-        <planeGeometry args={[1.06, 1.34]} />
-        <meshBasicMaterial color="#fff4fb" transparent opacity={0.95} />
+      <mesh position={[0, 0, -0.03]} scale={[scale, scale, 1]}>
+        <planeGeometry args={[1.02, 1.26]} />
+        <meshBasicMaterial color="#fff9f1" transparent opacity={0.94} />
       </mesh>
       <mesh
         scale={[0.94 * scale, 1.12 * scale, 1]}
@@ -215,31 +253,44 @@ function PhotoSphereScene<TItem extends RevealPhotoItem>({
 
   useFrame((_, delta) => {
     if (!reducedMotion && groupRef.current) {
-      groupRef.current.rotation.y += delta * 0.055
-      groupRef.current.rotation.x = Math.sin(Date.now() * 0.00016) * 0.035
+      groupRef.current.rotation.y += delta * 0.045
+      groupRef.current.rotation.x = Math.sin(Date.now() * 0.00014) * 0.03
     }
   })
 
   return (
     <>
-      <color attach="background" args={['#000000']} />
-      <ambientLight intensity={1.7} />
-      <pointLight position={[3, 4, 5]} intensity={12} color="#f5d0fe" />
-      <pointLight position={[-5, -2, -3]} intensity={8} color="#fde68a" />
-      <Stars
-        radius={18}
-        depth={18}
-        count={240}
-        factor={3.2}
-        saturation={0}
-        fade
-        speed={reducedMotion ? 0 : 0.22}
+      {/* Far cards melt into the night instead of clipping harshly */}
+      <fog attach="fog" args={['#0a0418', 8.5, 15.5]} />
+
+      {/* Nebula heart at the center of the memory galaxy */}
+      <mesh>
+        <sphereGeometry args={[radius * 0.5, 32, 32]} />
+        <meshBasicMaterial color="#6d28d9" transparent opacity={0.12} depthWrite={false} />
+      </mesh>
+      <mesh>
+        <sphereGeometry args={[radius * 0.26, 24, 24]} />
+        <meshBasicMaterial color="#f7b8d4" transparent opacity={0.08} depthWrite={false} />
+      </mesh>
+
+      <Sparkles
+        count={100}
+        scale={radius * 2.5}
+        size={2.4}
+        speed={reducedMotion ? 0 : 0.28}
+        opacity={0.5}
+        color="#e9c8fc"
       />
+      <Sparkles
+        count={36}
+        scale={radius * 1.4}
+        size={3.4}
+        speed={reducedMotion ? 0 : 0.18}
+        opacity={0.4}
+        color="#f4d9a6"
+      />
+
       <group ref={groupRef}>
-        <mesh>
-          <sphereGeometry args={[radius * 0.58, 48, 48]} />
-          <meshBasicMaterial color="#8b5cf6" transparent opacity={0.055} wireframe />
-        </mesh>
         {items.map((item, index) => (
           <PhotoSphereCard
             key={item.id}
@@ -247,6 +298,7 @@ function PhotoSphereScene<TItem extends RevealPhotoItem>({
             index={index}
             count={items.length}
             radius={radius}
+            reducedMotion={reducedMotion}
             onOpenItem={onOpenItem}
           />
         ))}
@@ -299,11 +351,11 @@ export function PhotoSphere<TItem extends RevealPhotoItem>({
   }, [])
 
   return (
-    <div
-      className={`relative overflow-hidden rounded-[2.4rem] border border-white/14 bg-black/22 shadow-[0_32px_120px_rgba(0,0,0,0.55)] ${className}`}
-    >
-      <div className="pointer-events-none absolute inset-0 z-10 rounded-[2.4rem] bg-[radial-gradient(circle_at_50%_28%,rgba(240,171,252,0.22),transparent_34%),radial-gradient(circle_at_48%_72%,rgba(253,230,138,0.14),transparent_34%)]" />
+    <div className={`relative ${className}`}>
+      {/* Aura behind the galaxy so it floats in the page's night sky */}
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(109,40,217,0.28),rgba(247,184,212,0.08)_46%,transparent_72%)] blur-xl" />
       <Canvas
+        className="[mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]"
         camera={{ position: [0, 0.55, 9.2], fov: 45, near: 0.1, far: 100 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}

@@ -4,9 +4,8 @@
 - Build this as a mobile-first birthday memory experience, with desktop as an enhanced layout.
 - Every major screen must look stunning on both mobile and desktop; mobile is the starting point, but desktop cannot feel like an afterthought.
 - Keep the tone romantic, funny, cinematic, and personal.
-- Preserve the dark purple/black luxury look, visible glowing particles, floating hearts, butterflies, lightning glints, purple glow fields, and scrapbook/Polaroid details.
-- Keep the visual system premium and calm: foreground content must sit on clear glass/dark material surfaces, with strong separation from the decorative background.
-- Use Liquid Glass-inspired styling intentionally: blur, translucency, edge highlights, and subtle reflection are good; low-contrast transparent text over busy effects is not.
+- The visual system is "Midnight Velvet", fully specified in [docs/design-system.md](docs/design-system.md). That document is binding for all UI work; read it before changing any screen.
+- Core look: content lives directly in the night sky (no full-screen glass panels), with glass reserved for cards/controls, semantic color tokens (night/plum, starlight/moon/faint, orchid/blush/champagne), serif-italic aurora headline accents, warm-paper polaroid photo frames, and quiet ambient decoration (aurora, starfield, butterflies, floating words, rising hearts).
 - Do not turn the first screen into a marketing page. The app should feel like a private gift.
 
 ## Architecture Rules
@@ -31,7 +30,7 @@
 - Use tap-friendly controls with at least 44px height for important actions.
 - Respect `prefers-reduced-motion`; decorative movement must be safe to reduce or remove.
 - Keep expensive visual effects behind focused components, and reduce particle/3D density on phones.
-- Background ambience should be clearly visible but never block readability: hearts, butterflies, lightning, glints, and purple glow should frame the content rather than sit on top of it.
+- Background ambience should be clearly visible but never block readability: aurora, starfield, butterflies, floating words, and rising hearts frame the content rather than sit on top of it.
 - If a screen starts to feel cumbersome, reduce decoration first and strengthen hierarchy before adding more animation.
 
 ## Commands
@@ -133,6 +132,7 @@ When the user requests a durable behavior change, record it here or in the relev
 
 ### Related human docs (not agent DOX)
 
+- [docs/design-system.md](docs/design-system.md) — **binding** Midnight Velvet design contract (palette, type, surfaces, motion, ambient rules, do's/don'ts)
 - [docs/maintainability.md](docs/maintainability.md) — architecture notes and add-section checklist
 - [docs/feature-roadmap.md](docs/feature-roadmap.md) — phase plan
 - Section READMEs under `src/sections/*/README.md` — route-specific technical notes

@@ -53,6 +53,8 @@ export type PhotoUniverseItem = RevealPhotoItem & {
 
 export type SiteContent = {
   appTitle: string
+  /** Short serif fragments that drift in the ambient background. Keep them tiny and personal. */
+  ambientWords: string[]
   login: LoginContent
   hero: HeroContent
   floatingPhotos: FloatingPhotoCard[]

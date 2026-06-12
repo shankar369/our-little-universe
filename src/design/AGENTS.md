@@ -2,29 +2,25 @@
 
 ## Purpose
 
-Shared motion constants and future visual tokens. Complements `index.css` theme and liquid-glass component classes.
+Shared motion constants. Complements the Midnight Velvet tokens and component classes in `src/index.css`. The binding design contract is [docs/design-system.md](../../docs/design-system.md).
 
 ## Ownership
 
 - `motion.ts` — easing curves and Motion presets
-- CSS component classes (`liquid-panel`, etc.) live in `src/index.css`
-- Global `@theme` color and font tokens belong in `index.css`, not scattered CSS files
+- `src/index.css` owns: `@theme` color tokens (`night`, `deep`, `plum`, `starlight`, `moon`, `faint`, `orchid`, `blush`, `champagne`), fonts, surface classes (`glass-panel`, `glass-chip`, `btn-primary`, `btn-ghost`, `polaroid`), type roles (`type-eyebrow`, `type-quote`, `text-aurora`, `text-glow`, `night-veil`), and the `aurora-drift` keyframes
 
 ## Local Contracts
 
 - Export named presets: `softEase`, `screenTransition`, `riseIn`
 - Motion spread pattern for Framer Motion consumers
 - Respect global `prefers-reduced-motion` rules in CSS
-- Typography lives in `index.css` `@theme`:
-  - `--font-display` (`Fraunces`) — headlines, memory titles, quotes, ambient monograms
-  - `--font-sans` (`DM Sans`) — body copy, buttons, labels, nav, forms
-- Base styles apply `font-display` to `h1`–`h3` and `blockquote`; use `.type-quote` for memory captions
+- Typography roles and usage limits (one `.text-aurora` per screen, clamp-size caps) are defined in docs/design-system.md §3
 
 ## Work Guidance
 
 - Add reusable motion presets here; one-off section animation can stay local
 - Do not duplicate easing magic numbers across files
-- Keep the dark purple/black luxury look and liquid-glass styling per root AGENTS.md
+- Never add raw Tailwind palette colors or ad-hoc glass styles in components; extend tokens/classes in `index.css` and document them in docs/design-system.md
 
 ## Verification
 

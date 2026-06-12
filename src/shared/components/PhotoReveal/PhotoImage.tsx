@@ -13,13 +13,13 @@ export function PhotoImage({ item, className = '' }: PhotoImageProps) {
   if (hasError) {
     return (
       <div
-        className={`flex h-full w-full items-center justify-center bg-gradient-to-br from-fuchsia-200 via-rose-100 to-amber-100 text-center text-purple-950 ${className}`}
+        className={`flex h-full w-full items-center justify-center bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.55),transparent_50%),linear-gradient(150deg,#ecd5fc_0%,#fbd3e3_55%,#f8e3bd_100%)] text-center text-[#2b1048] ${className}`}
       >
         <div className="px-5">
-          <CalendarHeart className="mx-auto mb-3 h-10 w-10 text-purple-900/60" />
-          <p className="font-display text-lg font-bold leading-tight">{item.heading}</p>
+          <CalendarHeart className="mx-auto mb-3 h-9 w-9 text-[#2b1048]/55" />
+          <p className="type-quote text-lg font-semibold leading-tight">{item.heading}</p>
           {item.label ? (
-            <p className="mt-1 text-xs font-semibold uppercase tracking-[0.22em] text-purple-950/46">
+            <p className="type-eyebrow mt-2 !tracking-[0.22em] text-[#2b1048]/45">
               {item.label}
             </p>
           ) : null}

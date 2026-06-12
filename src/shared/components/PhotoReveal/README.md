@@ -13,4 +13,4 @@ The component accepts `RevealPhotoItem` data: `id`, `photo`, `heading`, `name`, 
 - The modal uses `role="dialog"` and `aria-modal` for assistive technology.
 
 ## Visual Rules
-Keep the white photo frame inside one dark liquid-glass surface. Avoid placing extra cards inside the modal; the image, quote, story, and navigation should remain clear on mobile first.
+Keep the warm-paper `.polaroid` frame inside one `glass-panel` surface. Quote renders as serif italic inside the frame; story as quiet centered text below a hairline; navigation is circular ghost/primary icon buttons. Avoid placing extra cards inside the modal; mobile-first clarity wins.

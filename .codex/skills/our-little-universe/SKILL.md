@@ -33,13 +33,14 @@ Use this skill whenever changing this project.
 - Keep localStorage keys in `src/app/appConfig.ts`.
 
 ## Design Guidance
-- Design mobile first; desktop should enhance, not define, the experience.
-- Use tap interactions, bottom-sheet-friendly layouts, and comfortable touch targets.
-- Avoid hover-only behavior.
-- Respect reduced motion.
-- Keep decorative effects subtle enough that text remains readable.
-- Background effects should feel alive and magical, but content always wins: never let ambience obscure headings, buttons, forms, or photo cards.
-- Use Liquid Glass-inspired styling through blur, saturation, translucency, reflective edges, and depth shadows. Avoid noisy glass or transparent panels that make text fight the background.
+- The binding design contract is `docs/design-system.md` ("Midnight Velvet"). Read it before any UI change.
+- Content lives directly in the night sky; never wrap a screen in a full-size glass panel. Glass (`glass-panel`, `glass-chip`) is for cards and controls only.
+- Use only the semantic color tokens from `src/index.css` (night/deep/plum, starlight/moon/faint, orchid/blush/champagne) plus `#2b1048` on warm paper.
+- One serif-italic `.text-aurora` headline accent per screen; headlines capped at modest clamp sizes.
+- Photos always use the warm-paper `.polaroid` treatment with designed fallbacks.
+- Design mobile first; desktop is an asymmetric expansion, not a stretch.
+- Tap interactions, 44px+ targets, no hover-only behavior, respect reduced motion.
+- Ambience (aurora, starfield, butterflies, floating words, hearts) frames content and never obscures headings, forms, or cards.
 
 ## Verification
 - Run `npm run build` after code changes.

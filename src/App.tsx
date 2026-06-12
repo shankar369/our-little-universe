@@ -2,6 +2,7 @@ import { AnimatePresence } from 'motion/react'
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router'
 import { appConfig } from './app/appConfig'
+import { siteContent } from './content/siteContent'
 import { LoginScreen } from './features/auth/LoginScreen'
 import { OpeningHero } from './features/opening/OpeningHero'
 import { AmbientBackground } from './shared/components/AmbientBackground'
@@ -27,10 +28,10 @@ const PhotoUniverse = lazy(() =>
 
 function SectionLoading() {
   return (
-    <main className="flex min-h-svh items-center justify-center px-5 text-white">
-      <div className="liquid-panel rounded-[1.6rem] px-5 py-4 text-sm font-semibold text-violet-50/80">
-        <span className="relative">Opening the next little universe...</span>
-      </div>
+    <main className="flex min-h-svh items-center justify-center px-5 text-starlight">
+      <p className="type-quote text-glow text-lg text-moon">
+        opening the next little universe&hellip;
+      </p>
     </main>
   )
 }
@@ -47,7 +48,7 @@ function App() {
 
   return (
     <div className="relative min-h-svh overflow-x-hidden">
-      <AmbientBackground />
+      <AmbientBackground words={siteContent.ambientWords} />
       <div className="relative z-10">
         <AnimatePresence mode="wait">
           {isUnlocked ? (

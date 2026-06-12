@@ -1,9 +1,9 @@
-import { ArrowLeft, Orbit, Sparkles, ZoomIn } from 'lucide-react'
+import { ArrowLeft, Orbit, Sparkles } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Link } from 'react-router'
 import { useCallback, useMemo, useState } from 'react'
 import { orderedPhotoUniverseItems } from '../../content/photoUniverse'
-import { riseIn } from '../../design/motion'
+import { riseIn, softEase } from '../../design/motion'
 import { PhotoRevealDialog } from '../../shared/components/PhotoReveal/PhotoRevealDialog'
 import { PhotoSphere } from '../../shared/components/PhotoSphere/PhotoSphere'
 
@@ -29,81 +29,81 @@ export function PhotoUniverse() {
   }, [photos.length])
 
   return (
-    <main className="relative min-h-svh px-5 py-[max(1.25rem,env(safe-area-inset-top))] text-white">
-      <section className="mx-auto grid min-h-[calc(100svh-2.5rem)] w-full max-w-7xl gap-5 pb-[max(5.5rem,env(safe-area-inset-bottom))] pt-5 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:gap-8 lg:pt-8">
-        <motion.div
-          {...riseIn}
-          className="liquid-panel order-2 rounded-[2.15rem] px-5 py-6 sm:px-8 sm:py-8 lg:order-1"
-        >
-          <div className="relative">
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-              <div className="liquid-control inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-fuchsia-100/90">
-                <Orbit className="h-3.5 w-3.5 text-amber-200" />
-                Photo Universe
-              </div>
-              <button
-                type="button"
-                onClick={openRandomPhoto}
-                className="liquid-button inline-flex h-11 items-center justify-center gap-2 rounded-full px-4 text-xs font-bold uppercase tracking-[0.16em] text-purple-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fuchsia-100"
-              >
-                <Sparkles className="h-4 w-4" />
-                Surprise me
-              </button>
-            </div>
+    <main className="relative min-h-svh overflow-x-hidden px-6 py-[max(1.5rem,env(safe-area-inset-top))] text-starlight">
+      <section className="mx-auto flex min-h-[calc(100svh-3rem)] w-full max-w-6xl flex-col justify-center gap-2 pb-[max(5.5rem,env(safe-area-inset-bottom))] pt-4 lg:grid lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-8">
+        {/* Heading + actions */}
+        <motion.div {...riseIn} className="night-veil relative z-10 text-center lg:text-left">
+          <div className="mb-5 inline-flex items-center gap-2.5 text-champagne/85">
+            <Orbit className="h-3.5 w-3.5" />
+            <span className="type-eyebrow">Photo Universe</span>
+          </div>
+          <h1 className="text-glow text-balance text-[clamp(2.1rem,8.5vw,3.6rem)] font-medium leading-[1.04]">
+            A galaxy made
+            <span className="type-quote text-aurora block pb-1">entirely of us.</span>
+          </h1>
+          <p className="type-quote mx-auto mt-4 max-w-sm text-pretty text-base leading-7 text-moon lg:mx-0">
+            {photos.length} little planets, each one holding a moment that
+            refused to be forgotten.
+          </p>
 
-            <h1 className="pr-16 text-balance text-[clamp(2.62rem,11.5vw,7rem)] font-semibold leading-[0.9] text-white sm:pr-0">
-              Fifty tiny planets of us.
-            </h1>
-            <p className="mt-5 max-w-2xl text-pretty text-base leading-7 text-violet-50/78 sm:text-xl sm:leading-8">
-              Drag the globe, pinch or scroll to zoom, and tap a photo planet to
-              open it in the same framed memory preview. Real photos can drop in
-              later without changing the component.
-            </p>
-
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              <div className="liquid-control rounded-[1.35rem] px-4 py-4">
-                <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-fuchsia-100/76">
-                  <ZoomIn className="h-4 w-4 text-amber-200" />
-                  Gesture notes
-                </div>
-                <p className="text-sm leading-6 text-violet-50/72">
-                  One finger rotates. Pinch or wheel zooms. Tap opens a memory.
-                </p>
-              </div>
-              <div className="liquid-control rounded-[1.35rem] px-4 py-4">
-                <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-fuchsia-100/76">
-                  Orbit count
-                </p>
-                <p className="text-sm leading-6 text-violet-50/72">
-                  {photos.length} photo cards are placed in a balanced 3D sphere.
-                </p>
-              </div>
-            </div>
-
+          <div className="mt-7 hidden flex-col items-center gap-4 lg:flex lg:items-start">
+            <button
+              type="button"
+              onClick={openRandomPhoto}
+              className="btn-primary flex h-13 items-center justify-center gap-2 rounded-2xl px-7 text-base font-semibold active:scale-[0.985] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+            >
+              <Sparkles className="h-4 w-4" />
+              Surprise me
+            </button>
             <Link
               to="/journey"
-              className="liquid-control mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-2xl px-5 text-sm font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fuchsia-100"
+              className="inline-flex min-h-11 items-center gap-2 text-sm font-medium text-faint transition hover:text-moon focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
             >
               <ArrowLeft className="h-4 w-4" />
-              Back to journey
+              Back to the journey
             </Link>
           </div>
         </motion.div>
 
+        {/* The galaxy itself — full-bleed on mobile, no widget box */}
         <motion.div
-          initial={{ opacity: 0, y: 24, scale: 0.98 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ delay: 0.12, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="order-1 lg:order-2"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.15, duration: 0.85, ease: softEase }}
+          className="-mx-6 lg:mx-0"
         >
-          <div className="relative">
-            <div className="pointer-events-none absolute -inset-5 rounded-[3rem] bg-[radial-gradient(circle_at_50%_48%,rgba(216,180,254,0.24),transparent_44%)] blur-2xl" />
-            <PhotoSphere
-              items={photos}
-              onOpenItem={setOpenIndex}
-              className="relative h-[31rem] w-full sm:h-[40rem] lg:h-[44rem]"
-            />
-          </div>
+          <PhotoSphere
+            items={photos}
+            onOpenItem={setOpenIndex}
+            className="h-[56svh] min-h-[22rem] w-full sm:h-[60svh] lg:h-[42rem]"
+          />
+          <p className="type-quote relative z-10 text-center text-sm text-moon/80">
+            drag to wander &middot; pinch to zoom &middot; tap a planet
+          </p>
+        </motion.div>
+
+        {/* Mobile actions below the galaxy */}
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.6, ease: softEase }}
+          className="mt-5 flex items-center justify-center gap-4 lg:hidden"
+        >
+          <Link
+            to="/journey"
+            className="btn-ghost flex h-12 w-12 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+            aria-label="Back to the journey"
+          >
+            <ArrowLeft className="h-4.5 w-4.5" />
+          </Link>
+          <button
+            type="button"
+            onClick={openRandomPhoto}
+            className="btn-primary flex h-12 items-center justify-center gap-2 rounded-full px-6 text-sm font-semibold active:scale-[0.985] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+          >
+            <Sparkles className="h-4 w-4" />
+            Surprise me
+          </button>
         </motion.div>
       </section>
 

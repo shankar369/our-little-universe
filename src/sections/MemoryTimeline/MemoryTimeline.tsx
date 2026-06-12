@@ -1,5 +1,5 @@
 import { useCallback, useMemo, useState } from 'react'
-import { CalendarHeart, Dice5 } from 'lucide-react'
+import { CalendarHeart, Dices } from 'lucide-react'
 import { motion } from 'motion/react'
 import { orderedMemoryTimelineItems } from '../../content/memoryTimeline'
 import type { MemoryTimelineItem, RevealPhotoItem } from '../../content/types'
@@ -59,76 +59,32 @@ export function MemoryTimeline() {
   }
 
   return (
-    <main className="relative min-h-svh px-5 py-[max(1.25rem,env(safe-area-inset-top))] text-white">
-      <section className="mx-auto grid min-h-[calc(100svh-2.5rem)] w-full max-w-6xl gap-5 pb-[max(5.5rem,env(safe-area-inset-bottom))] pt-6 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:gap-10 lg:pt-8">
-        <motion.div {...riseIn} className="liquid-panel rounded-[2.15rem] px-5 py-5 sm:px-7 sm:py-8">
-          <div className="relative">
-            <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-              <div className="liquid-control inline-flex items-center gap-2 rounded-full px-3 py-2 text-xs font-semibold uppercase tracking-[0.24em] text-fuchsia-100/90">
-                <CalendarHeart className="h-3.5 w-3.5 text-amber-200" />
-                Memory Timeline
-              </div>
-              <button
-                type="button"
-                onClick={openRandomMemory}
-                className="liquid-button inline-flex h-11 items-center justify-center gap-2 rounded-full px-4 text-xs font-bold uppercase tracking-[0.16em] text-purple-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fuchsia-100"
-              >
-                <Dice5 className="h-4 w-4" />
-                Pick one
-              </button>
-            </div>
-
-            <h1 className="text-balance text-[clamp(2.35rem,10.5vw,6.5rem)] font-semibold leading-[0.92] text-white lg:leading-[0.9]">
-              A stack of tiny forever moments.
-            </h1>
-            <p className="mt-4 text-pretty text-sm leading-6 text-violet-50/76 sm:text-xl sm:leading-8">
-              Swipe through the photo stack, tap a card to frame it, and let each
-              quote hold the memory until the real photos arrive.
-            </p>
-
-            <div className="mt-5 grid grid-cols-[3.35rem_1fr] gap-3 sm:mt-7 sm:grid-cols-[3.75rem_1fr] sm:gap-4">
-              <div className="relative flex flex-col items-center gap-2 sm:gap-3">
-                <div className="absolute bottom-6 top-6 w-px bg-gradient-to-b from-fuchsia-100/10 via-fuchsia-100/35 to-fuchsia-100/10" />
-                {memories.map((memory, index) => (
-                  <button
-                    type="button"
-                    key={memory.id}
-                    onClick={() => goToIndex(index)}
-                    className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full border text-sm font-black transition sm:h-12 sm:w-12 ${
-                      index === activeIndex
-                        ? 'border-amber-100/50 bg-amber-100/20 text-amber-50 shadow-[0_0_28px_rgba(253,230,138,0.2)]'
-                        : 'border-white/12 bg-white/[0.06] text-violet-50/52'
-                    }`}
-                    aria-label={`Show ${memory.title}`}
-                  >
-                    {memory.order}
-                  </button>
-                ))}
-              </div>
-
-              <div className="space-y-3 pt-1">
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-fuchsia-100/56">
-                  {activeMemory.dateLabel}
-                </p>
-                <h2 className="text-xl font-semibold leading-tight text-white sm:text-2xl">
-                  {activeMemory.title}
-                </h2>
-                <p className="line-clamp-2 text-sm leading-6 text-violet-50/68 sm:line-clamp-none">
-                  {activeMemory.quote}
-                </p>
-                <div className="liquid-control inline-flex rounded-full px-3 py-1.5 text-xs font-semibold text-violet-50/74">
-                  {activeIndex + 1} of {memories.length}
-                </div>
-              </div>
-            </div>
+    <main className="relative min-h-svh px-6 py-[max(1.5rem,env(safe-area-inset-top))] text-starlight">
+      <section className="mx-auto grid min-h-[calc(100svh-3rem)] w-full max-w-5xl content-center gap-8 pb-[max(5.5rem,env(safe-area-inset-bottom))] pt-6 lg:grid-cols-[0.95fr_1.05fr] lg:grid-rows-[auto_auto] lg:items-center lg:gap-x-12 lg:gap-y-8">
+        {/* Heading */}
+        <motion.div
+          {...riseIn}
+          className="night-veil text-center lg:col-start-1 lg:row-start-1 lg:self-end lg:text-left"
+        >
+          <div className="mb-5 inline-flex items-center gap-2.5 text-champagne/85">
+            <CalendarHeart className="h-3.5 w-3.5" />
+            <span className="type-eyebrow">Memory Timeline</span>
           </div>
+          <h1 className="text-glow text-balance text-[clamp(2.1rem,8.5vw,3.4rem)] font-medium leading-[1.04]">
+            A stack of tiny
+            <span className="type-quote text-aurora block pb-1">forever moments.</span>
+          </h1>
+          <p className="type-quote mx-auto mt-4 max-w-sm text-pretty text-base leading-7 text-moon lg:mx-0">
+            Swipe through the stack, and tap a card to hold the whole memory.
+          </p>
         </motion.div>
 
+        {/* Shuffle stack */}
         <motion.div
           initial={{ opacity: 0, y: 28 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.16, duration: 0.64, ease: softEase }}
-          className="relative"
+          transition={{ delay: 0.18, duration: 0.7, ease: softEase }}
+          className="lg:col-start-2 lg:row-span-2 lg:row-start-1"
         >
           <PhotoShuffleStack
             items={memories}
@@ -136,6 +92,59 @@ export function MemoryTimeline() {
             onActiveIndexChange={goToIndex}
             onOpenItem={setOpenIndex}
           />
+        </motion.div>
+
+        {/* Active memory details */}
+        <motion.div
+          initial={{ opacity: 0, y: 22 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3, duration: 0.65, ease: softEase }}
+          className="glass-panel mx-auto w-full max-w-md rounded-3xl px-6 py-5 lg:col-start-1 lg:row-start-2 lg:mx-0 lg:self-start"
+        >
+          {/* The polaroid already shows date, title, and quote on mobile; avoid repeating them. */}
+          <div className="hidden lg:block">
+            <p className="type-eyebrow text-champagne/80">{activeMemory.dateLabel}</p>
+            <h2 className="mt-2.5 font-display text-xl font-semibold leading-tight sm:text-2xl">
+              {activeMemory.title}
+            </h2>
+            <p className="type-quote mt-2 line-clamp-2 text-sm leading-6 text-moon/90">
+              {activeMemory.quote}
+            </p>
+          </div>
+
+          <div className="flex items-center justify-between gap-4 lg:mt-5">
+            <div className="flex items-center gap-2" role="tablist" aria-label="Memories">
+              {memories.map((memory, index) => (
+                <button
+                  type="button"
+                  key={memory.id}
+                  role="tab"
+                  aria-selected={index === activeIndex}
+                  onClick={() => goToIndex(index)}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    index === activeIndex
+                      ? 'w-7 bg-champagne shadow-[0_0_14px_rgba(244,217,166,0.5)]'
+                      : 'w-2.5 bg-starlight/25 hover:bg-starlight/45'
+                  }`}
+                  aria-label={`Show ${memory.title}`}
+                />
+              ))}
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="text-xs font-medium tracking-wide text-faint">
+                {activeIndex + 1} / {memories.length}
+              </span>
+              <button
+                type="button"
+                onClick={openRandomMemory}
+                className="btn-ghost flex h-11 w-11 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+                aria-label="Open a random memory"
+                title="Surprise me"
+              >
+                <Dices className="h-4.5 w-4.5 text-champagne" />
+              </button>
+            </div>
+          </div>
         </motion.div>
       </section>
 

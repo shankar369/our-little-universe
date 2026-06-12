@@ -1,72 +1,133 @@
 @import 'tailwindcss';
 
+/*
+  Our Little Universe — Midnight Velvet design tokens.
+  The full design contract lives in docs/design-system.md.
+  Never invent new ad-hoc colors in components; use these tokens.
+*/
 @theme {
   --font-sans:
     'DM Sans', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
     sans-serif;
   --font-display:
     'Fraunces', ui-serif, Georgia, 'Times New Roman', serif;
-  --color-night: #06030b;
-  --color-plum: #15021f;
-  --color-orchid: #c084fc;
-  --color-blush: #f9a8d4;
-  --color-champagne: #fde68a;
+
+  /* Night-sky neutrals (page + surfaces) */
+  --color-night: #070312;
+  --color-deep: #0e0620;
+  --color-plum: #1c0d33;
+
+  /* Text */
+  --color-starlight: #f5f0ff;
+  --color-moon: #c9bce6;
+  --color-faint: #948ab8;
+
+  /* Accents */
+  --color-orchid: #c894fc;
+  --color-blush: #f7b8d4;
+  --color-champagne: #f4d9a6;
+
+  /* Ambient aurora drift (killed automatically by reduced-motion rule below) */
+  --animate-aurora-slow: aurora-drift 56s ease-in-out infinite alternate;
+  --animate-aurora-fast: aurora-drift 38s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(-4%, -2%, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(3%, 4%, 0) scale(1.12);
+  }
+  100% {
+    transform: translate3d(6%, -3%, 0) scale(1.04);
+  }
 }
 
 @layer components {
-  .liquid-panel {
+  /*
+    Surface system — three tiers only:
+    glass-panel (cards, dialogs) > glass-chip (pills, inputs, small controls) > bare night.
+    Full-screen mega-panels are forbidden; let content live in the sky.
+  */
+  .glass-panel {
     position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(255, 255, 255, 0.18);
+    border: 1px solid rgb(255 255 255 / 0.1);
     background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.055)),
-      rgba(12, 5, 24, 0.58);
+      linear-gradient(160deg, rgb(255 255 255 / 0.07), rgb(255 255 255 / 0.015) 42%),
+      rgb(14 6 32 / 0.64);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.2),
-      inset 0 -1px 0 rgba(255, 255, 255, 0.06),
-      0 28px 90px rgba(0, 0, 0, 0.52);
-    backdrop-filter: blur(28px) saturate(1.35);
-    -webkit-backdrop-filter: blur(28px) saturate(1.35);
+      inset 0 1px 0 rgb(255 255 255 / 0.12),
+      0 24px 70px rgb(2 0 10 / 0.55);
+    backdrop-filter: blur(22px) saturate(1.3);
+    -webkit-backdrop-filter: blur(22px) saturate(1.3);
   }
 
-  .liquid-panel::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
+  .glass-chip {
+    border: 1px solid rgb(255 255 255 / 0.12);
     background:
-      radial-gradient(circle at 18% 0%, rgba(255, 255, 255, 0.24), transparent 28%),
-      linear-gradient(120deg, rgba(255, 255, 255, 0.2), transparent 18%, transparent 76%, rgba(255, 255, 255, 0.1));
-    opacity: 0.58;
-  }
-
-  .liquid-control {
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06)),
-      rgba(255, 255, 255, 0.06);
+      linear-gradient(150deg, rgb(255 255 255 / 0.1), rgb(255 255 255 / 0.03)),
+      rgb(20 10 40 / 0.42);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.18),
-      0 12px 36px rgba(0, 0, 0, 0.24);
-    backdrop-filter: blur(18px) saturate(1.25);
-    -webkit-backdrop-filter: blur(18px) saturate(1.25);
+      inset 0 1px 0 rgb(255 255 255 / 0.14),
+      0 10px 30px rgb(2 0 10 / 0.3);
+    backdrop-filter: blur(14px) saturate(1.25);
+    -webkit-backdrop-filter: blur(14px) saturate(1.25);
   }
 
-  .liquid-button {
+  /* Primary action — aurora pastel, dark plum text, soft orchid bloom. */
+  .btn-primary {
+    color: #2b1048;
     background:
-      linear-gradient(135deg, rgba(255, 255, 255, 0.82), rgba(255, 255, 255, 0.2) 34%, rgba(255, 255, 255, 0.72)),
-      linear-gradient(90deg, #f0abfc, #fbcfe8 48%, #fde68a);
+      linear-gradient(170deg, rgb(255 255 255 / 0.65), rgb(255 255 255 / 0) 45%),
+      linear-gradient(115deg, #f7c3da, #e3b7fc 48%, #f4d9a6);
     box-shadow:
-      inset 0 1px 0 rgba(255, 255, 255, 0.82),
-      inset 0 -8px 18px rgba(109, 40, 217, 0.16),
-      0 20px 54px rgba(217, 70, 239, 0.28);
+      inset 0 1px 0 rgb(255 255 255 / 0.85),
+      inset 0 -10px 22px rgb(120 50 200 / 0.14),
+      0 14px 44px rgb(200 148 252 / 0.32);
+    transition: filter 200ms ease, box-shadow 240ms ease, transform 160ms ease;
   }
 
+  .btn-primary:hover {
+    filter: brightness(1.05);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.85),
+      inset 0 -10px 22px rgb(120 50 200 / 0.14),
+      0 16px 54px rgb(200 148 252 / 0.45);
+  }
+
+  .btn-ghost {
+    color: var(--color-starlight);
+    border: 1px solid rgb(255 255 255 / 0.16);
+    background:
+      linear-gradient(150deg, rgb(255 255 255 / 0.09), rgb(255 255 255 / 0.02)),
+      rgb(20 10 40 / 0.4);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.14);
+    backdrop-filter: blur(14px) saturate(1.2);
+    -webkit-backdrop-filter: blur(14px) saturate(1.2);
+    transition: background-color 200ms ease, border-color 200ms ease;
+  }
+
+  .btn-ghost:hover {
+    border-color: rgb(255 255 255 / 0.28);
+    background-color: rgb(255 255 255 / 0.07);
+  }
+
+  /* Warm paper photo frame (shuffle cards, reveal frame, hero polaroids). */
+  .polaroid {
+    background: linear-gradient(168deg, #fffdf9 0%, #f7f0e6 100%);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.95),
+      0 4px 14px rgb(2 0 10 / 0.35),
+      0 22px 60px rgb(2 0 10 / 0.5);
+  }
+
+  /* Typography roles */
   .type-eyebrow {
     font-family: var(--font-sans);
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     font-weight: 600;
-    letter-spacing: 0.24em;
+    letter-spacing: 0.32em;
     line-height: 1;
     text-transform: uppercase;
   }
@@ -74,7 +135,36 @@
   .type-quote {
     font-family: var(--font-display);
     font-style: italic;
-    font-variation-settings: 'SOFT' 50, 'WONK' 0.8;
+    font-variation-settings: 'SOFT' 60, 'WONK' 1;
+  }
+
+  /* Headline shimmer for the one emotional line per screen. */
+  .text-aurora {
+    background: linear-gradient(115deg, #f5f0ff 6%, #e9c8fc 38%, #f7b8d4 64%, #f4d9a6 94%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Halo for text sitting directly on the night sky. */
+  .text-glow {
+    text-shadow:
+      0 2px 22px rgb(7 3 18 / 0.85),
+      0 0 44px rgb(200 148 252 / 0.28);
+  }
+
+  /* Soft darkening behind text zones placed straight on the background. */
+  .night-veil {
+    position: relative;
+  }
+
+  .night-veil::before {
+    content: '';
+    position: absolute;
+    inset: -2.5rem -3rem;
+    pointer-events: none;
+    z-index: -1;
+    background: radial-gradient(ellipse 90% 80% at 50% 45%, rgb(7 3 18 / 0.62), transparent 72%);
   }
 }
 
@@ -100,7 +190,7 @@
 :root {
   color-scheme: dark;
   font-family: var(--font-sans);
-  background: #06030b;
+  background: #070312;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -110,7 +200,7 @@
 html {
   min-width: 320px;
   min-height: 100%;
-  background: #06030b;
+  background: #070312;
 }
 
 body {
@@ -118,7 +208,8 @@ body {
   min-height: 100svh;
   margin: 0;
   overflow-x: hidden;
-  background: #06030b;
+  background: #070312;
+  color: var(--color-starlight);
 }
 
 button,
@@ -131,7 +222,7 @@ button {
 }
 
 ::selection {
-  background: rgba(240, 171, 252, 0.35);
+  background: rgb(200 148 252 / 0.4);
   color: white;
 }
 

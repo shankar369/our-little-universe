@@ -14,8 +14,9 @@ Reusable UI, hooks, and utilities with no route or personal copy ownership.
 ## Local Contracts
 
 - Photo primitives use `RevealPhotoItem` from `content/types.ts`
-- `PhotoSphere`: generic `<TItem extends RevealPhotoItem>`, DPR cap `[1, 1.5]`, no DOM labels in canvas
-- `PhotoRevealDialog` and `PhotoShuffleStack` are shared contracts for memory and gallery sections
+- `PhotoSphere`: generic `<TItem extends RevealPhotoItem>`, DPR cap `[1, 1.5]`, no DOM labels in canvas, transparent unboxed canvas with edge mask, fog + Sparkles + nebula scene per design-system.md §9
+- `PhotoRevealDialog` and `PhotoShuffleStack` are shared contracts for memory and gallery sections; cards use the `.polaroid` surface
+- `AmbientBackground` takes `words?: string[]` (App passes `siteContent.ambientWords`); allowed layers are fixed in design-system.md §8
 - `usePersistentBoolean` + `storage.ts` centralize localStorage access
 
 ## Work Guidance

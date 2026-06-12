@@ -2,6 +2,7 @@ import type { SiteContent } from './types'
 
 export const siteContent = {
   appTitle: 'Our Little Universe',
+  ambientWords: ['always', 'us', 'stay', 'home', 'N \u2665 S'],
   login: {
     question: 'What is the tiny secret password to our little universe?',
     answer: 'moonlight',
@@ -21,28 +22,28 @@ export const siteContent = {
     subtitle: 'A soft, sparkly place for the memories that kept choosing us.',
     body: 'Built like a secret scrapbook: a little dramatic, very purple, full of photos, puzzles, and moments waiting to be unlocked.',
     cta: 'Begin the journey',
-    note: 'Phase 1 is the doorway. The memory timeline, photo globe, and puzzles come next.',
+    note: 'Every door in here leads back to us.',
   },
   floatingPhotos: [
     {
       id: 'first-spark',
       title: 'First Spark',
       caption: 'The beginning of all this magic',
-      gradient: 'from-fuchsia-300 via-rose-200 to-amber-100',
+      gradient: 'from-[#e9c8fc] via-[#fbd3e3] to-[#f8e3bd]',
       rotate: '-8deg',
     },
     {
       id: 'favorite-chaos',
       title: 'Favorite Chaos',
       caption: 'Laughs that became evidence',
-      gradient: 'from-violet-300 via-purple-200 to-pink-100',
+      gradient: 'from-[#d4c2fc] via-[#ecd5fc] to-[#fbd3e3]',
       rotate: '7deg',
     },
     {
       id: 'birthday-wish',
       title: 'Birthday Wish',
       caption: 'One more orbit around joy',
-      gradient: 'from-indigo-300 via-fuchsia-200 to-rose-100',
+      gradient: 'from-[#c4b8f8] via-[#e9c8fc] to-[#fbd9d3]',
       rotate: '-3deg',
     },
   ],

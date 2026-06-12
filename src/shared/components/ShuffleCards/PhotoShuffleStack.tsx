@@ -31,8 +31,8 @@ export function PhotoShuffleStack<TItem extends RevealPhotoItem>({
   swipeThreshold = defaultSwipeThreshold,
   visibleRadius = 2,
   className = '',
-  previousLabel = 'Prev',
-  nextLabel = 'Next',
+  previousLabel = 'Previous memory',
+  nextLabel = 'Next memory',
 }: PhotoShuffleStackProps<TItem>) {
   const didDragRef = useRef(false)
   const pointerStartXRef = useRef<number | null>(null)
@@ -55,10 +55,12 @@ export function PhotoShuffleStack<TItem extends RevealPhotoItem>({
 
   return (
     <div
-      className={`relative mx-auto h-[31rem] w-full max-w-[25rem] sm:h-[38rem] lg:max-w-[31rem] ${className}`}
+      className={`relative mx-auto h-[31.5rem] w-full max-w-[23rem] sm:h-[37rem] sm:max-w-[27rem] ${className}`}
     >
-      <div className="liquid-panel absolute inset-x-8 bottom-8 top-14 rounded-[2rem] opacity-60" />
-      <div className="absolute inset-0">
+      {/* Soft glow bed beneath the stack */}
+      <div className="pointer-events-none absolute inset-x-6 bottom-14 top-20 rounded-full bg-orchid/12 blur-3xl" />
+
+      <div className="absolute inset-x-0 bottom-16 top-0">
         {items.map((item, index) => {
           const rawOffset = index - activeIndex
           const circularOffset =
@@ -67,10 +69,10 @@ export function PhotoShuffleStack<TItem extends RevealPhotoItem>({
               : rawOffset
           const isVisible = Math.abs(circularOffset) <= visibleRadius
           const isActive = index === activeIndex
-          const x = circularOffset * 22
-          const y = Math.abs(circularOffset) * 18
-          const rotate = circularOffset * 5
-          const scale = 1 - Math.abs(circularOffset) * 0.055
+          const x = circularOffset * 20
+          const y = Math.abs(circularOffset) * 14
+          const rotate = circularOffset * 4.5
+          const scale = 1 - Math.abs(circularOffset) * 0.05
 
           if (!isVisible) {
             return null
@@ -129,39 +131,34 @@ export function PhotoShuffleStack<TItem extends RevealPhotoItem>({
                   goToIndex(index)
                 }
               }}
-              className="absolute left-1/2 top-4 w-[76%] origin-bottom rounded-[1.7rem] bg-white/92 p-2 text-left text-purple-950 shadow-[0_28px_90px_rgba(0,0,0,0.48)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fuchsia-100 sm:top-8 sm:w-[78%]"
+              className="polaroid absolute left-1/2 top-2 w-[78%] origin-bottom rounded-[1rem] p-2 text-left text-[#2b1048] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid sm:top-4"
               animate={{
                 x: `calc(-50% + ${x}px)`,
                 y,
                 rotate,
                 scale,
-                opacity: 1 - Math.abs(circularOffset) * 0.18,
+                opacity: 1 - Math.abs(circularOffset) * 0.22,
                 zIndex: 20 - Math.abs(circularOffset),
               }}
-              transition={{ duration: 0.34, ease: softEase }}
+              transition={{ duration: 0.38, ease: softEase }}
               whileTap={isActive ? { scale: scale * 0.985 } : undefined}
               aria-label={
                 isActive ? `Open ${item.heading}` : `Select ${item.heading}`
               }
             >
-              <div className="aspect-[4/5] overflow-hidden rounded-[1.25rem]">
+              <div className="aspect-[4/5] overflow-hidden rounded-[0.6rem]">
                 <PhotoImage item={item} />
               </div>
-              <div className="px-2.5 py-4">
-                <div className="mb-2 flex items-center justify-between gap-3">
-                  {item.label ? (
-                    <p className="text-[0.68rem] font-black uppercase tracking-[0.2em] text-purple-950/42">
-                      {item.label}
-                    </p>
-                  ) : null}
-                  {isActive ? (
-                    <p className="ml-auto text-[0.68rem] font-black uppercase tracking-[0.18em] text-fuchsia-800/62">
-                      Tap to frame
-                    </p>
-                  ) : null}
-                </div>
-                <h3 className="text-2xl font-black leading-none">{item.heading}</h3>
-                <p className="mt-2 text-sm font-medium leading-5 text-purple-950/58">
+              <div className="px-1.5 pb-2 pt-3.5">
+                {item.label ? (
+                  <p className="type-eyebrow mb-1.5 !tracking-[0.22em] text-[#2b1048]/45">
+                    {item.label}
+                  </p>
+                ) : null}
+                <h3 className="font-display text-xl font-semibold leading-tight">
+                  {item.heading}
+                </h3>
+                <p className="type-quote mt-1.5 line-clamp-2 text-sm leading-5 text-[#2b1048]/65">
                   {item.quote ?? item.text}
                 </p>
               </div>
@@ -170,22 +167,25 @@ export function PhotoShuffleStack<TItem extends RevealPhotoItem>({
         })}
       </div>
 
-      <div className="absolute bottom-0 left-1/2 grid w-full max-w-xs -translate-x-1/2 grid-cols-2 gap-3">
+      <div className="absolute inset-x-0 bottom-0 z-30 flex items-center justify-center gap-5">
         <button
           type="button"
           onClick={goPrevious}
-          className="liquid-control flex h-12 items-center justify-center gap-2 rounded-2xl text-sm font-semibold text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fuchsia-100"
+          className="btn-ghost flex h-12 w-12 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+          aria-label={previousLabel}
         >
-          <ArrowLeft className="h-4 w-4" />
-          {previousLabel}
+          <ArrowLeft className="h-4.5 w-4.5" />
         </button>
+        <p className="type-quote select-none text-sm text-faint">
+          swipe &middot; tap to open
+        </p>
         <button
           type="button"
           onClick={goNext}
-          className="liquid-button flex h-12 items-center justify-center gap-2 rounded-2xl text-sm font-bold text-purple-950 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-fuchsia-100"
+          className="btn-ghost flex h-12 w-12 items-center justify-center rounded-full focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+          aria-label={nextLabel}
         >
-          {nextLabel}
-          <ArrowRight className="h-4 w-4" />
+          <ArrowRight className="h-4.5 w-4.5" />
         </button>
       </div>
     </div>
