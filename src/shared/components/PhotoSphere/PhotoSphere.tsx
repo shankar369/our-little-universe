@@ -357,7 +357,7 @@ export function PhotoSphere<TItem extends RevealPhotoItem>({
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(109,40,217,0.28),rgba(247,184,212,0.08)_46%,transparent_72%)] blur-xl" />
       <Canvas
         className="[mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]"
-        camera={{ position: [0, 0.55, 9.2], fov: 45, near: 0.1, far: 100 }}
+        camera={{ position: [0, 0.5, 8.4], fov: 45, near: 0.1, far: 100 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >

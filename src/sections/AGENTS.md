@@ -12,10 +12,11 @@ Routed experience chapters. Each folder is a route, a README, and a section comp
 
 ## Local Contracts
 
-- Lazy-load heavy routes from `App.tsx` (e.g. PhotoUniverse)
+- Lazy-load heavy routes from `App.tsx` (e.g. PhotoUniverse, OurLittleAtlas/MapLibre)
 - Map content types to `RevealPhotoItem` at the section boundary
 - Hub sections filtered explicitly in `JourneyHub.tsx`
-- Use shared `PhotoReveal`, `PhotoSphere`, and `PhotoShuffleStack` primitives
+- Use shared `PhotoReveal`, `PhotoSphere`, `PhotoShuffleStack`, `AtlasMap`, and
+  `PhotoGallery` primitives
 
 ## Work Guidance
 
@@ -43,5 +44,6 @@ Preserve mobile-first gestures, 44px controls, reduced-motion behavior, and fore
 | [JourneyHub/README.md](JourneyHub/README.md) | Journey picker at `/journey` |
 | [MemoryTimeline/README.md](MemoryTimeline/README.md) | Timeline stack at `/memory-timeline` |
 | [PhotoUniverse/README.md](PhotoUniverse/README.md) | 3D globe at `/photo-universe` |
+| [OurLittleAtlas/README.md](OurLittleAtlas/README.md) | MapLibre map at `/our-little-atlas` |
 | [../shared/AGENTS.md](../shared/AGENTS.md) | Shared photo and ambient primitives |
 | [../content/AGENTS.md](../content/AGENTS.md) | Section content files |

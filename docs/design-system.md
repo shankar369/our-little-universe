@@ -67,6 +67,14 @@ Roles (classes in `src/index.css`):
 - Mobile composition is **centered, single column**: eyebrow → headline → quote
   subtitle → content → actions. Desktop expands to an asymmetric 2-column grid
   (`lg:grid-cols-[~0.9fr_~1.1fr]`), text left-aligned, hero artifact on the right.
+- **Immersive-stage exception** (component-led screens like Memory Timeline and Photo
+  Universe): when one interactive artifact *is* the screen, use a centered single
+  column on all breakpoints — a short header (eyebrow + one aurora line; drop the
+  paragraph) over the artifact sized to own the viewport (`flex-1` for DOM components,
+  explicit `svh` heights for the R3F canvas, which needs a measured height). Keep
+  on-page chrome minimal: a slim `glass-chip` rail at most, or none at all when the
+  artifact is self-explanatory and the `FloatingHeartMenu` covers navigation. Drop side
+  panels and shrink the headline so the artifact, not the copy, holds the stage.
 - Headings placed on the sky use `.night-veil` (soft radial darkening) for contrast.
 - Max content widths: forms ~`23.5rem`, hubs `max-w-4xl`, split sections `max-w-5xl`+.
 - Radii rhythm: pills/buttons `rounded-2xl`/`rounded-full`, cards `rounded-3xl`,
@@ -76,9 +84,13 @@ Roles (classes in `src/index.css`):
 
 Defined in `src/index.css`; do not write ad-hoc glass styles.
 
-1. `.glass-panel` — cards, dialogs, menus. Never wraps a whole screen.
+1. `.glass-panel` — cards and dialogs. Never wraps a whole screen.
 2. `.glass-chip` — pills, inputs, icon chips.
 3. Bare night sky + `.night-veil`/`.text-glow` — headings and quiet text.
+
+Menu exception: `.menu-panel` is the denser mobile navigation variant. It uses the
+same glass language as `.glass-panel` but raises opacity so ambient decoration does
+not read through the menu items.
 
 Buttons: `.btn-primary` (aurora pastel gradient, `#2b1048` text, one primary action
 per screen) and `.btn-ghost` (glass, icon buttons, secondary actions).
@@ -108,14 +120,20 @@ Photos: `.polaroid` (warm paper frame) is the only photo treatment.
 ## 8. Decorative Elements (AmbientBackground)
 
 Allowed layers, in order: nebula gradient base → aurora drift blobs (CSS keyframe
-`aurora-drift`) → link-free starfield particles → floating serif word fragments
-(from `siteContent.ambientWords`) → 3 SVG butterflies → 4 rising hearts → vignette.
+`aurora-drift`) → link-free starfield particles → twinkling four-point sparkle-stars →
+rare diagonal shooting stars → drifting brand monograms (`N`, `S`, `N ♥ S`) →
+floating serif word fragments (from `siteContent.ambientWords`) → 3 SVG butterflies →
+rising hearts (≤7 desktop) → vignette.
 
 Hard rules:
-- No particle link lines, no grid overlays, no lightning icon glyphs, no crowds of
-  monograms. Background opacity stays ≤ ~0.5 per element.
+- No particle link lines, no grid overlays, no lightning icon glyphs. Background
+  opacity stays ≤ ~0.5 per element; monograms peak at ~0.2 so they whisper.
+- Monograms stay few (≤5 desktop) and serif (`type-quote`/`font-display`); they are
+  ambient initials, never a repeating watermark or crowd.
+- Shooting stars are rare (long `repeatDelay`) and thin; never a meteor shower.
 - Decoration frames content; it never sits on top of headings, forms, or cards.
-- Mobile gets reduced particle counts (responsive options already configured).
+- Mobile gets reduced counts: `AmbientBackground` slices each layer behind a
+  `(max-width: 640px)` check, on top of the responsive particle options.
 
 ## 9. The 3D Photo Universe
 
@@ -138,7 +156,7 @@ Hard rules:
 ## 11. Do's and Don'ts
 
 Do:
-- Reuse `glass-panel`/`glass-chip`/`btn-*`/`polaroid`/`type-*` classes.
+- Reuse `glass-panel`/`menu-panel`/`glass-chip`/`btn-*`/`polaroid`/`type-*` classes.
 - Keep copy romantic and personal; UI hints written as lowercase serif whispers
   ("swipe · tap to open"), never instructional doc-boxes.
 - Put new copy in `src/content/`, new tokens in `index.css`, new motion in
@@ -151,3 +169,19 @@ Don't:
 - Don't add decorative elements beyond the allowed ambient set without updating
   this document first.
 - Don't ship a screen you haven't looked at on a phone-sized viewport.
+
+## 12. The Map (Our Little Atlas)
+
+- The map is its own immersive canvas (`h-svh`, `absolute inset-0`): MapLibre GL JS on
+  the free, no-key Carto **dark-matter** vector basemap, whose near-black palette reads
+  as the night sky. The ambient background sits behind but is covered by the map; the
+  map *is* the sky here. Frame floating UI with top/bottom night-gradient scrims.
+- Places are **heart "NS" markers** (aurora blush→orchid gradient, plum `#2b1048`
+  initials), styled in `index.css` `.atlas-marker`. The active marker scales up and
+  pulses. This is the only sanctioned map glyph — no default pins, no clusters of icons.
+- Transitions are MapLibre `flyTo` (zoom-out-then-in); reduced-motion uses `jumpTo`.
+- Chrome stays minimal and glass: a `glass-chip` opener, `menu-panel` sheets (bottom on
+  mobile, left drawer / bottom-left card on desktop), one `.text-aurora` line.
+- Full-screen **modals are allowed** (gallery, lightbox, reveal dialog) — the "no
+  full-size panel" rule is about boxing a *content screen* in glass, not dialogs. Photo
+  galleries use `PhotoGalleryModal` (masonry + lightbox), never a bespoke grid.

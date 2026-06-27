@@ -38,6 +38,13 @@ export const experienceSections: ExperienceSection[] = [
     description: 'Wander a galaxy of tiny photo planets and tap one open.',
   },
   {
+    id: 'our-little-atlas',
+    label: 'Our Little Atlas',
+    status: 'live',
+    path: '/our-little-atlas',
+    description: 'A living map of every place that became part of us.',
+  },
+  {
     id: 'quote-puzzles',
     label: 'Quote Puzzles',
     status: 'planned',

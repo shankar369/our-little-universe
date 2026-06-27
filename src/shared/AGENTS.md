@@ -16,6 +16,8 @@ Reusable UI, hooks, and utilities with no route or personal copy ownership.
 - Photo primitives use `RevealPhotoItem` from `content/types.ts`
 - `PhotoSphere`: generic `<TItem extends RevealPhotoItem>`, DPR cap `[1, 1.5]`, no DOM labels in canvas, transparent unboxed canvas with edge mask, fog + Sparkles + nebula scene per design-system.md §9
 - `PhotoRevealDialog` and `PhotoShuffleStack` are shared contracts for memory and gallery sections; cards use the `.polaroid` surface
+- `AtlasMap`: controlled MapLibre map (`activePlaceId` in, `onMarkerClick` out); Carto `dark-matter` basemap, no API key; heart "NS" markers styled in `index.css` `.atlas-marker`; `flyTo`/`jumpTo` per reduced-motion
+- `PhotoGallery/PhotoGalleryModal`: reusable full-screen masonry gallery + lightbox; takes **resolved** `photos: string[]` URLs and stays path-agnostic
 - `AmbientBackground` takes `words?: string[]` (App passes `siteContent.ambientWords`); allowed layers are fixed in design-system.md §8
 - `usePersistentBoolean` + `storage.ts` centralize localStorage access
 - `publicAssetPath()` in `lib/assetPath.ts` prefixes photo URLs for gh-pages base path; use in any component that loads `public/` assets
@@ -41,4 +43,6 @@ Reusable UI, hooks, and utilities with no route or personal copy ownership.
 | [components/PhotoSphere/README.md](components/PhotoSphere/README.md) | R3F globe primitive |
 | [components/PhotoReveal/README.md](components/PhotoReveal/README.md) | Framed reveal modal |
 | [components/ShuffleCards/README.md](components/ShuffleCards/README.md) | Swipeable photo stack |
+| [components/AtlasMap/README.md](components/AtlasMap/README.md) | MapLibre place map + heart markers |
+| [components/PhotoGallery/README.md](components/PhotoGallery/README.md) | Full-screen gallery + lightbox |
 | [../sections/AGENTS.md](../sections/AGENTS.md) | Section consumers |

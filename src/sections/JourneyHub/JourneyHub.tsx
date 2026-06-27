@@ -1,4 +1,4 @@
-import { ArrowRight, Images, Orbit, Sparkles } from 'lucide-react'
+import { ArrowRight, Images, MapPin, Orbit, Sparkles } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Link } from 'react-router'
 import { experienceSections } from '../../app/experienceRegistry'
@@ -7,18 +7,20 @@ import { riseIn, softEase } from '../../design/motion'
 const sectionIcons = {
   'memory-timeline': Images,
   'photo-universe': Orbit,
+  'our-little-atlas': MapPin,
 } as const
 
 const sectionAccents = {
   'memory-timeline': 'from-blush/25 to-orchid/5',
   'photo-universe': 'from-champagne/20 to-orchid/5',
+  'our-little-atlas': 'from-orchid/22 to-blush/5',
 } as const
 
 const romanNumerals = ['I', 'II', 'III', 'IV', 'V']
 
 export function JourneyHub() {
   const hubSections = experienceSections.filter((section) =>
-    ['memory-timeline', 'photo-universe'].includes(section.id),
+    ['memory-timeline', 'photo-universe', 'our-little-atlas'].includes(section.id),
   )
 
   return (

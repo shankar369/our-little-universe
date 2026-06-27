@@ -1,4 +1,5 @@
 import type { PhotoUniverseItem } from './types'
+import { heroTestPhotos } from './testPhotos'
 
 const universeNames = [
   'Moonlit Smile',
@@ -65,7 +66,9 @@ export const photoUniverseItems = universeNames.map((name, index) => {
     id: `photo-universe-${padOrder(order)}`,
     order,
     orbitBand: order % 3 === 0 ? 'outer' : order % 3 === 1 ? 'middle' : 'inner',
-    photo: `/photoUniverse/universe-${padOrder(order)}.jpg`,
+    // TEMP: cycle the 3 hero photos for testing until real photos land in
+    // /photoUniverse/universe-XX.jpg.
+    photo: heroTestPhotos[index % heroTestPhotos.length],
     heading: name,
     name,
     label,

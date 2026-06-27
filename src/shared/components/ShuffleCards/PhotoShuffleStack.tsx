@@ -29,7 +29,7 @@ export function PhotoShuffleStack<TItem extends RevealPhotoItem>({
   onActiveIndexChange,
   onOpenItem,
   swipeThreshold = defaultSwipeThreshold,
-  visibleRadius = 2,
+  visibleRadius = 1,
   className = '',
   previousLabel = 'Previous memory',
   nextLabel = 'Next memory',
@@ -55,10 +55,10 @@ export function PhotoShuffleStack<TItem extends RevealPhotoItem>({
 
   return (
     <div
-      className={`relative mx-auto h-[31.5rem] w-full max-w-[23rem] sm:h-[37rem] sm:max-w-[27rem] ${className}`}
+      className={`relative mx-auto h-[33rem] w-full max-w-[25rem] sm:h-[39rem] sm:max-w-[29rem] lg:h-[min(45rem,82svh)] lg:max-w-[34rem] ${className}`}
     >
       {/* Soft glow bed beneath the stack */}
-      <div className="pointer-events-none absolute inset-x-6 bottom-14 top-20 rounded-full bg-orchid/12 blur-3xl" />
+      <div className="pointer-events-none absolute inset-x-4 bottom-12 top-16 rounded-[40%] bg-orchid/16 blur-3xl" />
 
       <div className="absolute inset-x-0 bottom-16 top-0">
         {items.map((item, index) => {
@@ -85,6 +85,8 @@ export function PhotoShuffleStack<TItem extends RevealPhotoItem>({
               drag={isActive ? 'x' : false}
               dragConstraints={{ left: 0, right: 0 }}
               dragElastic={0.22}
+              dragMomentum={false}
+              dragTransition={{ bounceDamping: 28, bounceStiffness: 320 }}
               onPointerDown={(event) => {
                 pointerStartXRef.current = event.clientX
                 didDragRef.current = false
@@ -132,6 +134,12 @@ export function PhotoShuffleStack<TItem extends RevealPhotoItem>({
                 }
               }}
               className="polaroid absolute left-1/2 top-2 w-[78%] origin-bottom rounded-[1rem] p-2 text-left text-[#2b1048] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid sm:top-4"
+              style={{
+                touchAction: isActive ? 'pan-y' : 'manipulation',
+                willChange: 'transform, opacity',
+                backfaceVisibility: 'hidden',
+                WebkitBackfaceVisibility: 'hidden',
+              }}
               animate={{
                 x: `calc(-50% + ${x}px)`,
                 y,

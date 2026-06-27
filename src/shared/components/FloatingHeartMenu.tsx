@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Heart, Home, Images, Map, Orbit, X } from 'lucide-react'
+import { Heart, Home, Images, Map, MapPin, Orbit, X } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Link, useLocation } from 'react-router'
@@ -10,6 +10,7 @@ const iconBySection: Record<string, LucideIcon> = {
   journey: Map,
   'memory-timeline': Images,
   'photo-universe': Orbit,
+  'our-little-atlas': MapPin,
   'quote-puzzles': Heart,
 } as const
 
@@ -30,10 +31,10 @@ export function FloatingHeartMenu() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.96 }}
             transition={{ duration: 0.26 }}
-            className="glass-panel w-[min(19rem,calc(100vw-2rem))] rounded-3xl p-2.5"
+            className="menu-panel w-[min(19rem,calc(100vw-2rem))] rounded-3xl p-2.5"
             aria-label="Memory sections"
           >
-            <div className="relative space-y-1.5">
+            <div className="relative z-10 space-y-1.5">
               {menuSections.map((section) => {
                 const Icon = iconBySection[section.id] ?? Heart
                 const isActive = location.pathname === section.path

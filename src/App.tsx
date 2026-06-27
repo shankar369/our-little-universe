@@ -25,6 +25,11 @@ const PhotoUniverse = lazy(() =>
     default: module.PhotoUniverse,
   })),
 )
+const OurLittleAtlas = lazy(() =>
+  import('./sections/OurLittleAtlas/OurLittleAtlas').then((module) => ({
+    default: module.OurLittleAtlas,
+  })),
+)
 
 function SectionLoading() {
   return (
@@ -59,6 +64,7 @@ function App() {
                   <Route path="/journey" element={<JourneyHub />} />
                   <Route path="/memory-timeline" element={<MemoryTimeline />} />
                   <Route path="/photo-universe" element={<PhotoUniverse />} />
+                  <Route path="/our-little-atlas" element={<OurLittleAtlas />} />
                   <Route path="*" element={<Navigate to="/journey" replace />} />
                 </Routes>
               </Suspense>

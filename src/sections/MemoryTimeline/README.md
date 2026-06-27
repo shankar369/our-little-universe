@@ -1,7 +1,10 @@
 # MemoryTimeline Section
 
 ## Purpose
-Memory Timeline is the first full section after the journey hub. It presents memories as a premium mobile-first card stack with a vertical ordered rail and a framed reveal modal.
+Memory Timeline is the first full section after the journey hub. It presents memories as a premium mobile-first card stack with a framed reveal modal.
+
+## Layout
+Immersive-stage composition (design-system.md §4), centered single column on all breakpoints: compact header (eyebrow + one aurora line) → the `PhotoShuffleStack` stretched with `flex-1` to own the viewport → a slim `glass-chip` control rail (ordered dots, `n / total` counter, `Surprise me` dice). There is no side details panel; the active card already shows its date, title, and quote.
 
 ## Technical Notes
 - Route: `/memory-timeline`

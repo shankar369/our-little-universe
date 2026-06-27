@@ -3,6 +3,8 @@ export type FloatingPhotoCard = {
   title: string
   caption: string
   gradient: string
+  photo?: string
+  showText?: boolean
   rotate: `${number}deg`
 }
 
@@ -49,6 +51,29 @@ export type RevealPhotoItem = {
 export type PhotoUniverseItem = RevealPhotoItem & {
   order: number
   orbitBand: 'inner' | 'middle' | 'outer'
+}
+
+/**
+ * A single place pinned on the Our Little Atlas map.
+ * Photos are auto-discovered from `src/content/journeyPhotos/<folder>/` at build
+ * time, so authors only drop images into a folder — no path lists to maintain.
+ */
+export type JourneyPlace = {
+  id: string
+  /** Display name of the place, e.g. "Goa". */
+  name: string
+  /** Romantic one-line caption shown under the name. */
+  note: string
+  /** Small region/state label, e.g. "by the Arabian Sea". */
+  region?: string
+  /** Latitude in decimal degrees. */
+  lat: number
+  /** Longitude in decimal degrees. */
+  lng: number
+  /** Folder name under `src/content/journeyPhotos/<folder>/`. */
+  folder: string
+  /** Optional date or season label, e.g. "Dec 2024". */
+  dateLabel?: string
 }
 
 export type SiteContent = {

@@ -7,13 +7,18 @@ All editable personal data. Types before values. No UI logic.
 ## Ownership
 
 - `types.ts` is the schema
-- One file per domain: `siteContent.ts`, `memoryTimeline.ts`, `photoUniverse.ts`
+- One file per domain: `siteContent.ts`, `memoryTimeline.ts`, `photoUniverse.ts`, `ourLittleAtlas.ts`
 - Ordered exports via `ordered*Items` arrays where applicable
+- `journeyPhotos/<folder>/` holds Our Little Atlas photos, auto-discovered by build-time glob
 
 ## Local Contracts
 
 - Type hierarchy: `RevealPhotoItem` base → `MemoryTimelineItem`, `PhotoUniverseItem`
+- `JourneyPlace` (atlas) is standalone: name, note, lat/lng, `folder`
 - Photo paths: `/memoryTimeline/...`, `/photoUniverse/...` (logical public paths; `publicAssetPath()` in `src/shared/lib/assetPath.ts` prefixes the Vite base at runtime)
+- Atlas photos are the exception: dropped into `src/content/journeyPhotos/<folder>/` and
+  resolved by `import.meta.glob` in `ourLittleAtlas.ts` (`getPlacePhotos(folder)`), so
+  authors never list paths — they just add files
 - Use `satisfies` for type safety when defining content arrays
 - Keep secrets out of the repo; the login gate is client-side only
 
@@ -37,3 +42,4 @@ All editable personal data. Types before values. No UI logic.
 | [../sections/AGENTS.md](../sections/AGENTS.md) | Content consumers |
 | `public/memoryTimeline/README.md` | Timeline asset drop folder |
 | `public/photoUniverse/README.md` | Photo universe asset drop folder |
+| [journeyPhotos/README.md](journeyPhotos/README.md) | Atlas per-place photo drop folders |

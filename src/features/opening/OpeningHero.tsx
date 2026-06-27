@@ -3,6 +3,7 @@ import { motion } from 'motion/react'
 import { Link } from 'react-router'
 import { siteContent } from '../../content/siteContent'
 import { riseIn, softEase } from '../../design/motion'
+import { publicAssetPath } from '../../shared/lib/assetPath'
 
 export function OpeningHero() {
   const headlineWords = siteContent.hero.headline.split(' ')
@@ -108,20 +109,33 @@ export function OpeningHero() {
               }}
             >
               <div
-                className={`aspect-[4/5] rounded-[0.55rem] bg-gradient-to-br ${photo.gradient}`}
+                className={`aspect-[4/5] overflow-hidden rounded-[0.55rem] bg-gradient-to-br ${photo.gradient}`}
               >
+                {photo.photo ? (
+                  <img
+                    src={publicAssetPath(photo.photo)}
+                    alt={photo.title}
+                    className="h-full w-full object-cover"
+                    draggable={false}
+                    onError={(event) => {
+                      event.currentTarget.style.display = 'none'
+                    }}
+                  />
+                ) : null}
                 <div className="flex h-full items-center justify-center">
                   <Heart className="h-8 w-8 fill-white/50 text-white/85 drop-shadow-[0_0_16px_rgba(255,255,255,0.5)]" />
                 </div>
               </div>
-              <div className="px-1 pb-1.5 pt-2.5 lg:pb-2 lg:pt-3">
-                <h2 className="font-display text-sm font-semibold leading-none lg:text-base">
-                  {photo.title}
-                </h2>
-                <p className="type-quote mt-1 text-[0.66rem] leading-3.5 text-[#2b1048]/60 lg:text-xs lg:leading-4">
-                  {photo.caption}
-                </p>
-              </div>
+              {photo.showText !== false ? (
+                <div className="px-1 pb-1.5 pt-2.5 lg:pb-2 lg:pt-3">
+                  <h2 className="font-display text-sm font-semibold leading-none lg:text-base">
+                    {photo.title}
+                  </h2>
+                  <p className="type-quote mt-1 text-[0.66rem] leading-3.5 text-[#2b1048]/60 lg:text-xs lg:leading-4">
+                    {photo.caption}
+                  </p>
+                </div>
+              ) : null}
             </motion.article>
           ))}
         </motion.div>

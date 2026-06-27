@@ -9,9 +9,10 @@
 - `onActiveIndexChange`: receives the next wrapped index.
 - `onOpenItem`: called when the active card is tapped.
 - `swipeThreshold` and `visibleRadius`: optional tuning knobs for future sections.
+  The default visible radius is intentionally small for mobile performance.
 
 ## Interaction Model
-The active card can be dragged left or right. A drag beyond the threshold changes cards; smaller drags snap back. A pointer movement guard prevents drag gestures from also opening the reveal modal.
+The active card can be dragged left or right. A drag beyond the threshold changes cards; smaller drags snap back. A pointer movement guard prevents drag gestures from also opening the reveal modal. Drag momentum is disabled to keep the stack from feeling jittery on mobile browsers.
 
 ## Visual Rules
 Keep the component scrapbook-inspired but calm: white Polaroid cards, strong foreground separation, clear text, and 44px minimum touch controls. Do not rely on hover-only behavior.
