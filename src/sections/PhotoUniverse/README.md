@@ -4,7 +4,11 @@
 Photo Universe is the interactive 3D photo globe. It presents a reusable sphere of tappable photo cards with smooth drag rotation, pinch or wheel zoom, idle spin, and the shared framed reveal modal.
 
 ## Layout
-Maximally immersive, centered single column on all breakpoints (design-system.md §4): a short floating header (eyebrow + one aurora line only — no paragraph) over a `PhotoSphere` sized to claim the viewport (`h-[74svh] → lg:h-[82svh]`, full width), with just the `drag · pinch · tap` whisper beneath it. There are no on-page action buttons; tapping a planet opens the reveal modal and the `FloatingHeartMenu` handles navigation back. No 2-column grid — the galaxy is the entire stage.
+Maximally immersive (design-system.md §4 & §9): the `PhotoSphere` is `absolute inset-0`
+and fills the entire screen (`h-svh`), with a short header (eyebrow + one aurora line)
+and the `drag · pinch · tap` whisper floating over it, plus top/bottom night scrims for
+legibility. There are no on-page action buttons; tapping a planet opens the reveal modal,
+and the global `FloatingHeartMenu` + `FullscreenToggle` handle navigation and immersion.
 
 ## Technical Notes
 - Route: `/photo-universe`

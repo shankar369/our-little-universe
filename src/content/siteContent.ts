@@ -24,6 +24,16 @@ export const siteContent = {
     cta: 'Begin the journey',
     note: 'Every door in here leads back to us.',
   },
+  heartLocker: {
+    eyebrow: 'a little secret',
+    title: 'Heart Locker',
+    question: 'Whisper our little password to come inside.',
+    // ← change this answer to your own secret word.
+    answer: 'hello123',
+    hint: 'a simple hello, and a few numbers.',
+    intro: 'A hidden drawer for the things too precious to leave lying in the open.',
+    wrongMessage: 'Not quite — the locker stays shut, smiling to itself.',
+  },
   floatingPhotos: [
     {
       id: 'first-spark',

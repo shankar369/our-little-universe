@@ -6,9 +6,12 @@ Non-chapter or pre-journey screens: login gate, opening hero, future puzzle feat
 
 ## Ownership
 
-- One folder per feature (`auth/`, `opening/`, future `quote-puzzles/`)
+- One folder per feature (`auth/`, `opening/`, `heartLocker/`, future `quote-puzzles/`)
 - No route-chapter layout; may be routed (`OpeningHero` at `/`) or gated (`LoginScreen`)
 - Feature-specific UI lives here, not in `sections/`
+- `heartLocker/` owns the secret-locker state (`HeartLockerProvider` + `useHeartLocker`)
+  and the password `HeartLockerPrompt`; consumed by `FloatingHeartMenu` (5s hold reveals
+  the hub card), `JourneyHub` (the card + prompt), and the `HeartLocker` section
 
 ## Local Contracts
 

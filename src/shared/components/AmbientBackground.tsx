@@ -110,51 +110,83 @@ function MonogramMark({ kind, tint }: { kind: Monogram['kind']; tint: string }) 
   return <span className={`type-quote ${tint}`}>{kind}</span>
 }
 
-function ButterflyMark({ uid, flip = false }: { uid: number; flip?: boolean }) {
-  const wingPath =
-    'M2 16 C -4 2, -22 -8, -30 2 C -35 9, -28 16, -16 16 C -26 19, -31 30, -22 35 C -13 39, -3 30, 2 20 Z'
+// One symmetric butterfly. Each wing pair lives in its own group that flaps by
+// scaling toward the body axis; `transform-box: fill-box` anchors the fold to the
+// group's inner edge, so both sides stay perfectly aligned to the body.
+const upperWing = 'M0,-3 C 4,-17 16,-20 20,-11 C 22.5,-5.5 15,-1 2,0.5 Z'
+const lowerWing = 'M1.5,1.5 C 12,2.5 18,8 15.5,15 C 13.5,20.5 5,17 0.5,4 Z'
+
+function ButterflyMark({ uid }: { uid: number }) {
   const gradientId = `wing-gradient-${uid}`
+  const flap = {
+    animate: { scaleX: [1, 0.34, 1] },
+    transition: {
+      duration: 1.9,
+      repeat: Infinity,
+      ease: 'easeInOut' as const,
+      delay: uid * 0.4,
+    },
+  }
+  const wings = (
+    <>
+      <path d={upperWing} fill={`url(#${gradientId})`} stroke="rgba(255,255,255,0.28)" strokeWidth="0.4" />
+      <path d={lowerWing} fill={`url(#${gradientId})`} stroke="rgba(255,255,255,0.28)" strokeWidth="0.4" />
+    </>
+  )
 
   return (
     <svg
-      viewBox="-38 -14 76 56"
-      className="h-12 w-12 drop-shadow-[0_0_16px_rgba(247,184,212,0.45)]"
-      style={{ transform: flip ? 'scaleX(-1)' : undefined }}
+      viewBox="-24 -23 48 50"
+      className="h-11 w-11 drop-shadow-[0_0_13px_rgba(247,184,212,0.4)]"
       aria-hidden="true"
     >
       <defs>
         <linearGradient id={gradientId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#e9c8fc" stopOpacity="0.85" />
+          <stop offset="0%" stopColor="#e9c8fc" stopOpacity="0.82" />
           <stop offset="55%" stopColor="#f7b8d4" stopOpacity="0.6" />
-          <stop offset="100%" stopColor="#f4d9a6" stopOpacity="0.42" />
+          <stop offset="100%" stopColor="#f4d9a6" stopOpacity="0.44" />
         </linearGradient>
       </defs>
-      <motion.path
-        d={wingPath}
-        fill={`url(#${gradientId})`}
-        stroke="rgba(255,255,255,0.35)"
-        strokeWidth="0.8"
-        style={{ transformOrigin: '2px 18px' }}
-        animate={{ scaleX: [1, 0.24, 1] }}
-        transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <motion.path
-        d={wingPath}
-        fill={`url(#${gradientId})`}
-        stroke="rgba(255,255,255,0.35)"
-        strokeWidth="0.8"
-        style={{ transformOrigin: '-2px 18px', scaleX: -1 }}
-        animate={{ scaleX: [-1, -0.24, -1] }}
-        transition={{ duration: 1.7, repeat: Infinity, ease: 'easeInOut' }}
-      />
-      <ellipse cx="0" cy="18" rx="1.7" ry="9" fill="#f4d9a6" opacity="0.9" />
+
+      {/* Right wing pair */}
+      <motion.g
+        style={{ transformOrigin: 'left center', transformBox: 'fill-box' }}
+        {...flap}
+      >
+        {wings}
+      </motion.g>
+
+      {/* Left wing pair — mirror of the right, flapping in sync */}
+      <g transform="scale(-1 1)">
+        <motion.g
+          style={{ transformOrigin: 'left center', transformBox: 'fill-box' }}
+          {...flap}
+        >
+          {wings}
+        </motion.g>
+      </g>
+
+      {/* Body, head, antennae */}
+      <ellipse cx="0" cy="1" rx="1.3" ry="12" fill="#f4d9a6" opacity="0.85" />
+      <circle cx="0" cy="-11" r="1.9" fill="#f4d9a6" opacity="0.9" />
       <path
-        d="M-1 9 C -4 4, -7 2, -9 1 M1 9 C 4 4, 7 2, 9 1"
-        stroke="rgba(244,217,166,0.8)"
-        strokeWidth="0.9"
+        d="M0,-12 C -2.5,-16 -4.5,-18.5 -7,-20.5"
+        stroke="#f4d9a6"
+        strokeWidth="0.7"
         fill="none"
         strokeLinecap="round"
+        opacity="0.75"
       />
+      <path
+        d="M0,-12 C 2.5,-16 4.5,-18.5 7,-20.5"
+        stroke="#f4d9a6"
+        strokeWidth="0.7"
+        fill="none"
+        strokeLinecap="round"
+        opacity="0.75"
+      />
+      <circle cx="-7" cy="-20.5" r="0.9" fill="#f4d9a6" opacity="0.8" />
+      <circle cx="7" cy="-20.5" r="0.9" fill="#f4d9a6" opacity="0.8" />
     </svg>
   )
 }
@@ -399,7 +431,7 @@ export function AmbientBackground({ words = defaultWords }: AmbientBackgroundPro
               x: [0, butterfly.driftX, butterfly.driftX * 0.3, 0],
               y: [0, butterfly.driftY, butterfly.driftY * -0.4, 0],
               rotate: [-6, 5, -3, -6],
-              opacity: [0.5, 0.85, 0.6, 0.5],
+              opacity: [0.42, 0.72, 0.52, 0.42],
             }}
             transition={{
               duration: 16 + butterfly.id * 3,
@@ -408,7 +440,7 @@ export function AmbientBackground({ words = defaultWords }: AmbientBackgroundPro
               ease: 'easeInOut',
             }}
           >
-            <ButterflyMark uid={butterfly.id} flip={butterfly.id === 1} />
+            <ButterflyMark uid={butterfly.id} />
           </motion.div>
         ))}
 

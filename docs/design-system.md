@@ -137,12 +137,18 @@ Hard rules:
 
 ## 9. The 3D Photo Universe
 
-- The canvas is **unboxed**: transparent background, no border, edges melted with a
-  CSS mask, soft radial aura behind it. It must feel like part of the page's sky.
-- Scene contract: fog toward `#0a0418` for depth, central nebula spheres, drei
-  `Sparkles` dust, warm-paper card frames, gentle per-card bob, slow auto-rotation.
-- Performance: DPR capped `[1, 1.5]`, basic materials only, no postprocessing, no
-  DOM labels in canvas, lazy-loaded route.
+- The canvas is **unboxed and full-bleed**: transparent background, no border, edges
+  melted with a CSS mask, soft radial aura behind it. The galaxy fills the whole screen
+  with the header + hint floating over it (`absolute`), so it feels like the page's sky.
+- Cards are **frameless rounded photos with a soft additive halo** — no paper frame and
+  no caption text in the sphere. Each photo is fit inside a 1×1 box preserving its true
+  aspect ratio (never squished).
+- Scene contract: distance-aware fog toward `#0a0418` (near/far follow the camera so
+  zoom-out never dissolves the galaxy), central nebula spheres, drei `Sparkles` dust,
+  gentle per-card bob, slow auto-rotation. Zoom range is generous so the whole sphere
+  can be framed on a phone; selection is a movement-guarded tap (drags never select).
+- Performance: DPR capped `[1, 1.5]`, basic materials + one shared halo texture, no
+  postprocessing, no DOM labels in canvas, lazy-loaded route.
 
 ## 10. Accessibility & Performance
 
@@ -151,6 +157,9 @@ Hard rules:
 - Dialogs: `role="dialog"`, `aria-modal`, Escape/arrow keys handled.
 - Body text ≥ 14px; `moon` on night passes contrast; never put low-opacity text on
   busy areas without `.night-veil`.
+- Global controls float at the bottom corners: the heart menu (`btn-primary`,
+  bottom-right) and the fullscreen toggle (`btn-ghost`, bottom-left, hidden where the
+  Fullscreen API is unavailable). Keep section chrome clear of both corners.
 - `npm run build` and a 390px-wide visual check are required before finishing UI work.
 
 ## 11. Do's and Don'ts

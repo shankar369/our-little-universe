@@ -25,6 +25,18 @@ export type HeroContent = {
   note: string
 }
 
+export type HeartLockerContent = {
+  eyebrow: string
+  title: string
+  /** The secret question shown in the unlock prompt. */
+  question: string
+  /** The answer (compared case-insensitively, trimmed). Change this to your own. */
+  answer: string
+  hint: string
+  intro: string
+  wrongMessage: string
+}
+
 export type MemoryTimelineItem = {
   id: string
   order: number
@@ -82,5 +94,6 @@ export type SiteContent = {
   ambientWords: string[]
   login: LoginContent
   hero: HeroContent
+  heartLocker: HeartLockerContent
   floatingPhotos: FloatingPhotoCard[]
 }

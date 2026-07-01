@@ -45,6 +45,13 @@ export const experienceSections: ExperienceSection[] = [
     description: 'A living map of every place that became part of us.',
   },
   {
+    id: 'heart-locker',
+    label: 'Heart Locker',
+    status: 'live',
+    path: '/heart-locker',
+    description: 'A hidden little vault, opened only by a secret.',
+  },
+  {
     id: 'quote-puzzles',
     label: 'Quote Puzzles',
     status: 'planned',

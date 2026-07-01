@@ -8,7 +8,7 @@ import { publicAssetPath } from '../../lib/assetPath'
 
 const goldenAngle = Math.PI * (3 - Math.sqrt(5))
 
-function createFallbackTexture(item: RevealPhotoItem, index: number) {
+function createFallbackTexture(index: number) {
   const canvas = document.createElement('canvas')
   canvas.width = 512
   canvas.height = 640
@@ -46,10 +46,10 @@ function createFallbackTexture(item: RevealPhotoItem, index: number) {
   }
 
   // Heart
-  context.fillStyle = 'rgba(94, 26, 134, 0.5)'
+  context.fillStyle = 'rgba(94, 26, 134, 0.45)'
   context.save()
-  context.translate(256, 268)
-  context.scale(2.6, 2.6)
+  context.translate(256, 320)
+  context.scale(3, 3)
   context.beginPath()
   context.moveTo(0, 10)
   context.bezierCurveTo(-14, -2, -8, -16, 0, -8)
@@ -58,32 +58,43 @@ function createFallbackTexture(item: RevealPhotoItem, index: number) {
   context.fill()
   context.restore()
 
-  // Caption
-  context.textAlign = 'center'
-  context.textBaseline = 'middle'
-  context.fillStyle = 'rgba(43, 16, 72, 0.9)'
-  context.font = 'italic 600 42px Georgia, serif'
-  const words = item.heading.split(' ')
-  const firstLine = words.slice(0, Math.ceil(words.length / 2)).join(' ')
-  const secondLine = words.slice(Math.ceil(words.length / 2)).join(' ')
-  context.fillText(firstLine, 256, secondLine ? 420 : 444, 420)
-  if (secondLine) {
-    context.fillText(secondLine, 256, 472, 420)
-  }
-
-  context.font = '600 22px Arial, sans-serif'
-  context.fillStyle = 'rgba(43, 16, 72, 0.5)'
-  const label = (item.label ?? item.name).toUpperCase()
-  context.fillText(label.split('').join('\u200a'), 256, 552, 420)
-
   const texture = new THREE.CanvasTexture(canvas)
   texture.colorSpace = THREE.SRGBColorSpace
   texture.needsUpdate = true
   return texture
 }
 
+/** A shared soft radial halo, drawn once and reused behind every photo. */
+const glowTexture = (() => {
+  const size = 256
+  const canvas = document.createElement('canvas')
+  canvas.width = size
+  canvas.height = size
+  const context = canvas.getContext('2d')
+
+  if (context) {
+    const gradient = context.createRadialGradient(
+      size / 2,
+      size / 2,
+      0,
+      size / 2,
+      size / 2,
+      size / 2,
+    )
+    gradient.addColorStop(0, 'rgba(255,255,255,0.95)')
+    gradient.addColorStop(0.45, 'rgba(255,255,255,0.4)')
+    gradient.addColorStop(1, 'rgba(255,255,255,0)')
+    context.fillStyle = gradient
+    context.fillRect(0, 0, size, size)
+  }
+
+  const texture = new THREE.CanvasTexture(canvas)
+  texture.colorSpace = THREE.SRGBColorSpace
+  return texture
+})()
+
 function usePhotoTexture(item: RevealPhotoItem, index: number) {
-  const fallbackTexture = useMemo(() => createFallbackTexture(item, index), [item, index])
+  const fallbackTexture = useMemo(() => createFallbackTexture(index), [index])
   const [texture, setTexture] = useState<THREE.Texture>(fallbackTexture)
 
   useEffect(() => {
@@ -101,6 +112,7 @@ function usePhotoTexture(item: RevealPhotoItem, index: number) {
         loadedTexture.colorSpace = THREE.SRGBColorSpace
         loadedTexture.minFilter = THREE.LinearFilter
         loadedTexture.magFilter = THREE.LinearFilter
+        loadedTexture.anisotropy = 4
         setTexture(loadedTexture)
       },
       undefined,
@@ -117,6 +129,61 @@ function usePhotoTexture(item: RevealPhotoItem, index: number) {
   }, [fallbackTexture, item.photo])
 
   return texture
+}
+
+/** Natural aspect ratio (w/h) of a texture's image, with a portrait default. */
+function textureAspect(texture: THREE.Texture): number {
+  const image = texture.image as
+    | { naturalWidth?: number; naturalHeight?: number; width?: number; height?: number }
+    | undefined
+
+  if (!image) {
+    return 0.8
+  }
+
+  const width = image.naturalWidth || image.width || 4
+  const height = image.naturalHeight || image.height || 5
+  return height ? width / height : 0.8
+}
+
+/**
+ * A flat rounded-rectangle geometry in the XY plane, centered on the origin, with
+ * UVs remapped to the bounding box so a photo texture maps edge-to-edge (the
+ * default ShapeGeometry UVs use world coordinates and would distort the image).
+ */
+function createRoundedPhotoGeometry(width: number, height: number, radius: number) {
+  const r = Math.min(radius, width / 2, height / 2)
+  const x = -width / 2
+  const y = -height / 2
+  const shape = new THREE.Shape()
+  shape.moveTo(x + r, y)
+  shape.lineTo(x + width - r, y)
+  shape.quadraticCurveTo(x + width, y, x + width, y + r)
+  shape.lineTo(x + width, y + height - r)
+  shape.quadraticCurveTo(x + width, y + height, x + width - r, y + height)
+  shape.lineTo(x + r, y + height)
+  shape.quadraticCurveTo(x, y + height, x, y + height - r)
+  shape.lineTo(x, y + r)
+  shape.quadraticCurveTo(x, y, x + r, y)
+
+  const geometry = new THREE.ShapeGeometry(shape, 12)
+  const position = geometry.attributes.position
+  const uvs = new Float32Array(position.count * 2)
+  for (let i = 0; i < position.count; i += 1) {
+    uvs[i * 2] = (position.getX(i) + width / 2) / width
+    uvs[i * 2 + 1] = (position.getY(i) + height / 2) / height
+  }
+  geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2))
+  return geometry
+}
+
+function useRoundedPhotoGeometry(width: number, height: number, radius: number) {
+  const geometry = useMemo(
+    () => createRoundedPhotoGeometry(width, height, radius),
+    [width, height, radius],
+  )
+  useEffect(() => () => geometry.dispose(), [geometry])
+  return geometry
 }
 
 function spherePosition(index: number, count: number, radius: number) {
@@ -153,8 +220,28 @@ function PhotoSphereCard<TItem extends RevealPhotoItem>({
   const { camera } = useThree()
   const texture = usePhotoTexture(item, index)
   const position = useMemo(() => spherePosition(index, count, radius), [count, index, radius])
-  const scale = 0.58 + (index % 5) * 0.02
 
+  // Slight per-card size variety so the galaxy feels hand-placed, not gridded.
+  const cardScale = 1.02 + (index % 5) * 0.035
+
+  // Fit the photo inside a 1×1 box preserving its true aspect (no squishing).
+  const aspect = useMemo(() => textureAspect(texture), [texture])
+  const { photoWidth, photoHeight } = useMemo(() => {
+    const box = 1
+    return {
+      photoWidth: aspect >= 1 ? box : box * aspect,
+      photoHeight: aspect >= 1 ? box / aspect : box,
+    }
+  }, [aspect])
+
+  const photoGeometry = useRoundedPhotoGeometry(photoWidth, photoHeight, 0.06)
+
+  function handlePointerDown(event: ThreeEvent<PointerEvent>) {
+    const nativeEvent = event.nativeEvent
+    pointerStartRef.current = { x: nativeEvent.clientX, y: nativeEvent.clientY }
+  }
+
+  // Open only on a genuine tap; a drag (rotating the galaxy) must never select.
   function handlePointerUp(event: ThreeEvent<PointerEvent>) {
     const nativeEvent = event.nativeEvent
     const start = pointerStartRef.current
@@ -165,8 +252,7 @@ function PhotoSphereCard<TItem extends RevealPhotoItem>({
     }
 
     const movement = Math.hypot(nativeEvent.clientX - start.x, nativeEvent.clientY - start.y)
-
-    if (movement < 8) {
+    if (movement < 7) {
       event.stopPropagation()
       onOpenItem(index)
     }
@@ -178,60 +264,49 @@ function PhotoSphereCard<TItem extends RevealPhotoItem>({
     }
 
     // Each card breathes gently along its own rhythm.
-    const bob = reducedMotion ? 0 : Math.sin(clock.elapsedTime * 0.55 + index * 1.7) * 0.045
+    const bob = reducedMotion ? 0 : Math.sin(clock.elapsedTime * 0.55 + index * 1.7) * 0.05
     cardRef.current.position.set(position.x, position.y + bob, position.z)
     cardRef.current.lookAt(camera.position)
   })
 
   return (
     <group ref={cardRef} position={position}>
-      <mesh
-        position={[0, 0, 0.04]}
-        scale={[1.6 * scale, 1.9 * scale, 1]}
-        onPointerDown={(event) => {
-          const nativeEvent = event.nativeEvent as PointerEvent
-          pointerStartRef.current = { x: nativeEvent.clientX, y: nativeEvent.clientY }
-        }}
-        onPointerUp={handlePointerUp}
-        onClick={(event) => {
-          event.stopPropagation()
-          onOpenItem(index)
-        }}
-        onPointerOver={() => {
-          document.body.style.cursor = 'pointer'
-        }}
-        onPointerOut={() => {
-          document.body.style.cursor = ''
-        }}
-      >
-        <planeGeometry args={[1, 1]} />
-        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-      </mesh>
-      <mesh position={[0, 0, -0.03]} scale={[scale, scale, 1]}>
-        <planeGeometry args={[1.02, 1.26]} />
-        <meshBasicMaterial color="#fff9f1" transparent opacity={0.94} />
-      </mesh>
-      <mesh
-        scale={[0.94 * scale, 1.12 * scale, 1]}
-        onPointerDown={(event) => {
-          const nativeEvent = event.nativeEvent
-          pointerStartRef.current = { x: nativeEvent.clientX, y: nativeEvent.clientY }
-        }}
-        onPointerUp={handlePointerUp}
-        onClick={(event) => {
-          event.stopPropagation()
-          onOpenItem(index)
-        }}
-        onPointerOver={() => {
-          document.body.style.cursor = 'pointer'
-        }}
-        onPointerOut={() => {
-          document.body.style.cursor = ''
-        }}
-      >
-        <planeGeometry args={[1, 1.18]} />
-        <meshBasicMaterial map={texture} toneMapped={false} />
-      </mesh>
+      <group scale={cardScale}>
+        {/* Soft luminous halo so each photo glows in the night */}
+        <mesh position={[0, 0, -0.04]}>
+          <planeGeometry args={[photoWidth + 0.55, photoHeight + 0.55]} />
+          <meshBasicMaterial
+            map={glowTexture}
+            color="#e6d8ff"
+            transparent
+            opacity={0.32}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+            toneMapped={false}
+          />
+        </mesh>
+
+        {/* The photo — rounded, frameless, sized to its true aspect ratio */}
+        <mesh geometry={photoGeometry}>
+          <meshBasicMaterial map={texture} toneMapped={false} />
+        </mesh>
+
+        {/* Invisible hit area; tap-vs-drag handled in the pointer logic above */}
+        <mesh
+          position={[0, 0, 0.02]}
+          onPointerDown={handlePointerDown}
+          onPointerUp={handlePointerUp}
+          onPointerOver={() => {
+            document.body.style.cursor = 'pointer'
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = ''
+          }}
+        >
+          <planeGeometry args={[photoWidth, photoHeight]} />
+          <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+        </mesh>
+      </group>
     </group>
   )
 }
@@ -252,17 +327,25 @@ function PhotoSphereScene<TItem extends RevealPhotoItem>({
   const groupRef = useRef<THREE.Group>(null)
   const controlsRef = useRef<OrbitControlsImpl>(null)
 
-  useFrame((_, delta) => {
+  useFrame((state, delta) => {
     if (!reducedMotion && groupRef.current) {
       groupRef.current.rotation.y += delta * 0.045
       groupRef.current.rotation.x = Math.sin(Date.now() * 0.00014) * 0.03
+    }
+
+    // Distance-aware fog: fade the far side of the sphere relative to the current
+    // zoom, so zooming out never dissolves the whole galaxy into fog.
+    const fog = state.scene.fog
+    if (fog instanceof THREE.Fog) {
+      const distance = state.camera.position.length()
+      fog.near = distance - radius * 0.5
+      fog.far = distance + radius * 1.9
     }
   })
 
   return (
     <>
-      {/* Far cards melt into the night instead of clipping harshly */}
-      <fog attach="fog" args={['#0a0418', 8.5, 15.5]} />
+      <fog attach="fog" args={['#0a0418', 6, 16]} />
 
       {/* Nebula heart at the center of the memory galaxy */}
       <mesh>
@@ -310,10 +393,10 @@ function PhotoSphereScene<TItem extends RevealPhotoItem>({
         enableDamping
         dampingFactor={0.08}
         enablePan={false}
-        minDistance={5.4}
-        maxDistance={12}
-        rotateSpeed={0.55}
-        zoomSpeed={0.75}
+        minDistance={4.6}
+        maxDistance={26}
+        rotateSpeed={0.5}
+        zoomSpeed={0.8}
         touches={{
           ONE: THREE.TOUCH.ROTATE,
           TWO: THREE.TOUCH.DOLLY_ROTATE,
@@ -334,11 +417,23 @@ export function PhotoSphere<TItem extends RevealPhotoItem>({
   items,
   onOpenItem,
   className = '',
-  radius = 3.85,
+  radius = 3.55,
 }: PhotoSphereProps<TItem>) {
   const [reducedMotion, setReducedMotion] = useState(() =>
     window.matchMedia('(prefers-reduced-motion: reduce)').matches,
   )
+
+  // Narrow/portrait screens start further back so more of the galaxy is in frame.
+  const initialDistance = useMemo(() => {
+    const viewportAspect = window.innerWidth / Math.max(window.innerHeight, 1)
+    if (viewportAspect < 0.65) {
+      return 13
+    }
+    if (viewportAspect < 1) {
+      return 11
+    }
+    return 9.5
+  }, [])
 
   useEffect(() => {
     const query = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -356,8 +451,8 @@ export function PhotoSphere<TItem extends RevealPhotoItem>({
       {/* Aura behind the galaxy so it floats in the page's night sky */}
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(109,40,217,0.28),rgba(247,184,212,0.08)_46%,transparent_72%)] blur-xl" />
       <Canvas
-        className="[mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]"
-        camera={{ position: [0, 0.5, 8.4], fov: 45, near: 0.1, far: 100 }}
+        className="[mask-image:linear-gradient(to_bottom,transparent,black_8%,black_92%,transparent)]"
+        camera={{ position: [0, 0.3, initialDistance], fov: 45, near: 0.1, far: 100 }}
         dpr={[1, 1.5]}
         gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       >

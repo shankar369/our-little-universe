@@ -24,42 +24,47 @@ export function PhotoUniverse() {
   }, [photos.length])
 
   return (
-    <main className="relative min-h-svh overflow-x-hidden text-starlight">
-      <section className="mx-auto flex min-h-svh w-full flex-col justify-center pb-[max(3.5rem,env(safe-area-inset-bottom))] pt-[max(1.25rem,env(safe-area-inset-top))]">
-        {/* Header — short and sweet, floating over the galaxy */}
-        <motion.header
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.65, ease: softEase }}
-          className="night-veil pointer-events-none relative z-10 shrink-0 px-6 text-center"
-        >
-          <div className="mb-2.5 inline-flex items-center gap-2.5 text-champagne/85">
-            <Orbit className="h-3.5 w-3.5" />
-            <span className="type-eyebrow">Photo Universe</span>
-          </div>
-          <h1 className="text-glow text-balance text-[clamp(1.6rem,5.5vw,2.6rem)] font-medium leading-[1.05]">
-            A galaxy made
-            <span className="type-quote text-aurora block pb-1">entirely of us.</span>
-          </h1>
-        </motion.header>
+    <main className="relative h-svh w-full overflow-hidden text-starlight">
+      {/* The galaxy fills the entire screen */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        transition={{ duration: 0.95, ease: softEase }}
+        className="absolute inset-0"
+      >
+        <PhotoSphere items={photos} onOpenItem={setOpenIndex} className="h-full w-full" />
+      </motion.div>
 
-        {/* The galaxy claims as much of the viewport as it can */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.15, duration: 0.9, ease: softEase }}
-          className="relative -mt-3 w-full"
-        >
-          <PhotoSphere
-            items={photos}
-            onOpenItem={setOpenIndex}
-            className="h-[74svh] min-h-[26rem] w-full sm:h-[78svh] lg:h-[82svh]"
-          />
-          <p className="type-quote pointer-events-none relative z-10 -mt-3 text-center text-sm text-moon/70">
-            drag to wander &middot; pinch to zoom &middot; tap a planet
-          </p>
-        </motion.div>
-      </section>
+      {/* Edge scrims so the floating chrome stays legible */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 h-40 bg-gradient-to-b from-night/80 via-night/25 to-transparent" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-36 bg-gradient-to-t from-night/75 via-night/20 to-transparent" />
+
+      {/* Header — short and sweet, floating over the galaxy */}
+      <motion.header
+        initial={{ opacity: 0, y: -14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.65, ease: softEase }}
+        className="night-veil pointer-events-none absolute inset-x-0 top-0 z-20 px-6 pt-[max(1.25rem,env(safe-area-inset-top))] text-center"
+      >
+        <div className="mb-2 inline-flex items-center gap-2.5 text-champagne/85">
+          <Orbit className="h-3.5 w-3.5" />
+          <span className="type-eyebrow">Photo Universe</span>
+        </div>
+        <h1 className="text-glow text-balance text-[clamp(1.5rem,5vw,2.4rem)] font-medium leading-[1.05]">
+          A galaxy made
+          <span className="type-quote text-aurora block pb-1">entirely of us.</span>
+        </h1>
+      </motion.header>
+
+      {/* Hint — floating at the bottom, clear of the side controls */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.45, duration: 0.7, ease: softEase }}
+        className="type-quote pointer-events-none absolute inset-x-0 bottom-[max(1.75rem,env(safe-area-inset-bottom))] z-20 text-center text-sm text-moon/70"
+      >
+        drag to wander &middot; pinch to zoom &middot; tap a planet
+      </motion.p>
 
       <PhotoRevealDialog
         item={openPhoto}

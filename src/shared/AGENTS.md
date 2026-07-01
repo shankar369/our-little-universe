@@ -10,6 +10,8 @@ Reusable UI, hooks, and utilities with no route or personal copy ownership.
 - Never import `content/*` data files (types are OK)
 - `AmbientBackground` is app-wide decorative shell
 - `FloatingHeartMenu` reads `experienceRegistry` for nav
+- `FullscreenToggle` is an app-wide control (bottom-left) using the Fullscreen API
+- `CinematicTransition` provides `CinematicTransitionProvider` + `useCinematicTransition().play(variant)`; variants: `immersive` (warp), `unlock` (heart-iris), `seal`, `reveal`. Overlays are z-[120], pointer-events-none, reduced-motion aware
 
 ## Local Contracts
 
