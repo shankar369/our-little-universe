@@ -7,9 +7,10 @@ All editable personal data. Types before values. No UI logic.
 ## Ownership
 
 - `types.ts` is the schema
-- One file per domain: `siteContent.ts`, `memoryTimeline.ts`, `photoUniverse.ts`, `ourLittleAtlas.ts`
+- One file per domain: `siteContent.ts`, `memoryTimeline.ts`, `photoUniverse.ts`, `ourLittleAtlas.ts`, `heartLockerGallery.ts`
 - Ordered exports via `ordered*Items` arrays where applicable
 - `journeyPhotos/<folder>/` holds Our Little Atlas photos, auto-discovered by build-time glob
+- `heartLockerPhotos/<folder>/` holds Heart Locker act photos (`photo-stack`, `photo-tunnel`), same glob pattern via `heartLockerGallery.ts`; empty folders TEMP-fallback to hero test photos
 
 ## Local Contracts
 
@@ -43,3 +44,4 @@ All editable personal data. Types before values. No UI logic.
 | `public/memoryTimeline/README.md` | Timeline asset drop folder |
 | `public/photoUniverse/README.md` | Photo universe asset drop folder |
 | [journeyPhotos/README.md](journeyPhotos/README.md) | Atlas per-place photo drop folders |
+| [heartLockerPhotos/README.md](heartLockerPhotos/README.md) | Heart Locker per-act photo drop folders |

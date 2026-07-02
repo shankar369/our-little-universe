@@ -2,8 +2,41 @@
 
 ## Purpose
 Heart Locker is the hidden chapter: a private vault reached only through a secret
-long-press + password gesture, not the normal navigation. This file is the placeholder
-landing (the real treasure content is designed later).
+long-press + password gesture, not the normal navigation. Inside, it is a
+**scroll-driven cinema** — the page is ~23 viewports tall and every animation is tied
+to scroll position (sticky viewports + `useScroll`/`useTransform`).
+
+## The Scroll Cinema (component per act)
+1. **Intro** (`HeartLocker.tsx`) — title, minutes-remaining chip, "scroll slowly" cue.
+2. **Act I — `StackedAct.tsx`** ("you don't understand how much I like these photos"):
+   sticky **photo deck** — each polaroid rises from below the fold, overshoots a touch
+   and lands on the pile; cards beneath compress, peek upward and dim (continuous
+   depth). Cards are opaque from entry — nothing ever fades over text.
+3. **Act II — `FilmstripAct.tsx`** ("and I'd walk through every one of them again"):
+   scroll-pinned **horizontal filmstrip** — vertical scroll glides the strip across the
+   screen (runtime-measured travel via `startX`/`endX` MotionValues) while each photo
+   parallaxes inside its frame; tilt + bob per card.
+4. **Finale — `FinaleAct.tsx` + `FinaleEmbers.tsx`**: an R3F **ember particle scene**
+   (~15,400 GPU points, two clouds with custom shaders). Embers gather into "Navya" →
+   the a-v-y-a letters blow away as ash → the N swarm zooms, **flips** (rotation.x→π),
+   **turns 90° CW** (rotation.z→−π/2; flip∘turn maps `(x,y)→(−y,−x)`, so S targets are
+   authored through that map's inverse) → the swarm **boils and condenses into the S**
+   → every ember returns to write "Navya's Sankar"; the S-swarm lands in its slot.
+   Letterforms are canvas-sampled from the real page font (re-sampled after
+   `document.fonts.ready`). No DOM font is used for the signature.
+5. **Outro** — "Seal it back up".
+
+Photos: auto-discovered from `src/content/heartLockerPhotos/<folder>/`
+(`photo-stack`, `photo-strip`) via `src/content/heartLockerGallery.ts`; empty folders
+TEMP-fallback to the hero test photos. All acts render static grids/lines under
+`prefers-reduced-motion`.
+
+**Sticky caveats**:
+- The app root must stay `overflow-x-clip` (not `-hidden`) or every sticky act breaks
+  (App.tsx has a comment).
+- Scroll-driven `opacity` fades must use the **function form** of `useTransform`
+  (`useTransform(() => fade.get())`): Motion otherwise promotes them to native
+  ScrollTimeline animations, which mis-map ranges on these svh sticky sections.
 
 ## Access Flow (owned across a few files)
 1. **Reveal the card**: press-and-hold the heart menu FAB for 5s (`FloatingHeartMenu`,

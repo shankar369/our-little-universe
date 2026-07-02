@@ -72,7 +72,9 @@ function App() {
   return (
     <CinematicTransitionProvider>
       <HeartLockerProvider>
-        <div className="relative min-h-svh overflow-x-hidden">
+        {/* overflow-x-clip (not hidden): clips without creating a scroll container,
+            so position:sticky keeps working inside the Heart Locker scroll cinema. */}
+        <div className="relative min-h-svh overflow-x-clip">
           <AmbientBackground words={siteContent.ambientWords} />
           <div className="relative z-10">
             <AnimatePresence mode="wait">

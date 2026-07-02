@@ -194,3 +194,18 @@ Don't:
 - Full-screen **modals are allowed** (gallery, lightbox, reveal dialog) — the "no
   full-size panel" rule is about boxing a *content screen* in glass, not dialogs. Photo
   galleries use `PhotoGalleryModal` (masonry + lightbox), never a bespoke grid.
+
+## 13. Scroll Cinema (Heart Locker)
+
+- The Heart Locker is the app's only **scroll-driven** experience: tall acts
+  (`height: n×100svh`) with a `sticky top-0 h-svh overflow-hidden` stage, animated via
+  `useScroll` + `useTransform`. Nothing autoplays — scroll position *is* the timeline.
+- Structure: one title beat per act (eyebrow + single aurora line), then the photos
+  perform; whispers stay lowercase serif. Photos keep the `.polaroid` treatment.
+- The app root must remain `overflow-x-clip` (never `overflow-x-hidden`) — a hidden
+  overflow ancestor silently kills `position: sticky` for every act.
+- Reduced motion: every act must render a static equivalent (plain grid / final line),
+  not a broken half-animation.
+- Scroll-mapped values live in MotionValues end-to-end (no per-frame React state);
+  runtime-measured geometry (e.g. the finale's letter landing) is set into MotionValues
+  from a measure-on-resize effect.
