@@ -320,7 +320,7 @@ function PlacePreview({ place, photos, onViewAll, onClose }: PlacePreviewProps) 
             <button
               type="button"
               onClick={onViewAll}
-              className="btn-primary mt-3.5 flex h-12 w-full items-center justify-center gap-2 rounded-2xl text-sm font-semibold active:scale-[0.985] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+              className="btn-primary mt-3.5 flex h-12 w-full items-center justify-center gap-2 rounded-2xl text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
             >
               <Images className="h-4 w-4" />
               View all {photos.length} {photos.length === 1 ? 'photo' : 'photos'}

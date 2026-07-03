@@ -1,21 +1,12 @@
 import { useCallback, useRef, useState } from 'react'
-import { Heart, Home, Images, LockKeyhole, Map, MapPin, Orbit, X } from 'lucide-react'
-import type { LucideIcon } from 'lucide-react'
+import { Heart, LockKeyhole, X } from 'lucide-react'
 import { AnimatePresence, motion } from 'motion/react'
 import { Link, useLocation, useNavigate } from 'react-router'
 import { appConfig } from '../../app/appConfig'
 import { experienceSections } from '../../app/experienceRegistry'
 import { useHeartLocker } from '../../features/heartLocker/HeartLockerContext'
 import { useCinematicTransition } from './CinematicTransition'
-
-const iconBySection: Record<string, LucideIcon> = {
-  opening: Home,
-  journey: Map,
-  'memory-timeline': Images,
-  'photo-universe': Orbit,
-  'our-little-atlas': MapPin,
-  'quote-puzzles': Heart,
-} as const
+import { Magnetic } from './Magnetic'
 
 const HOLD_MS = appConfig.timings.heartLockerHoldMs
 const heartLockerSection = experienceSections.find(
@@ -105,7 +96,7 @@ export function FloatingHeartMenu() {
           >
             <div className="relative z-10 space-y-1.5">
               {menuSections.map((section) => {
-                const Icon = iconBySection[section.id] ?? Heart
+                const Icon = section.icon
                 const isActive = location.pathname === section.path
 
                 return (
@@ -171,7 +162,8 @@ export function FloatingHeartMenu() {
         ) : null}
       </AnimatePresence>
 
-      <div className="relative">
+      <Magnetic>
+      <div className={`relative ${charging ? '' : 'animate-heart-breathe'}`}>
         {/* Charge ring — fills while the heart is held for its secret */}
         <svg
           viewBox="0 0 64 64"
@@ -215,6 +207,7 @@ export function FloatingHeartMenu() {
           {isOpen ? <X className="h-5 w-5" /> : <Heart className="h-5 w-5 fill-[#2b1048]" />}
         </motion.button>
       </div>
+      </Magnetic>
     </div>
   )
 }

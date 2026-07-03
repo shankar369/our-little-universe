@@ -6,12 +6,13 @@ Shared motion constants. Complements the Midnight Velvet tokens and component cl
 
 ## Ownership
 
-- `motion.ts` — easing curves and Motion presets
-- `src/index.css` owns: `@theme` color tokens (`night`, `deep`, `plum`, `starlight`, `moon`, `faint`, `orchid`, `blush`, `champagne`), fonts, surface classes (`glass-panel`, `glass-chip`, `btn-primary`, `btn-ghost`, `polaroid`), type roles (`type-eyebrow`, `type-quote`, `text-aurora`, `text-glow`, `night-veil`), and the `aurora-drift` keyframes
+- `motion.ts` — easing curves, Motion presets, and the chapter-curtain timing constants (`curtain`)
+- `src/index.css` owns: `@theme` color tokens (`night`, `deep`, `plum`, `starlight`, `moon`, `faint`, `orchid`, `blush`, `champagne`), fonts (display/sans/script), surface classes (`glass-panel`, `glass-chip`, `btn-primary`, `btn-ghost`, `input-glass`, `polaroid`, `grain-veil`), type roles (`type-eyebrow`, `type-quote`, `type-script`, `text-aurora`, `text-glow`, `night-veil`), and the `aurora-drift` / `heart-breathe` / `star-twinkle` keyframes
 
 ## Local Contracts
 
-- Export named presets: `softEase`, `screenTransition`, `riseIn`
+- Export named presets: `softEase`, `screenTransition`, `curtainScreenTransition`, `riseIn`, `curtain`
+- `curtainScreenTransition`'s enter delay is derived from `curtain.close` — tune the curtain only via the `curtain` constants
 - Motion spread pattern for Framer Motion consumers
 - Respect global `prefers-reduced-motion` rules in CSS
 - Typography roles and usage limits (one `.text-aurora` per screen, clamp-size caps) are defined in docs/design-system.md §3

@@ -1,5 +1,7 @@
 import {
   createContext,
+  lazy,
+  Suspense,
   useCallback,
   useContext,
   useEffect,
@@ -11,6 +13,11 @@ import {
 import { AnimatePresence, motion } from 'motion/react'
 import { Heart } from 'lucide-react'
 import { softEase } from '../../design/motion'
+import { useRichMotion } from '../lib/richMotion'
+
+// Lazy so three.js never lands in the main bundle; while the chunk loads (or
+// without WebGL) the original SVG rim + hearts render instead.
+const HeartIrisEmbers = lazy(() => import('./HeartIrisEmbers'))
 
 export type TransitionVariant = 'immersive' | 'unlock' | 'seal' | 'reveal'
 
@@ -19,6 +26,8 @@ type ActiveTransition = { variant: TransitionVariant; id: number }
 type CinematicTransitionContextValue = {
   /** Play a full-screen cinematic transition overlay. */
   play: (variant: TransitionVariant) => void
+  /** Epoch ms of the most recent play() — lets the chapter curtain yield. */
+  lastPlayedAt: () => number
 }
 
 const CinematicTransitionContext = createContext<CinematicTransitionContextValue | null>(null)
@@ -50,13 +59,17 @@ export function useCinematicTransition() {
 export function CinematicTransitionProvider({ children }: { children: ReactNode }) {
   const [active, setActive] = useState<ActiveTransition | null>(null)
   const counter = useRef(0)
+  const playedAt = useRef(0)
 
   const play = useCallback((variant: TransitionVariant) => {
     counter.current += 1
+    playedAt.current = Date.now()
     setActive({ variant, id: counter.current })
   }, [])
 
-  const value = useMemo(() => ({ play }), [play])
+  const lastPlayedAt = useCallback(() => playedAt.current, [])
+
+  const value = useMemo(() => ({ play, lastPlayedAt }), [play, lastPlayedAt])
 
   return (
     <CinematicTransitionContext.Provider value={value}>
@@ -142,11 +155,11 @@ const STREAK_COLORS = ['#f5f0ff', '#c894fc', '#f4d9a6']
 function WarpOverlay() {
   const streaks = useMemo(
     () =>
-      Array.from({ length: 44 }, (_, index) => ({
+      Array.from({ length: 28 }, (_, index) => ({
         id: index,
-        angle: (index / 44) * 360 + (index % 3) * 5,
+        angle: (index / 28) * 360 + (index % 3) * 5,
         length: 30 + (index % 5) * 8,
-        width: index % 4 === 0 ? 2.2 : 1.3,
+        width: index % 4 === 0 ? 1.8 : 1,
         delay: (index % 6) * 0.018,
         color: STREAK_COLORS[index % 3],
       })),
@@ -155,12 +168,12 @@ function WarpOverlay() {
 
   return (
     <>
-      {/* Deep-space wash that briefly swallows the edges */}
+      {/* Velvet wash — the same night→deep→plum material as the curtain */}
       <motion.div
         className="absolute inset-0"
         style={{
           backgroundImage:
-            'radial-gradient(circle at 50% 50%, rgba(38,14,70,0.55), rgba(5,2,16,0.92) 72%)',
+            'radial-gradient(circle at 50% 50%, rgba(28,13,51,0.6), rgba(14,6,32,0.8) 55%, rgba(7,3,18,0.92) 82%)',
         }}
         initial={{ opacity: 0 }}
         animate={{ opacity: [0, 0.75, 0] }}
@@ -191,7 +204,10 @@ function WarpOverlay() {
             }}
             initial={{ scaleY: 0, opacity: 0 }}
             animate={{ scaleY: [0, 1], opacity: [0, 1, 0] }}
-            transition={{ duration: 0.72, delay: streak.delay, ease: easeIn, times: [0, 0.6, 1] }}
+            transition={{
+              scaleY: { duration: 0.72, delay: streak.delay, ease: easeIn },
+              opacity: { duration: 0.72, delay: streak.delay, ease: softEase, times: [0, 0.6, 1] },
+            }}
           />
         ))}
       </div>
@@ -206,9 +222,10 @@ function WarpOverlay() {
       <motion.div
         className="absolute inset-0 bg-white"
         initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.14, 0] }}
+        animate={{ opacity: [0, 0.07, 0] }}
         transition={{ duration: 0.45, times: [0, 0.3, 1] }}
       />
+      <div className="grain-veil" />
     </>
   )
 }
@@ -218,23 +235,7 @@ function WarpOverlay() {
 // ---------------------------------------------------------------------------
 
 function HeartPortalOverlay() {
-  const hearts = useMemo(
-    () =>
-      Array.from({ length: 18 }, (_, index) => {
-        const angle = (index / 18) * Math.PI * 2 + (index % 3) * 0.5
-        const distance = 24 + (index % 5) * 8
-        return {
-          id: index,
-          x: Math.cos(angle) * distance,
-          y: Math.sin(angle) * distance - 8,
-          size: 13 + (index % 4) * 6,
-          delay: 0.35 + (index % 6) * 0.05,
-          rotate: index % 2 ? 20 : -20,
-          warm: index % 3 === 0,
-        }
-      }),
-    [],
-  )
+  const { rich, compact } = useRichMotion()
 
   return (
     <>
@@ -259,21 +260,24 @@ function HeartPortalOverlay() {
         </defs>
         <rect width="100" height="100" fill="#070312" mask="url(#heart-iris)" />
 
-        {/* The glowing rim of the opening heart */}
-        <motion.path
-          d={HEART_PATH}
-          fill="none"
-          stroke="#f7b8d4"
-          strokeWidth="0.9"
-          style={{
-            transformOrigin: 'center',
-            transformBox: 'fill-box',
-            filter: 'drop-shadow(0 0 2px rgba(244,217,166,0.9))',
-          }}
-          initial={{ scale: 0.02, opacity: 0 }}
-          animate={{ scale: 3.4, opacity: [0, 1, 0] }}
-          transition={{ duration: 1.4, ease: irisEase, times: [0, 0.55, 1] }}
-        />
+        {/* The glowing rim of the opening heart (ember swarm takes over
+            when rich motion is available) */}
+        {rich ? null : (
+          <motion.path
+            d={HEART_PATH}
+            fill="none"
+            stroke="#f7b8d4"
+            strokeWidth="0.9"
+            style={{
+              transformOrigin: 'center',
+              transformBox: 'fill-box',
+              filter: 'drop-shadow(0 0 2px rgba(244,217,166,0.9))',
+            }}
+            initial={{ scale: 0.02, opacity: 0 }}
+            animate={{ scale: 3.4, opacity: [0, 1, 0] }}
+            transition={{ duration: 1.4, ease: irisEase, times: [0, 0.55, 1] }}
+          />
+        )}
       </svg>
 
       {/* Warm light welling up from the keyhole */}
@@ -300,32 +304,63 @@ function HeartPortalOverlay() {
         transition={{ duration: 1.1, delay: 0.5, ease: softEase }}
       />
 
-      {/* Hearts spilling free */}
-      <div className="absolute left-1/2 top-1/2">
-        {hearts.map((heart) => (
-          <motion.span
-            key={heart.id}
-            className={heart.warm ? 'absolute text-champagne' : 'absolute text-blush'}
-            style={{
-              filter: heart.warm
-                ? 'drop-shadow(0 0 7px rgba(244,217,166,0.7))'
-                : 'drop-shadow(0 0 7px rgba(247,184,212,0.7))',
-            }}
-            initial={{ x: '0vmin', y: '0vmin', opacity: 0, scale: 0.3, rotate: 0 }}
-            animate={{
-              x: `${heart.x}vmin`,
-              y: `${heart.y}vmin`,
-              opacity: [0, 1, 0],
-              scale: [0.3, 1, 0.5],
-              rotate: heart.rotate,
-            }}
-            transition={{ duration: 1.25, delay: heart.delay, ease: 'easeOut' }}
-          >
-            <Heart className="fill-current" style={{ height: heart.size, width: heart.size }} />
-          </motion.span>
-        ))}
-      </div>
+      {/* Embers trace the blooming iris; hearts spill in the fallback */}
+      {rich ? (
+        <Suspense fallback={<HeartSpill />}>
+          <HeartIrisEmbers variant="unlock" compact={compact} />
+        </Suspense>
+      ) : (
+        <HeartSpill />
+      )}
     </>
+  )
+}
+
+/** The original spill of little hearts — fallback for the ember iris. */
+function HeartSpill() {
+  const hearts = useMemo(
+    () =>
+      Array.from({ length: 18 }, (_, index) => {
+        const angle = (index / 18) * Math.PI * 2 + (index % 3) * 0.5
+        const distance = 24 + (index % 5) * 8
+        return {
+          id: index,
+          x: Math.cos(angle) * distance,
+          y: Math.sin(angle) * distance - 8,
+          size: 13 + (index % 4) * 6,
+          delay: 0.35 + (index % 6) * 0.05,
+          rotate: index % 2 ? 20 : -20,
+          warm: index % 3 === 0,
+        }
+      }),
+    [],
+  )
+
+  return (
+    <div className="absolute left-1/2 top-1/2">
+      {hearts.map((heart) => (
+        <motion.span
+          key={heart.id}
+          className={heart.warm ? 'absolute text-champagne' : 'absolute text-blush'}
+          style={{
+            filter: heart.warm
+              ? 'drop-shadow(0 0 7px rgba(244,217,166,0.7))'
+              : 'drop-shadow(0 0 7px rgba(247,184,212,0.7))',
+          }}
+          initial={{ x: '0vmin', y: '0vmin', opacity: 0, scale: 0.3, rotate: 0 }}
+          animate={{
+            x: `${heart.x}vmin`,
+            y: `${heart.y}vmin`,
+            opacity: [0, 1, 0],
+            scale: [0.3, 1, 0.5],
+            rotate: heart.rotate,
+          }}
+          transition={{ duration: 1.25, delay: heart.delay, ease: 'easeOut' }}
+        >
+          <Heart className="fill-current" style={{ height: heart.size, width: heart.size }} />
+        </motion.span>
+      ))}
+    </div>
   )
 }
 
@@ -393,6 +428,8 @@ function RevealOverlay() {
 // ---------------------------------------------------------------------------
 
 function SealOverlay() {
+  const { rich, compact } = useRichMotion()
+
   return (
     <>
       <svg
@@ -415,14 +452,28 @@ function SealOverlay() {
         </defs>
         <rect width="100" height="100" fill="#070312" mask="url(#heart-seal)" />
       </svg>
-      <motion.div
-        className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-blush drop-shadow-[0_0_18px_rgba(247,184,212,0.7)]"
-        initial={{ scale: 1.4, opacity: 0 }}
-        animate={{ scale: [1.4, 1, 0.2], opacity: [0, 1, 0] }}
-        transition={{ duration: 0.75, times: [0, 0.45, 1], ease: softEase }}
-      >
-        <Heart className="h-14 w-14 fill-blush/80" />
-      </motion.div>
+      {/* Embers converge with the closing iris; the little heart is the
+          fallback beat. */}
+      {rich ? (
+        <Suspense fallback={<SealHeart />}>
+          <HeartIrisEmbers variant="seal" compact={compact} />
+        </Suspense>
+      ) : (
+        <SealHeart />
+      )}
     </>
+  )
+}
+
+function SealHeart() {
+  return (
+    <motion.div
+      className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-blush drop-shadow-[0_0_18px_rgba(247,184,212,0.7)]"
+      initial={{ scale: 1.4, opacity: 0 }}
+      animate={{ scale: [1.4, 1, 0.2], opacity: [0, 1, 0] }}
+      transition={{ duration: 0.75, times: [0, 0.45, 1], ease: softEase }}
+    >
+      <Heart className="h-14 w-14 fill-blush/80" />
+    </motion.div>
   )
 }

@@ -10,7 +10,9 @@ Owns storage keys, timing constants, and the section catalog. Consumed by `App.t
 
 ## Local Contracts
 
-- `ExperienceSection` shape: `id`, `label`, `status`, `path`, `description`
+- `ExperienceSection` shape: `id`, `label`, `status`, `path`, `description`, `icon`
+- `icon` (LucideIcon) is the canonical chapter icon — nav, hub cards, and the
+  chapter curtain all read it from the registry (no duplicate icon maps)
 - `status` is `'live' | 'planned'`
 - Paths must match routes wired in `App.tsx`
 - New localStorage keys only in `appConfig.storageKeys`

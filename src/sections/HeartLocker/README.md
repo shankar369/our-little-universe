@@ -15,7 +15,24 @@ to scroll position (sticky viewports + `useScroll`/`useTransform`).
 3. **Act II — `FilmstripAct.tsx`** ("and I'd walk through every one of them again"):
    scroll-pinned **horizontal filmstrip** — vertical scroll glides the strip across the
    screen (runtime-measured travel via `startX`/`endX` MotionValues) while each photo
-   parallaxes inside its frame; tilt + bob per card.
+   parallaxes inside its frame; tilt + bob per card. The track **leans into scroll
+   velocity** (spring-smoothed skew, clamped ±3.5°), and over the final ~12% the last
+   photo performs the **ember dissolve** (below).
+
+### The ember layer (rich motion only, gated by `useRichMotion().rich`)
+- **`LockerAtmosphere.tsx`** — one fixed full-viewport WebGL canvas behind every act:
+  sparse drifting embers (~1,000 desktop / ~450 compact) whose drift + glow react to
+  scroll velocity; the field warms toward gold with page depth and dims to ~25% as the
+  finale enters so `FinaleEmbers` reads as the same field's crescendo. Act II feeds it
+  a `streak` MotionValue that smears embers into horizontal light streaks at speed.
+  When `rich` is false the acts keep their original static radial glows instead.
+- **`PhotoEmberDissolve.tsx`** — the Act II→finale bridge: the last polaroid's photo is
+  pixel-sampled (`sampleImageToPoints`) into ~2,600/~1,100 embers that lift out of the
+  paper frame and drift upward, scrubbed straight from scroll (reversible); the DOM
+  `<img>` crossfades inversely. Renders in its own thin overlay canvas ABOVE the act
+  content (the atmosphere canvas is behind the cards and would be occluded).
+- **Act seams** — `ActSeam` in `HeartLocker.tsx`: an aurora hairline that brightens and
+  stretches as it sweeps past between acts (DOM, `motion-reduce:hidden`).
 4. **Finale — `FinaleAct.tsx` + `FinaleEmbers.tsx`**: an R3F **ember particle scene**
    (~15,400 GPU points, two clouds with custom shaders). Embers gather into "Navya" →
    the a-v-y-a letters blow away as ash → the N swarm zooms, **flips** (rotation.x→π),

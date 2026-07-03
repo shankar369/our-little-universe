@@ -32,7 +32,7 @@ export function FinaleAct() {
   if (reduceMotion) {
     return (
       <section className="relative flex min-h-svh flex-col items-center justify-center px-6 text-center">
-        <p className="type-eyebrow mb-4 text-champagne/85">happy birthday, love — from</p>
+        <p className="type-script mb-4 text-champagne/85">happy birthday, love — from</p>
         <p className="text-aurora font-display text-[clamp(2.4rem,9vw,5rem)] font-semibold leading-none">
           Navya&rsquo;s Sankar
         </p>
@@ -67,7 +67,7 @@ export function FinaleAct() {
         {/* Closing whisper, above and below the ember signature */}
         <motion.p
           style={{ opacity: eyebrowOpacity }}
-          className="type-eyebrow pointer-events-none absolute inset-x-0 top-[30%] z-10 text-center text-champagne/85"
+          className="type-script text-glow pointer-events-none absolute inset-x-0 top-[28%] z-10 text-center text-champagne/85"
         >
           happy birthday, love — from
         </motion.p>

@@ -48,13 +48,21 @@ Fonts are loaded in `index.html` (variable axes incl. `SOFT`/`WONK` for Fraunces
 
 - `--font-display` (Fraunces): headlines, memory titles, quotes, polaroid captions.
 - `--font-sans` (DM Sans): body, buttons, labels, navigation, forms.
+- `--font-script` (Parisienne): the "handwritten in the margin" voice — UI whispers
+  and hints, signatures, and the chapter-curtain title. **Never** body copy, buttons,
+  eyebrows, headlines, or form values. Max **one script element per viewport**
+  (mirror of the `.text-aurora` rule). The aurora headline line stays Fraunces
+  (`.type-quote`) — two display voices in one headline fight each other.
 
 Roles (classes in `src/index.css`):
 - `.type-eyebrow` — 11px, 0.32em tracking, uppercase, almost always `text-champagne/85`.
 - Headline — `font-medium`, `clamp` sizes only, max ~3.6rem on sections
   (~5.6rem only on the opening hero). Leading 0.98–1.12. Never larger: oversized
   type reads as marketing, not intimacy.
-- `.type-quote` — italic Fraunces; used for subtitles, captions, hints, feedback.
+- `.type-quote` — italic Fraunces; used for subtitles, captions, feedback.
+- `.type-script` — Parisienne whispers ("swipe · tap to open", "…see?", login hints);
+  `clamp(1.125rem, 3.2vw, 1.375rem)` floor keeps it legible at 390px.
+  `.type-script--display` — the large variant for curtain titles and signatures.
 - `.text-aurora` — gradient-clipped headline accent. **Exactly one per screen**, on
   the final italic phrase of the headline (pattern: plain first line + `type-quote
   text-aurora` block second line, with `pb-1` so descenders aren't clipped).
@@ -93,19 +101,40 @@ same glass language as `.glass-panel` but raises opacity so ambient decoration d
 not read through the menu items.
 
 Buttons: `.btn-primary` (aurora pastel gradient, `#2b1048` text, one primary action
-per screen) and `.btn-ghost` (glass, icon buttons, secondary actions).
+per screen) and `.btn-ghost` (glass, icon buttons, secondary actions). Both carry
+their press state in the class (`:active` scale 0.985) — never re-add ad-hoc
+`active:scale-*` utilities. `.btn-primary` has a desktop-only shine sweep
+(`@media (hover:hover) and (pointer:fine)`); `.btn-ghost` lifts 1px with an orchid
+bloom on hover.
+Inputs: `.input-glass` (glass chip + orchid caret + double-glow focus) is the only
+form-field treatment.
 Photos: `.polaroid` (warm paper frame) is the only photo treatment.
+Texture: `.grain-veil` (static SVG noise via `--grain-url`, opacity 0.035,
+soft-light) — at most **two** grain layers alive at once (background + one overlay).
 
 ## 6. Motion & Transitions
 
 - House easing: `softEase` from `src/design/motion.ts`; reusable presets
-  (`screenTransition`, `riseIn`) live there. Never duplicate easing magic numbers.
+  (`screenTransition`, `curtainScreenTransition`, `riseIn`) and the chapter-curtain
+  timing constants (`curtain`) live there. Never duplicate easing magic numbers.
 - Entrances: fade + 14–28px rise, 0.55–0.9s, staggered ~0.12–0.15s per element.
 - Ambient loops are slow (8s+) and subtle; interactive feedback is fast
-  (`active:scale-[0.985]`, `whileTap`).
+  (`:active` scale in the button classes, `whileTap`).
+- Micro-interaction grammar: shine sweep is hover-only (fine pointers); heart FAB
+  breathes via the `heart-breathe` keyframe (5.5s, paused while charging); magnetic
+  hover (`Magnetic` wrapper, ±4px springs) is scoped to the heart FAB + fullscreen
+  toggle only; hub cards lift `-translate-y-0.5` with a glow on hover.
+- Iconography: lucide only, global stroke-width 1.75 (`svg.lucide` base rule).
+  Sizes — `h-4 w-4` inline/menu rows, `h-5 w-5` inside ≥44px chips, `h-3.5 w-3.5`
+  decorative accents. Colors — orchid = interactive identity, champagne =
+  precious/active, moon/faint = neutral, blush = emotional decoration (filled).
 - Everything decorative must respect `prefers-reduced-motion`: CSS animations are
   killed globally in `index.css`; Framer-driven decoration goes inside a
   `motion-reduce:hidden` wrapper; R3F scenes take a `reducedMotion` flag.
+- WebGL transition layers (locker atmosphere, ember dissolve, silk curtain, ember
+  iris) gate on `useRichMotion().rich` from `shared/lib/richMotion.ts` — WebGL
+  available AND motion welcome — and every one keeps a DOM/static fallback. `compact`
+  (≤640px) halves particle budgets.
 
 ## 7. Photo Treatment
 
@@ -117,23 +146,28 @@ Photos: `.polaroid` (warm paper frame) is the only photo treatment.
 - Content stores logical paths (`/memoryTimeline/...`); components must load them via
   `publicAssetPath()` so gh-pages base URLs resolve correctly.
 
-## 8. Decorative Elements (AmbientBackground)
+## 8. Decorative Elements — The Constellation Sky (AmbientBackground)
 
-Allowed layers, in order: nebula gradient base → aurora drift blobs (CSS keyframe
-`aurora-drift`) → link-free starfield particles → twinkling four-point sparkle-stars →
-rare diagonal shooting stars → drifting brand monograms (`N`, `S`, `N ♥ S`) →
-floating serif word fragments (from `siteContent.ambientWords`) → 3 SVG butterflies →
-rising hearts (≤7 desktop) → vignette.
+The background is a calm night with the initials written in stars. Allowed layers,
+in order: simplified nebula base (one orchid radial + diagonal night gradient) →
+**one** aurora blob (`animate-aurora-slow`) → seeded static star field (~90 desktop /
+~50 compact, deterministic `mulberry32`, ~⅓ twinkle via the `star-twinkle` CSS
+keyframe — **no particle engine**) → the three constellations → sparse extras
+(≤2 rising hearts, ≤1 butterfly desktop-only, 1 rare shooting star) → `.grain-veil`
+→ vignette. Zero recurring main-thread work after mount.
 
-Hard rules:
-- No particle link lines, no grid overlays, no lightning icon glyphs. Background
-  opacity stays ≤ ~0.5 per element; monograms peak at ~0.2 so they whisper.
-- Monograms stay few (≤5 desktop) and serif (`type-quote`/`font-display`); they are
-  ambient initials, never a repeating watermark or crowd.
-- Shooting stars are rare (long `repeatDelay`) and thin; never a meteor shower.
+Constellation rules:
+- Glyph data lives in `src/shared/components/constellationData.ts` (normalised
+  `0 0 100 140` boxes); rendered by `ConstellationGlyph` (halo + core circles,
+  no SVG filters).
+- Budgets: 6–9 stars per letterform; line `strokeOpacity` ≤ 0.16; whole-glyph
+  wrapper opacity ~0.55; ≤3 glyph placements desktop (N, S, N♥S sigil), 2 on
+  compact (N + sigil). Champagne anchors are the "named stars".
+- Drift is a 45–70s framer loop gated on `useReducedMotion()` — under reduced
+  motion the constellations stay **visible but still** (they are the art, not
+  decoration to hide); the extras live in `motion-reduce:hidden` as usual.
+- Shooting stars stay rare (repeatDelay ≥ 26s) and thin; never a meteor shower.
 - Decoration frames content; it never sits on top of headings, forms, or cards.
-- Mobile gets reduced counts: `AmbientBackground` slices each layer behind a
-  `(max-width: 640px)` check, on top of the responsive particle options.
 
 ## 9. The 3D Photo Universe
 
@@ -173,8 +207,9 @@ Do:
 
 Don't:
 - Don't wrap screens in full-size panels; don't nest glass inside glass.
-- Don't use raw Tailwind colors, new fonts, uppercase shouting outside
-  `.type-eyebrow`, or more than one `.text-aurora` per screen.
+- Don't use raw Tailwind colors, fonts beyond the three tokens (display/sans/script),
+  uppercase shouting outside `.type-eyebrow`, or more than one `.text-aurora` (or
+  `.type-script`) per screen.
 - Don't add decorative elements beyond the allowed ambient set without updating
   this document first.
 - Don't ship a screen you haven't looked at on a phone-sized viewport.
@@ -209,3 +244,35 @@ Don't:
 - Scroll-mapped values live in MotionValues end-to-end (no per-frame React state);
   runtime-measured geometry (e.g. the finale's letter landing) is set into MotionValues
   from a measure-on-resize effect.
+- **The ember layer**: under rich motion (`useRichMotion().rich`) the locker carries a
+  fixed WebGL ember atmosphere behind all acts (scroll-velocity drift/glow, warms with
+  depth, dims to ~25% as the finale enters) plus the last filmstrip photo's
+  scroll-scrubbed ember dissolve. Budgets: ~1,000/~450 atmosphere and ~2,600/~1,100
+  dissolve embers (desktop/compact), DPR ≤ 1.5. New ember scenes reuse
+  `shared/lib/emberGlsl.ts` so all embers read as one material; WebGL scenes read
+  MotionValues with `.get()` inside `useFrame` (never React state). Without rich
+  motion the acts keep their static glows; reduced motion never mounts a canvas.
+
+## 14. The Chapter Curtain (route transitions)
+
+- Navigating between sections plays `ChapterCurtain`: one continuous velvet layer
+  (soft-edged night→deep→plum gradient, 200vw wide, aurora hairline on the leading
+  edge, grain inside) sweeps across, holds ~0.35s showing the title card, then parts.
+  Total ≤ 1.35s; every number lives in `motion.ts` `curtain`.
+- Under rich motion the veil renders as the `VelvetCurtainGL` silk shader (same
+  gradient stops, span, and keyframes; adds noise ripple, woven sheen, champagne
+  sparks, and a glowing leading edge). It is lazy-loaded and idle-prefetched; the DOM
+  veil stays as the fallback for reduced motion, missing WebGL, and the first sweep if
+  the chunk hasn't arrived. The title card is always DOM.
+- Title card anatomy: registry icon in a `glass-chip` disc → `.type-eyebrow` chapter
+  whisper → chapter name in `.type-script--display .text-glow`. Chapter metadata comes
+  from `experienceRegistry` (which owns the canonical `icon` per section).
+- The page swap hides under the veil: `ScreenTransition` uses
+  `curtainScreenTransition` (exit = hold; enter rises as the veil parts). The login
+  gate uses `variant="fade"`.
+- It must **not** play: on first load (path ref initialised to current), on the login
+  → hero swap, within 1.5s of a `CinematicTransition` overlay (the heart-iris owns
+  those navigations, via `lastPlayedAt()`), or under reduced motion (instant swap).
+  Browser back/forward reverse the sweep direction (`useNavigationType` POP).
+- Z-map: content 10 < chrome 50 < atlas/reveal 55–60 < gallery 70–80 < locker prompt
+  90 < **curtain 100** < cinematic overlays 120.

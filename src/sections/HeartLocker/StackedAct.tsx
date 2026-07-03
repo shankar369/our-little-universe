@@ -7,6 +7,7 @@ import {
   type MotionValue,
 } from 'motion/react'
 import { softEase } from '../../design/motion'
+import { useRichMotion } from '../../shared/lib/richMotion'
 
 // Deterministic "hand-piled" variety per card.
 const tilts = [-4.5, 4, -3, 5.5, -6, 2.5, -4, 5]
@@ -25,6 +26,7 @@ type StackedActProps = {
 export function StackedAct({ photos }: StackedActProps) {
   const containerRef = useRef<HTMLElement | null>(null)
   const reduceMotion = useReducedMotion()
+  const { rich } = useRichMotion()
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
@@ -39,7 +41,7 @@ export function StackedAct({ photos }: StackedActProps) {
         <ActTitle />
         <div className="mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-3">
           {photos.map((src, index) => (
-            <Polaroid key={`${src}-${index}`} src={src} index={index} />
+            <Polaroid key={`${src}-${index}`} src={src} />
           ))}
         </div>
       </section>
@@ -54,8 +56,11 @@ export function StackedAct({ photos }: StackedActProps) {
       aria-label="A stack of favourite photos"
     >
       <div className="sticky top-0 flex h-svh w-full items-center justify-center overflow-hidden">
-        {/* Soft bed of light the pile grows on */}
-        <div className="pointer-events-none absolute h-[58vmin] w-[58vmin] rounded-full bg-orchid/12 blur-3xl" />
+        {/* Soft bed of light the pile grows on (the ember atmosphere covers
+            this when rich motion is available) */}
+        {rich ? null : (
+          <div className="pointer-events-none absolute h-[58vmin] w-[58vmin] rounded-full bg-orchid/12 blur-3xl" />
+        )}
 
         <StackTitle progress={scrollYProgress} unit={unit} />
 
@@ -173,23 +178,15 @@ function DeckPhoto({
       }}
       className="absolute w-[min(70vw,19rem)] sm:w-[23rem]"
     >
-      <Polaroid src={src} index={index} shadow />
+      <Polaroid src={src} shadow />
     </motion.div>
   )
 }
 
-function Polaroid({
-  src,
-  index,
-  shadow = false,
-}: {
-  src: string
-  index: number
-  shadow?: boolean
-}) {
+function Polaroid({ src, shadow = false }: { src: string; shadow?: boolean }) {
   return (
     <div
-      className={`polaroid rounded-[1rem] p-2 ${
+      className={`polaroid rounded-[1rem] p-2 pb-6 ${
         shadow ? 'shadow-[0_30px_80px_rgba(2,0,10,0.65)]' : ''
       }`}
     >
@@ -202,9 +199,6 @@ function Polaroid({
           decoding="async"
         />
       </div>
-      <p className="type-eyebrow py-2 text-center !tracking-[0.3em] text-[#2b1048]/40">
-        no. {String(index + 1).padStart(2, '0')}
-      </p>
     </div>
   )
 }
@@ -217,7 +211,7 @@ function Whisper({ progress }: { progress: MotionValue<number> }) {
   return (
     <motion.p
       style={{ opacity, y }}
-      className="type-quote night-veil absolute bottom-[5%] z-40 text-lg text-moon"
+      className="type-script night-veil absolute bottom-[5%] z-40 text-moon"
     >
       &hellip;see?
     </motion.p>

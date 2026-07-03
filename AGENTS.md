@@ -5,7 +5,7 @@
 - Every major screen must look stunning on both mobile and desktop; mobile is the starting point, but desktop cannot feel like an afterthought.
 - Keep the tone romantic, funny, cinematic, and personal.
 - The visual system is "Midnight Velvet", fully specified in [docs/design-system.md](docs/design-system.md). That document is binding for all UI work; read it before changing any screen.
-- Core look: content lives directly in the night sky (no full-screen glass panels), with glass reserved for cards/controls, semantic color tokens (night/plum, starlight/moon/faint, orchid/blush/champagne), serif-italic aurora headline accents, warm-paper polaroid photo frames, and quiet ambient decoration (aurora, starfield, butterflies, floating words, rising hearts).
+- Core look: content lives directly in the night sky (no full-screen glass panels), with glass reserved for cards/controls, semantic color tokens (night/plum, starlight/moon/faint, orchid/blush/champagne), serif-italic aurora headline accents, a Parisienne script whisper voice, warm-paper polaroid photo frames, and the Constellation Sky ambience (seeded stars, N/S/N♥S star constellations, one aurora, sparse hearts/butterfly, film grain).
 - Do not turn the first screen into a marketing page. The app should feel like a private gift.
 
 ## Architecture Rules
@@ -30,7 +30,7 @@
 - Use tap-friendly controls with at least 44px height for important actions.
 - Respect `prefers-reduced-motion`; decorative movement must be safe to reduce or remove.
 - Keep expensive visual effects behind focused components, and reduce particle/3D density on phones.
-- Background ambience should be clearly visible but never block readability: aurora, starfield, butterflies, floating words, and rising hearts frame the content rather than sit on top of it.
+- Background ambience should be clearly visible but never block readability: the aurora, star field, constellations, butterfly, and rising hearts frame the content rather than sit on top of it.
 - If a screen starts to feel cumbersome, reduce decoration first and strengthen hierarchy before adding more animation.
 
 ## Commands

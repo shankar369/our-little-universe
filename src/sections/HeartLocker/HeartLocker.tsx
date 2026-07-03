@@ -1,13 +1,22 @@
+import { useRef } from 'react'
 import { ChevronDown, LockKeyhole, Sparkles } from 'lucide-react'
-import { motion } from 'motion/react'
+import {
+  motion,
+  useMotionValue,
+  useScroll,
+  useTransform,
+} from 'motion/react'
 import { useNavigate } from 'react-router'
 import { getHeartLockerPhotos } from '../../content/heartLockerGallery'
 import { siteContent } from '../../content/siteContent'
 import { riseIn, softEase } from '../../design/motion'
 import { useCinematicTransition } from '../../shared/components/CinematicTransition'
+import { useRichMotion } from '../../shared/lib/richMotion'
 import { useHeartLocker } from '../../features/heartLocker/HeartLockerContext'
 import { FilmstripAct } from './FilmstripAct'
 import { FinaleAct } from './FinaleAct'
+import { LockerAtmosphere } from './LockerAtmosphere'
+import { PhotoEmberDissolve } from './PhotoEmberDissolve'
 import { StackedAct } from './StackedAct'
 
 const locker = siteContent.heartLocker
@@ -16,19 +25,86 @@ const locker = siteContent.heartLocker
  * The Heart Locker — a scroll-driven cinema in three acts:
  * I. photos landing on a deck, II. a horizontal filmstrip glide,
  * III. the ember-swarm "Navya's Sankar" signature.
+ * One shared ember atmosphere breathes behind all of it (LockerAtmosphere),
+ * stirred by scroll speed and handing off to the finale's own embers.
  */
 export function HeartLocker() {
   const stackedPhotos = getHeartLockerPhotos('photo-stack')
   const stripPhotos = getHeartLockerPhotos('photo-strip')
+  const { rich, compact } = useRichMotion()
+  const finaleRef = useRef<HTMLDivElement | null>(null)
+  // Driven by Act II's scroll velocity; smears atmosphere embers into streaks.
+  const streak = useMotionValue(0)
+  // The dissolve bridge: Act II drives these, the atmosphere consumes them.
+  const dissolveProgress = useMotionValue(0)
+  const dissolveRect = useRef<DOMRect | null>(null)
+  const lastStripPhoto = stripPhotos[stripPhotos.length - 1]
 
   return (
     <main className="relative text-starlight">
+      {rich ? (
+        <LockerAtmosphere
+          compact={compact}
+          finaleRef={finaleRef}
+          streak={streak}
+        />
+      ) : null}
+      {rich && lastStripPhoto ? (
+        <PhotoEmberDissolve
+          src={lastStripPhoto}
+          progress={dissolveProgress}
+          rect={dissolveRect}
+          compact={compact}
+        />
+      ) : null}
       <IntroSection />
+      <ActSeam />
       <StackedAct photos={stackedPhotos} />
-      <FilmstripAct photos={stripPhotos} />
-      <FinaleAct />
+      <ActSeam />
+      <FilmstripAct
+        photos={stripPhotos}
+        streak={rich ? streak : undefined}
+        dissolveProgress={rich && lastStripPhoto ? dissolveProgress : undefined}
+        dissolveRectRef={rich && lastStripPhoto ? dissolveRect : undefined}
+      />
+      <ActSeam />
+      <div ref={finaleRef}>
+        <FinaleAct />
+      </div>
       <OutroSection />
     </main>
+  )
+}
+
+/**
+ * A hairline of aurora light that brightens and stretches as it sweeps past —
+ * the seam between two acts of the cinema.
+ */
+function ActSeam() {
+  const ref = useRef<HTMLDivElement | null>(null)
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ['start 0.95', 'start 0.25'],
+  })
+  // Function-form fade: keeps it JS-driven, dodging Motion's native
+  // ScrollTimeline promotion, which mis-maps ranges near svh sticky sections.
+  const glow = useTransform(scrollYProgress, [0, 0.5, 1], [0, 1, 0])
+  const opacity = useTransform(() => glow.get())
+  const scaleX = useTransform(scrollYProgress, [0, 0.55], [0.25, 1])
+
+  return (
+    <div ref={ref} aria-hidden="true" className="relative h-px w-full motion-reduce:hidden">
+      <motion.div
+        style={{
+          opacity,
+          scaleX,
+          background:
+            'linear-gradient(90deg, transparent, rgba(200,148,252,0.55) 30%, rgba(247,184,212,0.75) 50%, rgba(244,217,166,0.55) 70%, transparent)',
+          boxShadow: '0 0 22px rgba(200,148,252,0.4)',
+        }}
+        className="absolute inset-x-[6%] top-0 h-px"
+      />
+    </div>
   )
 }
 
@@ -68,7 +144,7 @@ function IntroSection() {
         transition={{ delay: 0.6, duration: 0.8, ease: softEase }}
         className="absolute inset-x-0 bottom-[max(2.25rem,env(safe-area-inset-bottom))] flex flex-col items-center gap-1.5"
       >
-        <p className="type-quote text-sm text-moon/75">
+        <p className="type-script text-moon/75">
           scroll slowly &mdash; this one&rsquo;s just ours
         </p>
         <motion.span

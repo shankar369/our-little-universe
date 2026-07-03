@@ -2,10 +2,10 @@ import { AnimatePresence } from 'motion/react'
 import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router'
 import { appConfig } from './app/appConfig'
-import { siteContent } from './content/siteContent'
 import { LoginScreen } from './features/auth/LoginScreen'
 import { OpeningHero } from './features/opening/OpeningHero'
 import { AmbientBackground } from './shared/components/AmbientBackground'
+import { ChapterCurtain } from './shared/components/ChapterCurtain'
 import { CinematicTransitionProvider } from './shared/components/CinematicTransition'
 import { FloatingHeartMenu } from './shared/components/FloatingHeartMenu'
 import { FullscreenToggle } from './shared/components/FullscreenToggle'
@@ -52,7 +52,7 @@ function HeartLockerRoute() {
 function SectionLoading() {
   return (
     <main className="flex min-h-svh items-center justify-center px-5 text-starlight">
-      <p className="type-quote text-glow text-lg text-moon">
+      <p className="type-script text-glow text-moon">
         opening the next little universe&hellip;
       </p>
     </main>
@@ -75,7 +75,7 @@ function App() {
         {/* overflow-x-clip (not hidden): clips without creating a scroll container,
             so position:sticky keeps working inside the Heart Locker scroll cinema. */}
         <div className="relative min-h-svh overflow-x-clip">
-          <AmbientBackground words={siteContent.ambientWords} />
+          <AmbientBackground />
           <div className="relative z-10">
             <AnimatePresence mode="wait">
               {isUnlocked ? (
@@ -93,7 +93,7 @@ function App() {
                   </Suspense>
                 </ScreenTransition>
               ) : (
-                <ScreenTransition screenKey="login">
+                <ScreenTransition screenKey="login" variant="fade">
                   <LoginScreen onUnlock={handleUnlock} />
                 </ScreenTransition>
               )}
@@ -101,6 +101,7 @@ function App() {
             {isUnlocked && location.pathname !== '/' ? <FloatingHeartMenu /> : null}
             {isUnlocked ? <FullscreenToggle /> : null}
             {isUnlocked ? <HeartLockerPrompt /> : null}
+            {isUnlocked ? <ChapterCurtain /> : null}
           </div>
         </div>
       </HeartLockerProvider>

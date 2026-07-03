@@ -2,7 +2,6 @@ import type { SiteContent } from './types'
 
 export const siteContent = {
   appTitle: 'Our Little Universe',
-  ambientWords: ['always', 'us', 'stay', 'home', 'N \u2665 S'],
   login: {
     question: 'What is the tiny secret password to our little universe?',
     answer: 'moonlight',

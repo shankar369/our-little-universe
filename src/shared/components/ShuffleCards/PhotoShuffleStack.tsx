@@ -184,7 +184,7 @@ export function PhotoShuffleStack<TItem extends RevealPhotoItem>({
         >
           <ArrowLeft className="h-4.5 w-4.5" />
         </button>
-        <p className="type-quote select-none text-sm text-faint">
+        <p className="type-script select-none text-faint">
           swipe &middot; tap to open
         </p>
         <button

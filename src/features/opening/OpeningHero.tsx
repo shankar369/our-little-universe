@@ -66,7 +66,7 @@ export function OpeningHero() {
           >
             <Link
               to="/journey"
-              className="btn-primary flex h-14 w-full max-w-[19rem] items-center justify-center gap-2 rounded-2xl px-8 text-base font-semibold active:scale-[0.985] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+              className="btn-primary flex h-14 w-full max-w-[19rem] items-center justify-center gap-2 rounded-2xl px-8 text-base font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
             >
               <Heart className="h-4 w-4 fill-[#2b1048]" />
               {siteContent.hero.cta}

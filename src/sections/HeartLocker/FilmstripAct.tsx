@@ -1,20 +1,34 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, type RefObject } from 'react'
 import {
   motion,
   useMotionValue,
+  useMotionValueEvent,
   useReducedMotion,
   useScroll,
+  useSpring,
   useTransform,
+  useVelocity,
   type MotionValue,
 } from 'motion/react'
 import { softEase } from '../../design/motion'
+import { useRichMotion } from '../../shared/lib/richMotion'
 
 const tilts = [-3.5, 2.5, -2, 4, -4.5, 2, -3, 3.5]
 const bobs = [-3.5, 2.5, -1.5, 3, -2.5, 1.5, -3, 2]
 
 type FilmstripActProps = {
   photos: string[]
+  /** Fed back to the ember atmosphere: 0..1 light-streak intensity. */
+  streak?: MotionValue<number>
+  /** Fed to the dissolve bridge: 0..1 over the strip's final stretch. */
+  dissolveProgress?: MotionValue<number>
+  /** Kept fresh with the last photo box's viewport rect for the dissolve. */
+  dissolveRectRef?: RefObject<DOMRect | null>
 }
+
+// The last photo starts burning here (scroll progress through the section).
+const DISSOLVE_START = 0.86
+const DISSOLVE_END = 0.985
 
 /**
  * Act II — a scroll-pinned horizontal filmstrip. Vertical scroll drives the
@@ -22,10 +36,16 @@ type FilmstripActProps = {
  * gently inside its frame — the classic pinned horizontal-gallery pattern.
  * Cards are opaque edge-to-edge; nothing ever fades over text.
  */
-export function FilmstripAct({ photos }: FilmstripActProps) {
+export function FilmstripAct({
+  photos,
+  streak,
+  dissolveProgress,
+  dissolveRectRef,
+}: FilmstripActProps) {
   const containerRef = useRef<HTMLElement | null>(null)
   const trackRef = useRef<HTMLDivElement | null>(null)
   const reduceMotion = useReducedMotion()
+  const { rich } = useRichMotion()
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ['start start', 'end end'],
@@ -61,6 +81,67 @@ export function FilmstripAct({ photos }: FilmstripActProps) {
     () => startX.get() + (endX.get() - startX.get()) * travelT.get(),
   )
 
+  // The strip leans into fast scrolling and settles softly when you slow —
+  // a spring-smoothed skew clamped so overscroll bounces can't fling it.
+  const progressVelocity = useVelocity(scrollYProgress)
+  const leanVelocity = useSpring(progressVelocity, { stiffness: 90, damping: 28 })
+  const skewX = useTransform(() =>
+    Math.max(-3.5, Math.min(3.5, leanVelocity.get() * -8)),
+  )
+
+  // Feed the ember atmosphere its light-streak intensity while the strip
+  // is on stage (0 outside Act II so streaks never leak into other acts).
+  useMotionValueEvent(leanVelocity, 'change', (value) => {
+    if (!streak) {
+      return
+    }
+    const p = scrollYProgress.get()
+    const onStage = p > 0.03 && p < 0.97 ? 1 : 0
+    streak.set(Math.min(Math.abs(value) * 3, 1) * onStage)
+  })
+
+  // The dissolve bridge: over the strip's last stretch the final photo burns
+  // into embers. Scrubbed straight from scroll, so scrolling back re-condenses
+  // it. The photo box rect is re-measured each tick while the act is near its
+  // end (the strip is still gliding, so the box moves).
+  const lastPhotoBoxRef = useRef<HTMLDivElement | null>(null)
+  const syncDissolve = (p: number) => {
+    if (!dissolveProgress) {
+      return
+    }
+    const t = Math.max(
+      0,
+      Math.min(1, (p - DISSOLVE_START) / (DISSOLVE_END - DISSOLVE_START)),
+    )
+    dissolveProgress.set(t)
+    if (p > 0.8 && dissolveRectRef && lastPhotoBoxRef.current) {
+      dissolveRectRef.current = lastPhotoBoxRef.current.getBoundingClientRect()
+    }
+  }
+  useMotionValueEvent(scrollYProgress, 'change', syncDissolve)
+  // Scroll restoration can land mid-act without a scroll event — sync once on
+  // mount (and after resizes, which move the photo box).
+  useEffect(() => {
+    const sync = () => syncDissolve(scrollYProgress.get())
+    const settle = window.setTimeout(sync, 400)
+    window.addEventListener('resize', sync)
+    return () => {
+      window.clearTimeout(settle)
+      window.removeEventListener('resize', sync)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  // The DOM photo fades as its embers light up (function-form: JS-driven).
+  const lastPhotoFade = useTransform(
+    scrollYProgress,
+    [DISSOLVE_START + 0.015, DISSOLVE_START + 0.095],
+    [1, 0],
+  )
+  const lastPhotoOpacity = useTransform(() =>
+    dissolveProgress ? lastPhotoFade.get() : 1,
+  )
+
   const count = photos.length
 
   if (reduceMotion) {
@@ -93,15 +174,18 @@ export function FilmstripAct({ photos }: FilmstripActProps) {
       aria-label="A filmstrip of memories"
     >
       <div className="sticky top-0 h-svh w-full overflow-hidden">
-        {/* A soft horizon of light the strip glides along */}
-        <div className="pointer-events-none absolute inset-x-0 top-1/2 h-[46vmin] -translate-y-1/2 bg-[radial-gradient(60%_100%_at_50%_50%,rgba(109,40,217,0.22),transparent_75%)] blur-2xl" />
+        {/* A soft horizon of light the strip glides along (the ember
+            atmosphere covers this when rich motion is available) */}
+        {rich ? null : (
+          <div className="pointer-events-none absolute inset-x-0 top-1/2 h-[46vmin] -translate-y-1/2 bg-[radial-gradient(60%_100%_at_50%_50%,rgba(109,40,217,0.22),transparent_75%)] blur-2xl" />
+        )}
 
         <TitleOverlay progress={scrollYProgress} />
 
         <div className="absolute inset-0 flex items-center">
           <motion.div
             ref={trackRef}
-            style={{ x: trackX, willChange: 'transform' }}
+            style={{ x: trackX, skewX, willChange: 'transform' }}
             className="flex w-max items-center gap-[7vw] pr-[10vw] sm:gap-20"
           >
             {photos.map((src, index) => (
@@ -110,6 +194,12 @@ export function FilmstripAct({ photos }: FilmstripActProps) {
                 src={src}
                 index={index}
                 travelT={travelT}
+                photoOpacity={
+                  index === photos.length - 1 ? lastPhotoOpacity : undefined
+                }
+                photoBoxRef={
+                  index === photos.length - 1 ? lastPhotoBoxRef : undefined
+                }
               />
             ))}
           </motion.div>
@@ -164,10 +254,15 @@ function FilmstripCard({
   src,
   index,
   travelT,
+  photoOpacity,
+  photoBoxRef,
 }: {
   src: string
   index: number
   travelT: MotionValue<number>
+  /** Set on the last card: the photo fades as its embers take over. */
+  photoOpacity?: MotionValue<number>
+  photoBoxRef?: RefObject<HTMLDivElement | null>
 }) {
   // Each photo drifts inside its frame as the strip travels — parallax depth.
   const parallax = useTransform(
@@ -184,20 +279,22 @@ function FilmstripCard({
         translate: `0 ${bobs[index % bobs.length]}svh`,
       }}
     >
-      <div className="polaroid w-[min(62vw,24rem)] rounded-[1rem] p-2 shadow-[0_30px_80px_rgba(2,0,10,0.6)]">
-        <div className="aspect-[4/5] overflow-hidden rounded-[0.6rem]">
+      <div className="polaroid w-[min(62vw,24rem)] rounded-[1rem] p-2 pb-5 shadow-[0_30px_80px_rgba(2,0,10,0.6)]">
+        <div
+          ref={photoBoxRef}
+          className="aspect-[4/5] overflow-hidden rounded-[0.6rem]"
+        >
           <motion.img
             src={src}
             alt="a memory of us"
-            style={{ x: parallax }}
+            style={
+              photoOpacity ? { x: parallax, opacity: photoOpacity } : { x: parallax }
+            }
             className="h-full w-[116%] max-w-none object-cover"
             draggable={false}
             decoding="async"
           />
         </div>
-        <p className="type-eyebrow py-2 text-center !tracking-[0.3em] text-[#2b1048]/40">
-          no. {String(index + 1).padStart(2, '0')}
-        </p>
       </div>
     </div>
   )
@@ -211,7 +308,7 @@ function EndWhisper({ progress }: { progress: MotionValue<number> }) {
   return (
     <motion.p
       style={{ opacity, y }}
-      className="type-quote night-veil absolute inset-x-0 bottom-[7%] z-20 text-center text-lg text-moon"
+      className="type-script night-veil absolute inset-x-0 bottom-[7%] z-20 text-center text-moon"
     >
       and we&rsquo;re still collecting.
     </motion.p>

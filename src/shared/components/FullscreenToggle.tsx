@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'motion/react'
 import { useCinematicTransition } from './CinematicTransition'
+import { Magnetic } from './Magnetic'
 
 // Safari still ships the webkit-prefixed Fullscreen API.
 type VendorDocument = Document & {
@@ -25,7 +26,7 @@ function ImmersiveIcon({ fullscreen }: { fullscreen: boolean }) {
       className="h-[1.15rem] w-[1.15rem]"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.7"
+      strokeWidth="1.75"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
@@ -104,6 +105,7 @@ export function FullscreenToggle() {
 
   return (
     <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-50 sm:left-6">
+      <Magnetic>
       <motion.button
         type="button"
         whileTap={{ scale: 0.9 }}
@@ -127,6 +129,7 @@ export function FullscreenToggle() {
           <ImmersiveIcon fullscreen={isFullscreen} />
         </span>
       </motion.button>
+      </Magnetic>
     </div>
   )
 }

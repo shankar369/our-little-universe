@@ -1,16 +1,10 @@
-import { ArrowRight, Heart, Images, LockKeyhole, MapPin, Orbit, Sparkles } from 'lucide-react'
+import { ArrowRight, Heart, LockKeyhole, Sparkles } from 'lucide-react'
 import { motion } from 'motion/react'
 import { Link, useNavigate } from 'react-router'
 import { experienceSections } from '../../app/experienceRegistry'
 import { riseIn, softEase } from '../../design/motion'
 import { useCinematicTransition } from '../../shared/components/CinematicTransition'
 import { useHeartLocker } from '../../features/heartLocker/HeartLockerContext'
-
-const sectionIcons = {
-  'memory-timeline': Images,
-  'photo-universe': Orbit,
-  'our-little-atlas': MapPin,
-} as const
 
 const sectionAccents = {
   'memory-timeline': 'from-blush/25 to-orchid/5',
@@ -59,7 +53,7 @@ export function JourneyHub() {
 
         <div className="grid gap-5 md:grid-cols-2">
           {hubSections.map((section, index) => {
-            const Icon = sectionIcons[section.id as keyof typeof sectionIcons]
+            const Icon = section.icon
             const accent =
               sectionAccents[section.id as keyof typeof sectionAccents] ??
               'from-orchid/20 to-orchid/5'
@@ -74,7 +68,7 @@ export function JourneyHub() {
               >
                 <Link
                   to={section.path}
-                  className="glass-panel group relative flex min-h-56 flex-col justify-between overflow-hidden rounded-3xl p-6 transition duration-300 hover:border-white/25 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_24px_70px_rgba(2,0,10,0.55),0_0_60px_rgba(200,148,252,0.14)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+                  className="glass-panel group relative flex min-h-56 flex-col justify-between overflow-hidden rounded-3xl p-6 transition duration-300 hover:-translate-y-0.5 hover:border-white/25 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_24px_70px_rgba(2,0,10,0.55),0_0_60px_rgba(200,148,252,0.14)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
                 >
                   <div
                     className={`pointer-events-none absolute -right-10 -top-12 h-44 w-44 rounded-full bg-gradient-to-br ${accent} blur-2xl`}
@@ -123,7 +117,7 @@ export function JourneyHub() {
               <button
                 type="button"
                 onClick={handleLockerClick}
-                className="glass-panel group relative flex min-h-56 w-full flex-col justify-between overflow-hidden rounded-3xl border border-champagne/30 p-6 text-left shadow-[0_0_50px_rgba(244,217,166,0.12)] transition duration-300 hover:border-champagne/45 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_24px_70px_rgba(2,0,10,0.55),0_0_60px_rgba(247,184,212,0.22)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+                className="glass-panel group relative flex min-h-56 w-full flex-col justify-between overflow-hidden rounded-3xl border border-champagne/30 p-6 text-left shadow-[0_0_50px_rgba(244,217,166,0.12)] transition duration-300 hover:-translate-y-0.5 hover:border-champagne/45 hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.12),0_24px_70px_rgba(2,0,10,0.55),0_0_60px_rgba(247,184,212,0.22)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
               >
                 <div className="pointer-events-none absolute -right-10 -top-12 h-44 w-44 rounded-full bg-gradient-to-br from-champagne/25 to-blush/8 blur-2xl" />
                 <Heart

@@ -135,11 +135,11 @@ export function HeartLockerPrompt() {
                   spellCheck={false}
                   placeholder="whisper it here"
                   aria-label="Secret answer"
-                  className="glass-chip h-12 w-full rounded-2xl px-4 text-center text-base text-starlight placeholder:text-faint/70 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orchid"
+                  className="input-glass h-12 w-full rounded-2xl px-4 text-center text-base text-starlight placeholder:text-faint/70"
                 />
 
                 <p
-                  className={`type-quote min-h-5 text-center text-xs ${
+                  className={`type-script min-h-5 text-center !text-base ${
                     wrong ? 'text-blush' : 'text-faint'
                   }`}
                 >
@@ -148,7 +148,7 @@ export function HeartLockerPrompt() {
 
                 <button
                   type="submit"
-                  className="btn-primary flex h-12 w-full items-center justify-center gap-2 rounded-2xl text-sm font-semibold active:scale-[0.985] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+                  className="btn-primary flex h-12 w-full items-center justify-center gap-2 rounded-2xl text-sm font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
                 >
                   <KeyRound className="h-4 w-4" />
                   Open the locker

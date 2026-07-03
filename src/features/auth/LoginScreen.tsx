@@ -77,7 +77,7 @@ export function LoginScreen({ onUnlock }: LoginScreenProps) {
               onChange={(event) => setAnswer(event.target.value)}
               disabled={isUnlocking}
               autoFocus
-              className="glass-chip h-14 w-full rounded-2xl px-5 text-center text-base text-starlight outline-none transition placeholder:text-faint focus:border-orchid/55 focus:shadow-[0_0_0_4px_rgba(200,148,252,0.14),0_0_36px_rgba(200,148,252,0.22)] disabled:cursor-wait"
+              className="input-glass h-14 w-full rounded-2xl px-5 text-center text-base text-starlight placeholder:text-faint disabled:cursor-wait"
               placeholder="whisper the magic answer"
             />
           </label>
@@ -85,7 +85,7 @@ export function LoginScreen({ onUnlock }: LoginScreenProps) {
           <button
             type="submit"
             disabled={isUnlocking}
-            className="btn-primary flex h-14 w-full items-center justify-center gap-2 rounded-2xl px-5 text-base font-semibold active:scale-[0.985] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid disabled:cursor-wait disabled:opacity-85"
+            className="btn-primary flex h-14 w-full items-center justify-center gap-2 rounded-2xl px-5 text-base font-semibold focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid disabled:cursor-wait disabled:opacity-85"
           >
             <Heart className="h-4 w-4 fill-[#2b1048]" />
             {isUnlocking ? 'Opening the universe\u2026' : 'Unlock the universe'}
@@ -97,7 +97,7 @@ export function LoginScreen({ onUnlock }: LoginScreenProps) {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
-              className="type-quote min-h-12 px-2 pt-1 text-center text-[0.95rem] leading-6 text-moon/90"
+              className="type-script min-h-12 px-2 pt-1 text-center text-moon/90"
             >
               {isUnlocking ? siteContent.login.successMessage : feedback}
             </motion.p>

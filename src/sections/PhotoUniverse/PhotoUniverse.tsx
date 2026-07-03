@@ -61,7 +61,7 @@ export function PhotoUniverse() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.45, duration: 0.7, ease: softEase }}
-        className="type-quote pointer-events-none absolute inset-x-0 bottom-[max(1.75rem,env(safe-area-inset-bottom))] z-20 text-center text-sm text-moon/70"
+        className="type-script pointer-events-none absolute inset-x-0 bottom-[max(1.75rem,env(safe-area-inset-bottom))] z-20 text-center text-moon/70"
       >
         drag to wander &middot; pinch to zoom &middot; tap a planet
       </motion.p>
