@@ -253,6 +253,24 @@ Don't:
   MotionValues with `.get()` inside `useFrame` (never React state). Without rich
   motion the acts keep their static glows; reduced motion never mounts a canvas.
 
+## 13b. The mUSeum (first-person gallery)
+
+- `/museum` is the app's only **walkable 3D space**: a first-person velvet gallery
+  hall (R3F) floating in the ambient constellation sky (transparent canvas). The
+  chapter card, entrance overlay, and password gate follow the normal Midnight
+  Velvet language; **inside the hall the 3D scene owns its own art direction**
+  (gold frames, warm paper mats, champagne picture lights over plum walls — the
+  palette translated into materials, not classes).
+- Interaction contract: WASD/arrows + drag-look on desktop; joystick + touch-look
+  on mobile (joystick sits clear of the fullscreen-toggle corner); tapping an
+  exhibit glides the camera to it, tap-anywhere/Escape steps back. All movement
+  state lives in refs — never React state per frame.
+- Gate: same glass modal pattern as the Heart Locker prompt; unlocked per tab via
+  `appConfig.storageKeys.museumUnlocked`.
+- Performance: DPR ≤ 1.5, shared module-level materials, ≤ 5 lights, fake
+  picture-light pools, dust `Sparkles` (45 compact / 90 desktop), photos capped
+  at 16. Reduced motion / no WebGL falls back to the gate + polaroid grid.
+
 ## 14. The Chapter Curtain (route transitions)
 
 - Navigating between sections plays `ChapterCurtain`: one continuous velvet layer

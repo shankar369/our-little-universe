@@ -5,6 +5,8 @@ export const appConfig = {
     heartLockerRevealedUntil: 'our-little-universe:heart-locker-revealed',
     /** Per-tab (sessionStorage) flag: the password has been entered this session. */
     heartLockerEntered: 'our-little-universe:heart-locker-entered',
+    /** Per-tab (sessionStorage) flag: the museum doors have been opened this session. */
+    museumUnlocked: 'our-little-universe:museum-unlocked',
   },
   timings: {
     loginUnlockDelayMs: 850,

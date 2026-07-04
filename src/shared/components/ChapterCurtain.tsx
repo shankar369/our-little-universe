@@ -21,6 +21,7 @@ const chapterEyebrows: Record<string, string> = {
   'memory-timeline': 'chapter one',
   'photo-universe': 'chapter two',
   'our-little-atlas': 'chapter three',
+  museum: 'chapter four',
   'heart-locker': 'the hidden chapter',
 }
 

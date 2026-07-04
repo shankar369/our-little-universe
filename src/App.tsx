@@ -42,6 +42,11 @@ const HeartLocker = lazy(() =>
     default: module.HeartLocker,
   })),
 )
+const Museum = lazy(() =>
+  import('./sections/Museum/Museum').then((module) => ({
+    default: module.Museum,
+  })),
+)
 
 /** The Heart Locker route is only reachable while the locker is unlocked. */
 function HeartLockerRoute() {
@@ -87,6 +92,7 @@ function App() {
                       <Route path="/memory-timeline" element={<MemoryTimeline />} />
                       <Route path="/photo-universe" element={<PhotoUniverse />} />
                       <Route path="/our-little-atlas" element={<OurLittleAtlas />} />
+                      <Route path="/museum" element={<Museum />} />
                       <Route path="/heart-locker" element={<HeartLockerRoute />} />
                       <Route path="*" element={<Navigate to="/journey" replace />} />
                     </Routes>

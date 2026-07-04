@@ -37,6 +37,24 @@ export type HeartLockerContent = {
   wrongMessage: string
 }
 
+export type MuseumContent = {
+  eyebrow: string
+  /** Display title — the US is the point: "mUSeum". */
+  title: string
+  /** One-line invitation on the hub card / entrance. */
+  intro: string
+  /** The secret question shown at the museum doors. */
+  question: string
+  /** The answer (compared case-insensitively, trimmed). Change to your own. */
+  answer: string
+  hint: string
+  wrongMessage: string
+  /** Label on the entrance button, e.g. "knock on the doors". */
+  enterCta: string
+  /** Etched dedication shown on the far wall inside. */
+  dedication: string
+}
+
 export type MemoryTimelineItem = {
   id: string
   order: number

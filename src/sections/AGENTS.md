@@ -45,6 +45,7 @@ Preserve mobile-first gestures, 44px controls, reduced-motion behavior, and fore
 | [MemoryTimeline/README.md](MemoryTimeline/README.md) | Timeline stack at `/memory-timeline` |
 | [PhotoUniverse/README.md](PhotoUniverse/README.md) | 3D globe at `/photo-universe` |
 | [OurLittleAtlas/README.md](OurLittleAtlas/README.md) | MapLibre map at `/our-little-atlas` |
+| [Museum/README.md](Museum/README.md) | First-person 3D gallery at `/museum` |
 | [HeartLocker/README.md](HeartLocker/README.md) | Hidden scroll cinema at `/heart-locker` |
 | [../shared/AGENTS.md](../shared/AGENTS.md) | Shared photo and ambient primitives |
 | [../content/AGENTS.md](../content/AGENTS.md) | Section content files |

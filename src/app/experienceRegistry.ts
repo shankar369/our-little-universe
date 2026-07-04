@@ -1,4 +1,13 @@
-import { Heart, Home, Images, LockKeyhole, Map, MapPin, Orbit } from 'lucide-react'
+import {
+  Heart,
+  Home,
+  Images,
+  Landmark,
+  LockKeyhole,
+  Map,
+  MapPin,
+  Orbit,
+} from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 export type ExperienceSectionStatus = 'live' | 'planned'
@@ -53,6 +62,14 @@ export const experienceSections: ExperienceSection[] = [
     path: '/our-little-atlas',
     description: 'A living map of every place that became part of us.',
     icon: MapPin,
+  },
+  {
+    id: 'museum',
+    label: 'mUSeum',
+    status: 'live',
+    path: '/museum',
+    description: 'Walk a private gallery where every exhibit is us.',
+    icon: Landmark,
   },
   {
     id: 'heart-locker',
