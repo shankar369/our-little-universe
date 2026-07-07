@@ -1,4 +1,4 @@
-import{Rt as e,Wt as t,zt as n}from"./MotionConfigContext-hCaKQYCv.js";import{t as r}from"./animate-XvlEF1jx.js";import{C as i,c as a,o}from"./index-gcVgbtFC.js";import{i as s,r as c,t as l}from"./react-three-fiber.esm-DmvfwWUz.js";var u=t(n(),1),d=e(),f=o.close+o.hold+o.open,p=`
+import{Rt as e,Wt as t,zt as n}from"./MotionConfigContext-hCaKQYCv.js";import{t as r}from"./animate-XvlEF1jx.js";import{C as i,c as a,o}from"./index-CuIHG9Oq.js";import{i as s,r as c,t as l}from"./react-three-fiber.esm-YNYBXUc2.js";var u=t(n(),1),d=e(),f=o.close+o.hold+o.open,p=`
   varying vec2 vUv;
   void main() {
     vUv = uv;
