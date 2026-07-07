@@ -47,6 +47,11 @@ const Museum = lazy(() =>
     default: module.Museum,
   })),
 )
+const FinaleLab = lazy(() =>
+  import('./sections/FinaleLab/FinaleLab').then((module) => ({
+    default: module.FinaleLab,
+  })),
+)
 
 /** The Heart Locker route is only reachable while the locker is unlocked. */
 function HeartLockerRoute() {
@@ -93,6 +98,8 @@ function App() {
                       <Route path="/photo-universe" element={<PhotoUniverse />} />
                       <Route path="/our-little-atlas" element={<OurLittleAtlas />} />
                       <Route path="/museum" element={<Museum />} />
+                      {/* Private screening room for picking the locker finale. */}
+                      <Route path="/finale-lab" element={<FinaleLab />} />
                       <Route path="/heart-locker" element={<HeartLockerRoute />} />
                       <Route path="*" element={<Navigate to="/journey" replace />} />
                     </Routes>

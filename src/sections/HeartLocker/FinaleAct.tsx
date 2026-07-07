@@ -1,13 +1,16 @@
 import { useRef } from 'react'
 import { Heart } from 'lucide-react'
 import { motion, useReducedMotion, useScroll, useTransform } from 'motion/react'
-import { FinaleEmbers } from './FinaleEmbers'
+import { VelvetScriptFinale } from './finaleVariants/VelvetScriptFinale'
 
 /**
- * The signature finale. All lettering is performed by the ember particle scene
- * (FinaleEmbers); the DOM only contributes the whispered bookends. Timeline:
- * embers gather → "Navya" → ash blows the other letters away → the N flips,
- * turns, and condenses into an S → every ember returns as "Navya's Sankar".
+ * The signature finale. All lettering is performed by the Velvet Script
+ * particle scene (tiny hearts in Parisienne script — chosen from the
+ * finale-lab audition, see finaleVariants/); the DOM only contributes the
+ * whispered bookends. Timeline: hearts gather → "Navya" → ash blows the
+ * other letters away → the N flips, turns, and settles as an S (through its
+ * own flip∘turn, no letterform swap) → every heart returns as "Navya's
+ * Sankar".
  */
 export function FinaleAct() {
   const containerRef = useRef<HTMLElement | null>(null)
@@ -48,9 +51,9 @@ export function FinaleAct() {
       aria-label="Happy birthday, from Navya's Sankar"
     >
       <div className="sticky top-0 h-svh w-full overflow-hidden">
-        {/* The ember stage */}
+        {/* The signature stage */}
         <div className="pointer-events-none absolute inset-0">
-          <FinaleEmbers progress={P} />
+          <VelvetScriptFinale progress={P} />
         </div>
 
         {/* Opening whisper */}
