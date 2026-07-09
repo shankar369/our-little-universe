@@ -47,6 +47,11 @@ const Museum = lazy(() =>
     default: module.Museum,
   })),
 )
+const TheBook = lazy(() =>
+  import('./sections/TheBook/TheBook').then((module) => ({
+    default: module.TheBook,
+  })),
+)
 const FinaleLab = lazy(() =>
   import('./sections/FinaleLab/FinaleLab').then((module) => ({
     default: module.FinaleLab,
@@ -98,6 +103,7 @@ function App() {
                       <Route path="/photo-universe" element={<PhotoUniverse />} />
                       <Route path="/our-little-atlas" element={<OurLittleAtlas />} />
                       <Route path="/museum" element={<Museum />} />
+                      <Route path="/the-book" element={<TheBook />} />
                       {/* Private screening room for picking the locker finale. */}
                       <Route path="/finale-lab" element={<FinaleLab />} />
                       <Route path="/heart-locker" element={<HeartLockerRoute />} />

@@ -1,4 +1,5 @@
 import {
+  BookHeart,
   Heart,
   Home,
   Images,
@@ -70,6 +71,14 @@ export const experienceSections: ExperienceSection[] = [
     path: '/museum',
     description: 'Walk a private gallery where every exhibit is us.',
     icon: Landmark,
+  },
+  {
+    id: 'the-book',
+    label: 'The Book',
+    status: 'live',
+    path: '/the-book',
+    description: 'A black-paged storybook of us — swipe, and it turns.',
+    icon: BookHeart,
   },
   {
     id: 'heart-locker',

@@ -11,6 +11,7 @@ All editable personal data. Types before values. No UI logic.
 - Ordered exports via `ordered*Items` arrays where applicable
 - `journeyPhotos/<folder>/` holds Our Little Atlas photos, auto-discovered by build-time glob
 - `heartLockerPhotos/<folder>/` holds Heart Locker act photos (`photo-stack`, `photo-tunnel`), same glob pattern via `heartLockerGallery.ts`; empty folders TEMP-fallback to hero test photos
+- `bookPages/` holds The Book album pages, discovered by `bookGallery.ts` (name-sorted, max 40 faces, `spread` filenames span two facing pages); empty folder TEMP-fallbacks to hero test photos
 
 ## Local Contracts
 
@@ -45,3 +46,4 @@ All editable personal data. Types before values. No UI logic.
 | `public/photoUniverse/README.md` | Photo universe asset drop folder |
 | [journeyPhotos/README.md](journeyPhotos/README.md) | Atlas per-place photo drop folders |
 | [heartLockerPhotos/README.md](heartLockerPhotos/README.md) | Heart Locker per-act photo drop folders |
+| [bookPages/README.md](bookPages/README.md) | The Book album page drop folder |

@@ -55,6 +55,33 @@ export type MuseumContent = {
   dedication: string
 }
 
+export type BookContent = {
+  eyebrow: string
+  /** Chapter title shown in the overlay, e.g. "The Book". */
+  title: string
+  /** One-line invitation under the title. */
+  intro: string
+  /** Embossed title on the black front cover. */
+  coverTitle: string
+  /** Small script line under the cover title, e.g. "N ♥ S". */
+  coverSubtitle: string
+  /** Script dedication on the outside of the back cover. */
+  dedication: string
+  /** Whisper hint shown until the first page turn. */
+  hint: string
+  /** Bottom label once every page has been turned. */
+  endNote: string
+}
+
+/**
+ * One printable face of the book. Photos are auto-discovered from
+ * `src/content/bookPages/` (see bookGallery.ts). A face is either black
+ * paper, a mounted photo, or one half of a two-page spread.
+ */
+export type BookFace =
+  | { kind: 'blank' }
+  | { kind: 'photo'; src: string; half?: 'left' | 'right' }
+
 export type MemoryTimelineItem = {
   id: string
   order: number

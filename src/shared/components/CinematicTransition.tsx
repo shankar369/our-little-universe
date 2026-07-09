@@ -19,7 +19,7 @@ import { useRichMotion } from '../lib/richMotion'
 // without WebGL) the original SVG rim + hearts render instead.
 const HeartIrisEmbers = lazy(() => import('./HeartIrisEmbers'))
 
-export type TransitionVariant = 'immersive' | 'unlock' | 'seal' | 'reveal'
+export type TransitionVariant = 'unlock' | 'seal' | 'reveal'
 
 type ActiveTransition = { variant: TransitionVariant; id: number }
 
@@ -33,7 +33,6 @@ type CinematicTransitionContextValue = {
 const CinematicTransitionContext = createContext<CinematicTransitionContextValue | null>(null)
 
 const durationByVariant: Record<TransitionVariant, number> = {
-  immersive: 1050,
   unlock: 1750,
   seal: 850,
   reveal: 900,
@@ -43,7 +42,6 @@ const durationByVariant: Record<TransitionVariant, number> = {
 const HEART_PATH =
   'M50,86 C 22,64 10,45 10,30 C 10,17 19,9 30,9 C 39,9 46,16 50,23 C 54,16 61,9 70,9 C 81,9 90,17 90,30 C 90,45 78,64 50,86 Z'
 
-const easeIn = [0.5, 0, 0.75, 0] as const
 // A smoother accelerate-then-settle for the heart iris opening.
 const irisEase = [0.5, 0, 0.22, 1] as const
 
@@ -115,9 +113,7 @@ function CinematicOverlay({
       className="pointer-events-none fixed inset-0 z-[120] overflow-hidden"
     >
       {reducedMotion ? (
-        <ReducedOverlay variant={variant} />
-      ) : variant === 'immersive' ? (
-        <WarpOverlay />
+        <ReducedOverlay />
       ) : variant === 'unlock' ? (
         <HeartPortalOverlay />
       ) : variant === 'reveal' ? (
@@ -130,103 +126,18 @@ function CinematicOverlay({
 }
 
 /** A calm, contrast-safe fallback when the viewer prefers reduced motion. */
-function ReducedOverlay({ variant }: { variant: TransitionVariant }) {
-  const tint =
-    variant === 'immersive'
-      ? 'radial-gradient(circle, rgba(200,148,252,0.4), transparent 62%)'
-      : 'radial-gradient(circle, rgba(247,184,212,0.42), transparent 62%)'
+function ReducedOverlay() {
   return (
     <motion.div
       className="absolute inset-0"
-      style={{ backgroundImage: tint }}
+      style={{
+        backgroundImage:
+          'radial-gradient(circle, rgba(247,184,212,0.42), transparent 62%)',
+      }}
       initial={{ opacity: 0 }}
       animate={{ opacity: [0, 0.9, 0] }}
       transition={{ duration: 0.38, times: [0, 0.4, 1] }}
     />
-  )
-}
-
-// ---------------------------------------------------------------------------
-// Immersive — a starfield warp, as if launching into the universe.
-// ---------------------------------------------------------------------------
-
-const STREAK_COLORS = ['#f5f0ff', '#c894fc', '#f4d9a6']
-
-function WarpOverlay() {
-  const streaks = useMemo(
-    () =>
-      Array.from({ length: 28 }, (_, index) => ({
-        id: index,
-        angle: (index / 28) * 360 + (index % 3) * 5,
-        length: 30 + (index % 5) * 8,
-        width: index % 4 === 0 ? 1.8 : 1,
-        delay: (index % 6) * 0.018,
-        color: STREAK_COLORS[index % 3],
-      })),
-    [],
-  )
-
-  return (
-    <>
-      {/* Velvet wash — the same night→deep→plum material as the curtain */}
-      <motion.div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            'radial-gradient(circle at 50% 50%, rgba(28,13,51,0.6), rgba(14,6,32,0.8) 55%, rgba(7,3,18,0.92) 82%)',
-        }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.75, 0] }}
-        transition={{ duration: 0.95, times: [0, 0.35, 1], ease: softEase }}
-      />
-
-      {/* A hot core igniting at the centre */}
-      <motion.div
-        className="absolute left-1/2 top-1/2 h-44 w-44 -translate-x-1/2 -translate-y-1/2 rounded-full bg-white"
-        style={{ filter: 'blur(10px)' }}
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: [0, 1.25, 0.35], opacity: [0, 0.95, 0] }}
-        transition={{ duration: 0.55, times: [0, 0.35, 1], ease: 'easeOut' }}
-      />
-
-      {/* Light streaks tearing outward */}
-      <div className="absolute left-1/2 top-1/2">
-        {streaks.map((streak) => (
-          <motion.div
-            key={streak.id}
-            className="absolute rounded-full"
-            style={{
-              width: streak.width,
-              height: `${streak.length}vmax`,
-              transformOrigin: 'top center',
-              rotate: `${streak.angle}deg`,
-              background: `linear-gradient(to bottom, ${streak.color}, transparent)`,
-            }}
-            initial={{ scaleY: 0, opacity: 0 }}
-            animate={{ scaleY: [0, 1], opacity: [0, 1, 0] }}
-            transition={{
-              scaleY: { duration: 0.72, delay: streak.delay, ease: easeIn },
-              opacity: { duration: 0.72, delay: streak.delay, ease: softEase, times: [0, 0.6, 1] },
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Shockwave ring chasing the streaks */}
-      <motion.div
-        className="absolute left-1/2 top-1/2 h-[28vmin] w-[28vmin] -translate-x-1/2 -translate-y-1/2 rounded-full border border-orchid/40"
-        initial={{ scale: 0, opacity: 0.7 }}
-        animate={{ scale: 5.5, opacity: 0 }}
-        transition={{ duration: 0.9, ease: 'easeOut' }}
-      />
-      <motion.div
-        className="absolute inset-0 bg-white"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [0, 0.07, 0] }}
-        transition={{ duration: 0.45, times: [0, 0.3, 1] }}
-      />
-      <div className="grain-veil" />
-    </>
   )
 }
 

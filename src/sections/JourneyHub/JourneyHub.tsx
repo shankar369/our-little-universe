@@ -10,6 +10,8 @@ const sectionAccents = {
   'memory-timeline': 'from-blush/25 to-orchid/5',
   'photo-universe': 'from-champagne/20 to-orchid/5',
   'our-little-atlas': 'from-orchid/22 to-blush/5',
+  museum: 'from-champagne/22 to-blush/6',
+  'the-book': 'from-blush/22 to-champagne/6',
 } as const
 
 const romanNumerals = ['I', 'II', 'III', 'IV', 'V']
@@ -20,7 +22,13 @@ export function JourneyHub() {
   const { play } = useCinematicTransition()
 
   const hubSections = experienceSections.filter((section) =>
-    ['memory-timeline', 'photo-universe', 'our-little-atlas'].includes(section.id),
+    [
+      'memory-timeline',
+      'photo-universe',
+      'our-little-atlas',
+      'museum',
+      'the-book',
+    ].includes(section.id),
   )
 
   function handleLockerClick() {

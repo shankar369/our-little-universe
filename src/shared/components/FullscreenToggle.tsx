@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react'
-import { motion } from 'motion/react'
-import { useCinematicTransition } from './CinematicTransition'
+import { useEffect, useRef, useState } from 'react'
+import { AnimatePresence, motion } from 'motion/react'
+import { softEase } from '../../design/motion'
 import { Magnetic } from './Magnetic'
 
 // Safari still ships the webkit-prefixed Fullscreen API.
@@ -17,6 +17,21 @@ type VendorElement = HTMLElement & {
 function currentFullscreenElement(doc: VendorDocument): Element | null {
   return doc.fullscreenElement ?? doc.webkitFullscreenElement ?? null
 }
+
+function wait(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms))
+}
+
+/**
+ * The blink that makes fullscreen feel smooth. The browser's viewport snap
+ * cannot be animated, so the next best thing (the video-player trick) is to
+ * hide it: dip the screen to the app's night color, perform the fullscreen
+ * switch under the veil, let layout and the canvases settle, then unveil.
+ */
+const BLINK_IN_MS = 180
+const SETTLE_MS = 240
+/** Never let a stuck fullscreen promise pin the veil to the screen. */
+const FULLSCREEN_TIMEOUT_MS = 900
 
 /** A crafted "frame the universe" glyph — corner brackets around a sparkle. */
 function ImmersiveIcon({ fullscreen }: { fullscreen: boolean }) {
@@ -56,8 +71,9 @@ function ImmersiveIcon({ fullscreen }: { fullscreen: boolean }) {
 }
 
 /**
- * A crafted glass control (bottom-left) that dives the app into real fullscreen
- * with a cinematic warp. Hidden where the Fullscreen API is unavailable.
+ * A crafted glass control (bottom-left) that dives the app into real
+ * fullscreen behind a soft night blink. Hidden where the Fullscreen API is
+ * unavailable.
  */
 export function FullscreenToggle() {
   const [supported] = useState(() => {
@@ -67,7 +83,8 @@ export function FullscreenToggle() {
   const [isFullscreen, setIsFullscreen] = useState(() =>
     Boolean(currentFullscreenElement(document as VendorDocument)),
   )
-  const { play } = useCinematicTransition()
+  const [blinking, setBlinking] = useState(false)
+  const busy = useRef(false)
 
   useEffect(() => {
     const doc = document as VendorDocument
@@ -86,17 +103,36 @@ export function FullscreenToggle() {
   }, [])
 
   async function toggle() {
-    const doc = document as VendorDocument
-    try {
-      if (currentFullscreenElement(doc)) {
-        await (doc.exitFullscreen?.() ?? doc.webkitExitFullscreen?.())
-      } else {
-        const element = document.documentElement as VendorElement
-        await (element.requestFullscreen?.() ?? element.webkitRequestFullscreen?.())
-      }
-    } catch {
-      // Denied (no user gesture) or unsupported — leave the state untouched.
+    if (busy.current) {
+      return
     }
+    busy.current = true
+    const doc = document as VendorDocument
+
+    // Dip to night first, so the veil is opaque when the viewport snaps.
+    setBlinking(true)
+    await wait(BLINK_IN_MS + 40)
+
+    try {
+      const operation = currentFullscreenElement(doc)
+        ? (doc.exitFullscreen?.() ?? doc.webkitExitFullscreen?.())
+        : (() => {
+            const element = document.documentElement as VendorElement
+            return (
+              element.requestFullscreen?.({ navigationUI: 'hide' }) ??
+              element.webkitRequestFullscreen?.()
+            )
+          })()
+      // Race a timeout: denied, unsupported, or hung — the blink resolves.
+      await Promise.race([Promise.resolve(operation), wait(FULLSCREEN_TIMEOUT_MS)])
+    } catch {
+      // Denied (no user gesture) or unsupported — the blink still resolves.
+    }
+
+    // Let the reflow and canvas resizes finish under the veil.
+    await wait(SETTLE_MS)
+    setBlinking(false)
+    busy.current = false
   }
 
   if (!supported) {
@@ -104,32 +140,65 @@ export function FullscreenToggle() {
   }
 
   return (
-    <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-50 sm:left-6">
-      <Magnetic>
-      <motion.button
-        type="button"
-        whileTap={{ scale: 0.9 }}
-        whileHover={{ scale: 1.06 }}
-        onClick={() => {
-          play('immersive')
-          void toggle()
-        }}
-        className="group relative flex h-12 w-12 items-center justify-center rounded-full text-champagne focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
-        aria-label={isFullscreen ? 'Exit immersive mode' : 'Enter immersive mode'}
-        aria-pressed={isFullscreen}
-        title={isFullscreen ? 'Exit immersive mode' : 'Immersive mode'}
-      >
-        {/* Slow aurora glow breathing behind the glass */}
-        <span
-          className="pointer-events-none absolute -inset-1 rounded-full bg-[radial-gradient(circle,rgba(200,148,252,0.4),transparent_70%)] blur-md motion-safe:animate-pulse"
-        />
-        {/* Glass disc with a hair-thin aurora rim */}
-        <span className="absolute inset-0 rounded-full bg-plum/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_30px_rgba(2,0,10,0.5)] ring-1 ring-white/12 backdrop-blur-md transition-colors duration-300 group-hover:ring-orchid/40" />
-        <span className="relative transition-transform duration-500 group-hover:scale-110">
-          <ImmersiveIcon fullscreen={isFullscreen} />
-        </span>
-      </motion.button>
-      </Magnetic>
-    </div>
+    <>
+      <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] left-4 z-50 sm:left-6">
+        <Magnetic>
+        <motion.button
+          type="button"
+          whileTap={{ scale: 0.9 }}
+          whileHover={{ scale: 1.06 }}
+          onClick={() => void toggle()}
+          className="group relative flex h-12 w-12 items-center justify-center rounded-full text-champagne focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-orchid"
+          aria-label={isFullscreen ? 'Exit immersive mode' : 'Enter immersive mode'}
+          aria-pressed={isFullscreen}
+          title={isFullscreen ? 'Exit immersive mode' : 'Immersive mode'}
+        >
+          {/* Slow aurora glow breathing behind the glass */}
+          <span
+            className="pointer-events-none absolute -inset-1 rounded-full bg-[radial-gradient(circle,rgba(200,148,252,0.4),transparent_70%)] blur-md motion-safe:animate-pulse"
+          />
+          {/* Glass disc with a hair-thin aurora rim */}
+          <span className="absolute inset-0 rounded-full bg-plum/50 shadow-[inset_0_1px_0_rgba(255,255,255,0.14),0_10px_30px_rgba(2,0,10,0.5)] ring-1 ring-white/12 backdrop-blur-md transition-colors duration-300 group-hover:ring-orchid/40" />
+          <span className="relative transition-transform duration-500 group-hover:scale-110">
+            {/* The glyph swaps with a little unfurl when the mode flips */}
+            <motion.span
+              key={isFullscreen ? 'exit' : 'enter'}
+              initial={{ opacity: 0, rotate: -50, scale: 0.7 }}
+              animate={{ opacity: 1, rotate: 0, scale: 1 }}
+              transition={{ duration: 0.35, ease: softEase }}
+              className="flex"
+            >
+              <ImmersiveIcon fullscreen={isFullscreen} />
+            </motion.span>
+          </span>
+        </motion.button>
+        </Magnetic>
+      </div>
+
+      {/* The night blink — covers the viewport snap, absorbs stray clicks */}
+      <AnimatePresence>
+        {blinking ? (
+          <motion.div
+            key="fullscreen-blink"
+            className="fixed inset-0 z-[140] bg-[#070312]"
+            initial={{ opacity: 0 }}
+            animate={{
+              opacity: 1,
+              transition: { duration: BLINK_IN_MS / 1000, ease: softEase },
+            }}
+            exit={{ opacity: 0, transition: { duration: 0.45, ease: softEase } }}
+          >
+            <div
+              className="absolute inset-0"
+              style={{
+                backgroundImage:
+                  'radial-gradient(circle at 50% 55%, rgba(200,148,252,0.1), transparent 60%)',
+              }}
+            />
+            <div className="grain-veil" />
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </>
   )
 }
