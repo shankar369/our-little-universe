@@ -1,1 +1,0 @@
-var e=[`/hero/first-spark.jpg`,`/hero/favorite-chaos.jpg`,`/hero/birthday-wish.jpg`];export{e as t};
