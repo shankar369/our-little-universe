@@ -1,5 +1,24 @@
+import { publicAssetPath } from '../shared/lib/assetPath'
 import type { PhotoUniverseItem } from './types'
 import { heroTestPhotos } from './testPhotos'
+
+/**
+ * Build-time photo discovery: drop any image into `src/content/photoUniversePhotos/`
+ * and it becomes a planet — no path list to maintain. Name-sorted, so `01.jpg`,
+ * `02.jpg`, ... control the orbit order (any filename works if order doesn't matter).
+ */
+const photoModules = import.meta.glob(
+  './photoUniversePhotos/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF}',
+  { eager: true, query: '?url', import: 'default' },
+) as Record<string, string>
+
+const discoveredPhotos = Object.entries(photoModules)
+  .sort(([first], [second]) => first.localeCompare(second))
+  .map(([, url]) => url)
+
+// TEMP: cycle the hero test photos until real photos land in the folder above.
+const universePhotos =
+  discoveredPhotos.length > 0 ? discoveredPhotos : heroTestPhotos.map(publicAssetPath)
 
 const universeNames = [
   'Moonlit Smile',
@@ -58,25 +77,31 @@ function padOrder(order: number) {
   return String(order).padStart(2, '0')
 }
 
-export const photoUniverseItems = universeNames.map((name, index) => {
+const hasRealPhotos = discoveredPhotos.length > 0
+
+export const photoUniverseItems = universePhotos.map((photo, index) => {
   const order = index + 1
   const label = `Orbit ${padOrder(order)}`
+  const name = universeNames[index % universeNames.length]
 
   return {
     id: `photo-universe-${padOrder(order)}`,
     order,
     orbitBand: order % 3 === 0 ? 'outer' : order % 3 === 1 ? 'middle' : 'inner',
-    // TEMP: cycle the 3 hero photos for testing until real photos land in
-    // /photoUniverse/universe-XX.jpg.
-    photo: heroTestPhotos[index % heroTestPhotos.length],
+    photo,
     heading: name,
     name,
     label,
-    quote: 'A tiny photo planet waiting for the real memory to land here.',
-    text: 'One day this little orbit will hold a real picture and a softer line than we can write in advance.',
-    story:
-      'For now it is a placeholder planet — warm, patient, and ready the moment the real photo arrives.',
-    alt: `${name} placeholder photo universe memory`,
+    quote: hasRealPhotos
+      ? 'A tiny photo planet, holding one real memory.'
+      : 'A tiny photo planet waiting for the real memory to land here.',
+    text: hasRealPhotos
+      ? 'One little orbit, one real picture — a moment kept close in its own corner of the sky.'
+      : 'One day this little orbit will hold a real picture and a softer line than we can write in advance.',
+    story: hasRealPhotos
+      ? 'This planet is real now — warm, close, and exactly where it belongs.'
+      : 'For now it is a placeholder planet — warm, patient, and ready the moment the real photo arrives.',
+    alt: hasRealPhotos ? `${name} photo universe memory` : `${name} placeholder photo universe memory`,
   }
 }) satisfies PhotoUniverseItem[]
 

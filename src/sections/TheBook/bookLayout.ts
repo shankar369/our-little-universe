@@ -9,9 +9,12 @@ import type { SheetFace } from './pageTextures'
  * otherwise the generated replica cover is painted.
  */
 
-/** Landscape page size (world units) — ≈A4 landscape, like the real album. */
+/**
+ * Landscape page size (world units), matched to the real album's scans
+ * (cover 1171×819, pages ≈1391×969 → aspect ≈ 1.43).
+ */
 export const PAGE_WIDTH = 1.3
-export const PAGE_HEIGHT = 0.92
+export const PAGE_HEIGHT = 0.91
 /** Visual thickness of one sheet in the stack. */
 export const SHEET_GAP = 0.003
 /** Slack between the spiral rings and the punched page edge. */

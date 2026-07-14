@@ -1,11 +1,23 @@
-export type FloatingPhotoCard = {
+/**
+ * One verse of the opening "story of you" scroll act — a line of the poem
+ * plus the photo drop folder that performs beneath it.
+ */
+export type StoryVerse = {
   id: string
-  title: string
-  caption: string
-  gradient: string
-  photo?: string
-  showText?: boolean
-  rotate: `${number}deg`
+  /** Folder under `src/content/openingPhotos/` this verse draws photos from. */
+  folder: string
+  /**
+   * How the verse's photos enter the stage: `bloom` (out of a star-point),
+   * `fan` (spread open like a tiara), `meet` (arrive from opposite edges
+   * and lean into each other).
+   */
+  choreography: 'bloom' | 'fan' | 'meet'
+  /** Plain display-face opening of the line, e.g. "once upon a quiet night,". */
+  lead: string
+  /** The aurora italic payoff phrase, e.g. "you were born". */
+  accent: string
+  /** Small serif whisper that settles under the line. */
+  whisper: string
 }
 
 export type LoginContent = {
@@ -16,13 +28,47 @@ export type LoginContent = {
   successMessage: string
 }
 
+/**
+ * Copy for the three-act opening overture at `/`:
+ * act 1 (the wish quote) → act 2 (drifting memories) → act 3 (the cake).
+ */
 export type HeroContent = {
+  /** Tiny uppercase line above the birthday headline. */
   eyebrow: string
+  /** Plain first line of the headline, e.g. "Happy birthday,". */
   headline: string
-  subtitle: string
-  body: string
-  cta: string
-  note: string
+  /** The aurora italic line that completes the headline — her name. */
+  headlineAccent: string
+  /** The birthday wish quote — the emotional beat of the first viewport. */
+  quote: string
+  /** Script whisper inviting the scroll at the bottom of act 1. */
+  scrollCue: string
+  story: {
+    /** Eyebrow pinned over the story scroll act, e.g. "the story of you". */
+    eyebrow: string
+    /** The three verses: born → princess → mine. */
+    verses: StoryVerse[]
+    /** Closing script line that bridges the story into the cake act. */
+    outro: string
+  }
+  cake: {
+    /** Eyebrow over the cake stage. */
+    eyebrow: string
+    /** Script line asking for the wish, e.g. "make a wish…". */
+    whisper: string
+    /** Script line revealed once the candles are out. */
+    granted: string
+    /** Whisper when the candles are tapped again and relight. */
+    relight: string
+    /** Name piped onto the cake's warm-paper tag. */
+    name: string
+    /** Label of the journey button revealed after the wish. */
+    cta: string
+    /** Small line under the CTA once the wish is made. */
+    note: string
+    /** Label of the accessible fallback control for blowing the candles. */
+    blowHint: string
+  }
 }
 
 export type HeartLockerContent = {
@@ -138,5 +184,4 @@ export type SiteContent = {
   login: LoginContent
   hero: HeroContent
   heartLocker: HeartLockerContent
-  floatingPhotos: FloatingPhotoCard[]
 }

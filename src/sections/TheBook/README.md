@@ -67,8 +67,15 @@ Lazy-loaded from `App.tsx`.
 ## Controls
 - Swipe/drag left = next page, right = previous; the page follows the finger.
 - Tap right/left third of the screen, the HUD chevrons, or arrow keys.
-- Pinch (two fingers) or mouse-wheel to zoom, 1×–2.6×, softly damped.
-- Reset button (HUD, `RotateCcw`) returns to the closed cover at fitted zoom.
+- **Free zoom for reading**: pinch or mouse-wheel (cursor-anchored), 1×–5×;
+  double-tap the middle band dives to 2.4× on the tapped spot; double-tap
+  while zoomed eases back to fitted. While zoomed (>1.15×) one finger **pans**
+  instead of turning pages (pan clamped to the page in `BookScene`, bounds
+  collapse as zoom returns to 1), taps never flip pages under the reader, and
+  the idle float / pointer lean scale down by `1/zoom` so text holds still.
+  `worldPerPixel` (written by the scene each frame) converts finger travel to
+  world units. Chevrons/arrow keys still turn pages at any zoom.
+- Reset button (HUD, `RotateCcw`) returns to the closed cover, fitted, centered.
 - The stage sets `touch-action: none` so page-drags never scroll.
 
 ## Sizing

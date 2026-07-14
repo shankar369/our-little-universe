@@ -5,6 +5,7 @@ import * as THREE from 'three'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import type { RevealPhotoItem } from '../../../content/types'
 import { publicAssetPath } from '../../lib/assetPath'
+import { queueTextureLoad } from '../../lib/textureLoadQueue'
 
 const goldenAngle = Math.PI * (3 - Math.sqrt(5))
 
@@ -98,34 +99,21 @@ function usePhotoTexture(item: RevealPhotoItem, index: number) {
   const [texture, setTexture] = useState<THREE.Texture>(fallbackTexture)
 
   useEffect(() => {
-    let disposed = false
-    const loader = new THREE.TextureLoader()
-
-    loader.load(
+    const cancel = queueTextureLoad(
       publicAssetPath(item.photo),
       (loadedTexture) => {
-        if (disposed) {
-          loadedTexture.dispose()
-          return
-        }
-
         loadedTexture.colorSpace = THREE.SRGBColorSpace
         loadedTexture.minFilter = THREE.LinearFilter
         loadedTexture.magFilter = THREE.LinearFilter
         loadedTexture.anisotropy = 4
         setTexture(loadedTexture)
       },
-      undefined,
       () => {
-        if (!disposed) {
-          setTexture(fallbackTexture)
-        }
+        setTexture(fallbackTexture)
       },
     )
 
-    return () => {
-      disposed = true
-    }
+    return cancel
   }, [fallbackTexture, item.photo])
 
   return texture

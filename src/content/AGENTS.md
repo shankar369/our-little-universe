@@ -10,17 +10,21 @@ All editable personal data. Types before values. No UI logic.
 - One file per domain: `siteContent.ts`, `memoryTimeline.ts`, `photoUniverse.ts`, `ourLittleAtlas.ts`, `heartLockerGallery.ts`
 - Ordered exports via `ordered*Items` arrays where applicable
 - `journeyPhotos/<folder>/` holds Our Little Atlas photos, auto-discovered by build-time glob
-- `heartLockerPhotos/<folder>/` holds Heart Locker act photos (`photo-stack`, `photo-tunnel`), same glob pattern via `heartLockerGallery.ts`; empty folders TEMP-fallback to hero test photos
+- `heartLockerPhotos/<folder>/` holds Heart Locker act photos (`photo-stack`, `photo-strip`), same glob pattern via `heartLockerGallery.ts`; empty folders TEMP-fallback to hero test photos
 - `bookPages/` holds The Book album pages, discovered by `bookGallery.ts` (name-sorted, max 40 faces, `spread` filenames span two facing pages); empty folder TEMP-fallbacks to hero test photos
+- `photoUniversePhotos/` holds Photo Universe sphere photos, same glob pattern via `photoUniverse.ts`; empty folder TEMP-fallbacks to hero test photos
+- `openingPhotos/group1|group2|group3/` holds the opening Story-of-You verse photos (born / princess / mine), same glob pattern via `openingStory.ts` (≤4 per verse); empty folders TEMP-fallback to hero test photos
 
 ## Local Contracts
 
 - Type hierarchy: `RevealPhotoItem` base → `MemoryTimelineItem`, `PhotoUniverseItem`
 - `JourneyPlace` (atlas) is standalone: name, note, lat/lng, `folder`
-- Photo paths: `/memoryTimeline/...`, `/photoUniverse/...` (logical public paths; `publicAssetPath()` in `src/shared/lib/assetPath.ts` prefixes the Vite base at runtime)
-- Atlas photos are the exception: dropped into `src/content/journeyPhotos/<folder>/` and
-  resolved by `import.meta.glob` in `ourLittleAtlas.ts` (`getPlacePhotos(folder)`), so
-  authors never list paths — they just add files
+- Photo paths: `/memoryTimeline/...` (logical public path; `publicAssetPath()` in `src/shared/lib/assetPath.ts` prefixes the Vite base at runtime, and is idempotent so it also safely no-ops on already-resolved glob URLs)
+- Atlas, Heart Locker, The Book, Photo Universe, and opening Story-of-You photos are
+  build-time-glob folders under `src/content/` (`journeyPhotos/<folder>/`,
+  `heartLockerPhotos/<folder>/`, `bookPages/`, `photoUniversePhotos/`,
+  `openingPhotos/<group>/`) resolved by `import.meta.glob`, so authors never list
+  paths — they just add files and they're auto-discovered, name-sorted
 - Use `satisfies` for type safety when defining content arrays
 - Keep secrets out of the repo; the login gate is client-side only
 
@@ -43,7 +47,8 @@ All editable personal data. Types before values. No UI logic.
 |-----|-------|
 | [../sections/AGENTS.md](../sections/AGENTS.md) | Content consumers |
 | `public/memoryTimeline/README.md` | Timeline asset drop folder |
-| `public/photoUniverse/README.md` | Photo universe asset drop folder |
 | [journeyPhotos/README.md](journeyPhotos/README.md) | Atlas per-place photo drop folders |
 | [heartLockerPhotos/README.md](heartLockerPhotos/README.md) | Heart Locker per-act photo drop folders |
 | [bookPages/README.md](bookPages/README.md) | The Book album page drop folder |
+| [photoUniversePhotos/README.md](photoUniversePhotos/README.md) | Photo universe planet photo drop folder |
+| [openingPhotos/README.md](openingPhotos/README.md) | Story-of-You verse photo drop folders |

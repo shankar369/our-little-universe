@@ -155,7 +155,8 @@ export function PhotoShuffleStack<TItem extends RevealPhotoItem>({
               }
             >
               <div className="aspect-[4/5] overflow-hidden rounded-[0.6rem]">
-                <PhotoImage item={item} />
+                {/* Caption plate below already names the memory */}
+                <PhotoImage item={item} showFallbackText={false} />
               </div>
               <div className="px-1.5 pb-2 pt-3.5">
                 {item.label ? (

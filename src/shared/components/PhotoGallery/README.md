@@ -28,6 +28,12 @@ blooms in on scroll, with a draggable, swipeable lightbox. Built for Our Little 
 - **Lightbox**: `object-contain` (no crop for any ratio); directional crossfade between
   photos; drag down to dismiss, swipe left/right to navigate; arrow keys + Esc; tap
   backdrop to close; counter + optional caption. Buttons appear on `sm+`.
+- **Lightbox zoom**: pinch (touch), scroll wheel, or double-tap/double-click (manual
+  double-tap detection — native `dblclick` is unreliable on touch), zoom range 1–4×,
+  anchored to the gesture point. Drag pans while zoomed (clamped to the photo's edges);
+  at rest (1×) drag keeps its swipe meaning. A new photo always opens at 1×. Zoom
+  state lives on a persistent wrapper around the keyed photo, so the crossfade
+  variants never fight the zoom transforms.
 - Body scroll locks while open; empty `photos` → a glowing "memories landing here soon".
 - Lightbox reset on reopen uses a render-time state adjustment (no synchronous effect).
 

@@ -21,8 +21,12 @@ export type BookControlState = {
   drag: BookDrag | null
   /** User zoom multiplier, 1 = fitted. */
   zoom: number
+  /** Pan offset in world units while zoomed; the scene clamps it per frame. */
+  pan: { x: number; y: number }
   /** Normalized pointer position for parallax, both axes in [-1, 1]. */
   pointer: { x: number; y: number }
+  /** World units per screen pixel at the book plane — written by the scene. */
+  worldPerPixel: number
 }
 
 type Gesture = {
@@ -40,7 +44,11 @@ type Pinch = {
 }
 
 const MIN_ZOOM = 1
-const MAX_ZOOM = 2.6
+const MAX_ZOOM = 5
+/** Above this, one finger pans the zoomed book instead of turning pages. */
+const PAN_ZOOM = 1.15
+/** Zoom level a double-tap jumps to. */
+const DOUBLE_TAP_ZOOM = 2.4
 
 function clampZoom(value: number) {
   return Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, value))
@@ -52,11 +60,14 @@ export function useBookControls(totalSheets: number) {
     turned: 0,
     drag: null,
     zoom: 1,
+    pan: { x: 0, y: 0 },
     pointer: { x: 0, y: 0 },
+    worldPerPixel: 0.003,
   })
   const gesture = useRef<Gesture | null>(null)
   const pointers = useRef(new Map<number, { x: number; y: number }>())
   const pinch = useRef<Pinch | null>(null)
+  const lastTap = useRef<{ time: number; x: number; y: number } | null>(null)
 
   useEffect(() => {
     stateRef.current.turned = turned
@@ -70,11 +81,13 @@ export function useBookControls(totalSheets: number) {
     setTurned((value) => Math.max(0, value - 1))
   }, [])
 
-  /** Back to the very beginning: the closed cover, fitted zoom. */
+  /** Back to the very beginning: the closed cover, fitted zoom, centered. */
   const reset = useCallback(() => {
     setTurned(0)
     stateRef.current.drag = null
     stateRef.current.zoom = 1
+    stateRef.current.pan.x = 0
+    stateRef.current.pan.y = 0
   }, [])
 
   // Arrow keys turn pages too.
@@ -132,7 +145,8 @@ export function useBookControls(totalSheets: number) {
       state.pointer.x = (event.clientX / window.innerWidth) * 2 - 1
       state.pointer.y = (event.clientY / window.innerHeight) * 2 - 1
 
-      if (pointers.current.has(event.pointerId)) {
+      const previous = pointers.current.get(event.pointerId)
+      if (previous) {
         pointers.current.set(event.pointerId, {
           x: event.clientX,
           y: event.clientY,
@@ -145,6 +159,16 @@ export function useBookControls(totalSheets: number) {
           state.zoom = clampZoom(
             pinch.current.startZoom * (distance / pinch.current.startDistance),
           )
+        }
+        return
+      }
+
+      // While reading up close, one finger wanders the page instead of
+      // turning it (screen y down = world y up; the scene clamps the pan).
+      if (state.zoom > PAN_ZOOM) {
+        if (previous && pointers.current.size === 1) {
+          state.pan.x += (event.clientX - previous.x) * state.worldPerPixel
+          state.pan.y -= (event.clientY - previous.y) * state.worldPerPixel
         }
         return
       }
@@ -209,9 +233,42 @@ export function useBookControls(totalSheets: number) {
       state.drag = null
 
       if (active.direction === 0) {
-        // A clean tap: left third goes back, right third goes forward.
-        if (elapsed < 350 && Math.abs(dx) < 8) {
+        const dy = event.clientY - active.startY
+        if (elapsed < 350 && Math.abs(dx) < 8 && Math.abs(dy) < 8) {
           const t = event.clientX / window.innerWidth
+          const now = performance.now()
+          const previousTap = lastTap.current
+          const isDoubleTap =
+            previousTap !== null &&
+            now - previousTap.time < 350 &&
+            Math.hypot(event.clientX - previousTap.x, event.clientY - previousTap.y) < 48
+          lastTap.current = { time: now, x: event.clientX, y: event.clientY }
+
+          if (state.zoom > PAN_ZOOM) {
+            // Reading up close: a double-tap eases back to the fitted view;
+            // single taps never flip pages under the reader.
+            if (isDoubleTap) {
+              lastTap.current = null
+              state.zoom = 1
+              state.pan.x = 0
+              state.pan.y = 0
+            }
+            return
+          }
+
+          // In the middle band (where a single tap does nothing) a
+          // double-tap dives in on the tapped spot.
+          if (isDoubleTap && t >= 0.38 && t <= 0.62) {
+            lastTap.current = null
+            const ox = (event.clientX - window.innerWidth / 2) * state.worldPerPixel
+            const oy = -(event.clientY - window.innerHeight / 2) * state.worldPerPixel
+            state.zoom = DOUBLE_TAP_ZOOM
+            state.pan.x = -ox * DOUBLE_TAP_ZOOM
+            state.pan.y = -oy * DOUBLE_TAP_ZOOM
+            return
+          }
+
+          // A clean tap: left third goes back, right third goes forward.
           if (t > 0.62) {
             next()
           } else if (t < 0.38) {
@@ -248,7 +305,15 @@ export function useBookControls(totalSheets: number) {
 
   const onWheel = useCallback((event: React.WheelEvent) => {
     const state = stateRef.current
-    state.zoom = clampZoom(state.zoom * Math.exp(-event.deltaY * 0.0012))
+    const from = state.zoom
+    const to = clampZoom(from * Math.exp(-event.deltaY * 0.0012))
+    // Zoom toward the cursor: keep the point under it fixed on screen.
+    const ox = (event.clientX - window.innerWidth / 2) * state.worldPerPixel
+    const oy = -(event.clientY - window.innerHeight / 2) * state.worldPerPixel
+    const ratio = to / from
+    state.pan.x = ox - (ox - state.pan.x) * ratio
+    state.pan.y = oy - (oy - state.pan.y) * ratio
+    state.zoom = to
   }, [])
 
   return {

@@ -107,7 +107,7 @@ function BookGroup({
   const shiftRef = useRef<THREE.Group>(null)
   const settledRef = useRef(false)
 
-  const { viewport } = useThree()
+  const { viewport, size } = useThree()
   const total = sheets.length
 
   useFrame(({ clock }, delta) => {
@@ -118,6 +118,9 @@ function BookGroup({
     }
     const state = controls.current
     const time = clock.elapsedTime
+
+    // Let the gesture layer convert finger travel into world-space pan.
+    state.worldPerPixel = viewport.width / size.width
 
     // Continuous "how far through the book" including the live drag.
     let through = state.turned
@@ -152,20 +155,40 @@ function BookGroup({
     const targetX = (PAGE_WIDTH / 2) * (closedLeft - closedRight)
     shift.position.x = THREE.MathUtils.damp(shift.position.x, targetX, 4, delta)
 
-    // Idle float + pointer lean + a slow sway so it never sits dead-flat.
+    // Keep the reader's pan inside the zoomed page (no wandering off into
+    // the sky); the bounds collapse to 0 as the zoom returns to fitted.
+    const maxPanX = Math.max(
+      0,
+      (visibleWidth * targetScale - viewport.width) / 2 + 0.05,
+    )
+    const maxPanY = Math.max(
+      0,
+      (PAGE_HEIGHT * targetScale - viewport.height) / 2 + 0.05,
+    )
+    state.pan.x = Math.min(maxPanX, Math.max(-maxPanX, state.pan.x))
+    state.pan.y = Math.min(maxPanY, Math.max(-maxPanY, state.pan.y))
+
+    // Idle float + pointer lean + a slow sway — all of it calms down as the
+    // reader zooms in, so the text holds still under their eyes.
+    const calm = 1 / state.zoom
     group.position.z = 0
-    group.position.x = 0
-    group.position.y = Math.sin(time * 0.55) * 0.018
+    group.position.x = THREE.MathUtils.damp(group.position.x, state.pan.x, 8, delta)
+    group.position.y = THREE.MathUtils.damp(
+      group.position.y,
+      state.pan.y + Math.sin(time * 0.55) * 0.018 * calm,
+      8,
+      delta,
+    )
     group.rotation.z = 0
     group.rotation.x = THREE.MathUtils.damp(
       group.rotation.x,
-      REST_TILT_X + state.pointer.y * 0.09 + Math.sin(time * 0.4) * 0.014,
+      (REST_TILT_X + state.pointer.y * 0.09 + Math.sin(time * 0.4) * 0.014) * calm,
       3,
       delta,
     )
     group.rotation.y = THREE.MathUtils.damp(
       group.rotation.y,
-      state.pointer.x * 0.16 + Math.sin(time * 0.32) * 0.035,
+      (state.pointer.x * 0.16 + Math.sin(time * 0.32) * 0.035) * calm,
       3,
       delta,
     )

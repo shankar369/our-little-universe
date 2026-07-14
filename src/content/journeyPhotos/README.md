@@ -7,7 +7,7 @@ image in a folder is auto-discovered at build time (Vite glob in
 ## How to add photos
 
 1. Find (or create) the folder that matches a place's `folder` field in
-   `src/content/ourLittleAtlas.ts`, e.g. `goa/`.
+   `src/content/ourLittleAtlas.ts`, e.g. `kakinada/`.
 2. Drop compressed images into it: `01.jpg`, `02.jpg`, `sunset.webp`, … Supported:
    `jpg`, `jpeg`, `png`, `webp`, `avif`.
 3. That's it. Photos appear in the marker preview (first few) and the full-screen

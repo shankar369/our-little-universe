@@ -7,7 +7,7 @@ import { heroTestPhotos } from './testPhotos'
  *
  * Every image dropped into `src/content/journeyPhotos/<folder>/` is picked up
  * automatically by Vite's glob import — authors never edit a path list. The keys
- * look like `./journeyPhotos/goa/01.jpg`; we group the resolved URLs by folder.
+ * look like `./journeyPhotos/kakinada/01.jpg`; we group the resolved URLs by folder.
  */
 const photoModules = import.meta.glob(
   './journeyPhotos/**/*.{jpg,jpeg,png,webp,avif,JPG,JPEG,PNG,WEBP,AVIF}',
@@ -59,58 +59,53 @@ export const indiaDefaultView = {
 export const placeFocusZoom = 10.5
 
 /**
- * Sample places — edit freely. Each `folder` maps to
+ * Our places — edit freely. Each `folder` maps to
  * `src/content/journeyPhotos/<folder>/`; drop photos there and they appear.
  */
 export const ourLittleAtlasPlaces = [
   {
-    id: 'goa',
-    name: 'Goa',
-    note: 'where the sea kept all our secrets',
-    region: 'by the Arabian Sea',
-    lat: 15.2993,
-    lng: 74.124,
-    folder: 'goa',
-    dateLabel: 'Dec 2024',
+    id: 'samarlakota',
+    name: 'Samarlakota',
+    note: 'memories landing here soon',
+    region: 'Kakinada district, Andhra Pradesh',
+    lat: 17.05,
+    lng: 82.1833,
+    folder: 'samarlakota',
   },
   {
-    id: 'manali',
-    name: 'Manali',
-    note: 'cold air, warm hands, zero complaints',
-    region: 'in the Himalayas',
-    lat: 32.2432,
-    lng: 77.1892,
-    folder: 'manali',
-    dateLabel: 'Feb 2025',
+    id: 'ramachandrapuram',
+    name: 'Ramachandrapuram',
+    note: 'memories landing here soon',
+    region: 'East Godavari, Andhra Pradesh',
+    lat: 16.8361,
+    lng: 82.0286,
+    folder: 'ramachandrapuram',
   },
   {
-    id: 'jaipur',
-    name: 'Jaipur',
-    note: 'pink walls and one very pink heart',
-    region: 'the rose city',
-    lat: 26.9124,
-    lng: 75.7873,
-    folder: 'jaipur',
-    dateLabel: 'Apr 2025',
+    id: 'kakinada',
+    name: 'Kakinada',
+    note: 'memories landing here soon',
+    region: 'Andhra Pradesh',
+    lat: 16.9604,
+    lng: 82.2381,
+    folder: 'kakinada',
   },
   {
-    id: 'munnar',
-    name: 'Munnar',
-    note: 'green hills that watched us laugh',
-    region: 'the Western Ghats',
-    lat: 10.0889,
-    lng: 77.0595,
-    folder: 'munnar',
-    dateLabel: 'Jul 2025',
+    id: 'hyderabad',
+    name: 'Hyderabad',
+    note: 'memories landing here soon',
+    region: 'Telangana',
+    lat: 17.385,
+    lng: 78.4867,
+    folder: 'hyderabad',
   },
   {
-    id: 'varanasi',
-    name: 'Varanasi',
-    note: 'a thousand lamps, one wish',
-    region: 'on the Ganga',
-    lat: 25.3176,
-    lng: 82.9739,
-    folder: 'varanasi',
-    dateLabel: 'Oct 2025',
+    id: 'yadadri',
+    name: 'Yadadri',
+    note: 'memories landing here soon',
+    region: 'Sri Lakshmi Narasimha Swamy Temple',
+    lat: 17.5892,
+    lng: 78.9446,
+    folder: 'yadadri',
   },
 ] satisfies JourneyPlace[]

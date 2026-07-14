@@ -1,9 +1,10 @@
 import { Orbit } from 'lucide-react'
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useMemo, useState } from 'react'
 import { orderedPhotoUniverseItems } from '../../content/photoUniverse'
 import { softEase } from '../../design/motion'
-import { PhotoRevealDialog } from '../../shared/components/PhotoReveal/PhotoRevealDialog'
+import { publicAssetPath } from '../../shared/lib/assetPath'
+import { PhotoLightbox } from '../../shared/components/PhotoGallery/PhotoGalleryModal'
 import { PhotoSphere } from '../../shared/components/PhotoSphere/PhotoSphere'
 
 function wrapIndex(index: number, length: number) {
@@ -12,15 +13,26 @@ function wrapIndex(index: number, length: number) {
 
 export function PhotoUniverse() {
   const photos = useMemo(() => orderedPhotoUniverseItems, [])
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
-  const openPhoto = openIndex === null ? null : photos[openIndex]
+  const photoSrcs = useMemo(() => photos.map((photo) => publicAssetPath(photo.photo)), [photos])
 
-  const openNextPhoto = useCallback(() => {
-    setOpenIndex((current) => (current === null ? 0 : wrapIndex(current + 1, photos.length)))
+  const [lightbox, setLightbox] = useState<{ index: number; direction: number } | null>(null)
+
+  const openItem = useCallback((index: number) => {
+    setLightbox({ index, direction: 0 })
+  }, [])
+
+  const closeLightbox = useCallback(() => setLightbox(null), [])
+
+  const showNext = useCallback(() => {
+    setLightbox((current) =>
+      current === null ? null : { index: wrapIndex(current.index + 1, photos.length), direction: 1 },
+    )
   }, [photos.length])
 
-  const openPreviousPhoto = useCallback(() => {
-    setOpenIndex((current) => (current === null ? 0 : wrapIndex(current - 1, photos.length)))
+  const showPrevious = useCallback(() => {
+    setLightbox((current) =>
+      current === null ? null : { index: wrapIndex(current.index - 1, photos.length), direction: -1 },
+    )
   }, [photos.length])
 
   return (
@@ -32,7 +44,7 @@ export function PhotoUniverse() {
         transition={{ duration: 0.95, ease: softEase }}
         className="absolute inset-0"
       >
-        <PhotoSphere items={photos} onOpenItem={setOpenIndex} className="h-full w-full" />
+        <PhotoSphere items={photos} onOpenItem={openItem} className="h-full w-full" />
       </motion.div>
 
       {/* Edge scrims so the floating chrome stays legible */}
@@ -66,12 +78,20 @@ export function PhotoUniverse() {
         drag to wander &middot; pinch to zoom &middot; tap a planet
       </motion.p>
 
-      <PhotoRevealDialog
-        item={openPhoto}
-        onClose={() => setOpenIndex(null)}
-        onNext={openNextPhoto}
-        onPrevious={openPreviousPhoto}
-      />
+      <AnimatePresence custom={lightbox?.direction ?? 0}>
+        {lightbox !== null ? (
+          <PhotoLightbox
+            photos={photoSrcs}
+            index={lightbox.index}
+            direction={lightbox.direction}
+            title={photos[lightbox.index]?.heading}
+            caption={photos[lightbox.index]?.quote}
+            onClose={closeLightbox}
+            onNext={showNext}
+            onPrevious={showPrevious}
+          />
+        ) : null}
+      </AnimatePresence>
     </main>
   )
 }

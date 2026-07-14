@@ -53,6 +53,10 @@ Fonts are loaded in `index.html` (variable axes incl. `SOFT`/`WONK` for Fraunces
   eyebrows, headlines, or form values. Max **one script element per viewport**
   (mirror of the `.text-aurora` rule). The aurora headline line stays Fraunces
   (`.type-quote`) — two display voices in one headline fight each other.
+  *Carved-out exception:* the Journey Hub's chapter-letter **addresses** — every
+  envelope title is script because handwriting *is* the letter; the rule keeps
+  applying to everything around them (the hub headline, notes, and CTAs stay
+  Fraunces/DM Sans).
 
 Roles (classes in `src/index.css`):
 - `.type-eyebrow` — 11px, 0.32em tracking, uppercase, almost always `text-champagne/85`.
@@ -123,7 +127,9 @@ soft-light) — at most **two** grain layers alive at once (background + one ove
 - Micro-interaction grammar: shine sweep is hover-only (fine pointers); heart FAB
   breathes via the `heart-breathe` keyframe (5.5s, paused while charging); magnetic
   hover (`Magnetic` wrapper, ±4px springs) is scoped to the heart FAB + fullscreen
-  toggle only; hub cards lift `-translate-y-0.5` with a glow on hover.
+  toggle only; hub chapter letters lift `-translate-y-1` while their envelope
+  flap tilts open (`rotateX`, fine pointers only — the letter reads fully
+  closed on touch).
 - Iconography: lucide only, global stroke-width 1.75 (`svg.lucide` base rule).
   Sizes — `h-4 w-4` inline/menu rows, `h-5 w-5` inside ≥44px chips, `h-3.5 w-3.5`
   decorative accents. Colors — orchid = interactive identity, champagne =
@@ -174,6 +180,10 @@ Constellation rules:
 - The canvas is **unboxed and full-bleed**: transparent background, no border, edges
   melted with a CSS mask, soft radial aura behind it. The galaxy fills the whole screen
   with the header + hint floating over it (`absolute`), so it feels like the page's sky.
+- The floating header and hint sit on **deep night scrims** (top `from-night/95`,
+  bottom `from-night/90`) and the initial camera starts far enough back (portrait
+  further than landscape) that the sphere reads as a globe — photos must never crowd
+  or overlap the headline.
 - Cards are **frameless rounded photos with a soft additive halo** — no paper frame and
   no caption text in the sphere. Each photo is fit inside a 1×1 box preserving its true
   aspect ratio (never squished).
@@ -194,6 +204,10 @@ Constellation rules:
 - Global controls float at the bottom corners: the heart menu (`btn-primary`,
   bottom-right) and the fullscreen toggle (`btn-ghost`, bottom-left, hidden where the
   Fullscreen API is unavailable). Keep section chrome clear of both corners.
+- The opening route carries the app's **birthday beat** inside the Opening Overture
+  (§13c). Without rich motion the static fallback keeps the original `BirthdayWish`
+  candle (token-colored CSS flame, warm-paper cake) and an ungated journey CTA, so
+  nobody is locked out of the app by an interaction they can't perform.
 - `npm run build` and a 390px-wide visual check are required before finishing UI work.
 
 ## 11. Do's and Don'ts
@@ -223,16 +237,22 @@ Don't:
 - Places are **heart "NS" markers** (aurora blush→orchid gradient, plum `#2b1048`
   initials), styled in `index.css` `.atlas-marker`. The active marker scales up and
   pulses. This is the only sanctioned map glyph — no default pins, no clusters of icons.
+- The markers are joined by the **journey thread**: a champagne stitched-dot line
+  (round caps, `dasharray [0.1, 2.4]`, opacity ≤ 0.55) over a faint orchid glow line,
+  drawn through the places in story order. It is the map's only sanctioned line layer.
 - Transitions are MapLibre `flyTo` (zoom-out-then-in); reduced-motion uses `jumpTo`.
 - Chrome stays minimal and glass: a `glass-chip` opener, `menu-panel` sheets (bottom on
   mobile, left drawer / bottom-left card on desktop), one `.text-aurora` line.
 - Full-screen **modals are allowed** (gallery, lightbox, reveal dialog) — the "no
   full-size panel" rule is about boxing a *content screen* in glass, not dialogs. Photo
-  galleries use `PhotoGalleryModal` (masonry + lightbox), never a bespoke grid.
+  galleries use `PhotoGalleryModal` (masonry + lightbox), never a bespoke grid. The
+  lightbox is zoomable (pinch / wheel / double-tap, 1–4×, drag-to-pan while zoomed);
+  swipe gestures keep their navigate/dismiss meaning only at rest (1×).
 
 ## 13. Scroll Cinema (Heart Locker)
 
-- The Heart Locker is the app's only **scroll-driven** experience: tall acts
+- The Heart Locker is the app's flagship **scroll-driven** experience (the Opening
+  Overture's Story of You, §13c, borrows the same grammar): tall acts
   (`height: n×100svh`) with a `sticky top-0 h-svh overflow-hidden` stage, animated via
   `useScroll` + `useTransform`. Nothing autoplays — scroll position *is* the timeline.
 - Structure: one title beat per act (eyebrow + single aurora line), then the photos
@@ -270,6 +290,60 @@ Don't:
 - Performance: DPR ≤ 1.5, shared module-level materials, ≤ 5 lights, fake
   picture-light pools, dust `Sparkles` (45 compact / 90 desktop), photos capped
   at 16. Reduced motion / no WebGL falls back to the gate + polaroid grid.
+
+## 13c. The Opening Overture (`/`)
+
+The first screen is a three-act birthday cinematic (`features/opening/`), gated on
+`useRichMotion().rich` with a static single-column fallback (quote → the story verses
+as static polaroid rows → `BirthdayWish` candle → ungated CTA).
+
+- **Act 1 — Wish Overture**: the birthday quote alone on the sky. Plain headline line
+  rises word-by-word from a blur; her name cascades letter-by-letter as the viewport's
+  single `.text-aurora` moment; a `.type-script` scroll cue waits at the bottom.
+- **Act 2 — The Story of You**: a 560svh scroll-cinema track (sticky `h-svh` stage)
+  telling one sentence in three verses — "you were born" → "became a princess" →
+  "to be mine". Each verse speaks its line center stage (display lead + the
+  viewport's single `.text-aurora` payoff + a quote whisper), lifts it to the sky,
+  then its photos perform: verse 1 blooms out of a star-point (childhood), verse 2
+  fans open like a tiara, verse 3 arrives from opposite edges and leans in. Behind
+  each verse's photos a giant translucent signature glyph (sparkle / crown / heart,
+  ~64svh, champagne/30 or blush/35, thin 0.4 stroke) flares in while the photos fly
+  in, settles to a steady glow for the hold, and drifts out with the verse —
+  decoration behind the cards, never over text. Photos are auto-discovered from
+  `src/content/openingPhotos/group1|2|3/` (build-time glob, ≤4 per verse, empty
+  folders TEMP-fallback to the hero test photos); resting layouts have separate
+  desktop/compact pose tables (compact cascades vertically so every photo stays
+  visible at 375px; desktop sits +4.5svh below center and caps cards at `34svh` so
+  short landscape viewports keep the lifted verse text clear of the cards); every
+  value maps from `useScroll` MotionValues — no per-frame React state. A soft
+  champagne/blush aura flares as each verse's photos arrive, and a script outro
+  line hands the scroll to the cake.
+- **Act 3 — Cake Moment**: the interactive 3D drip cake (see below). Blowing the
+  candles (tap any candle, or the accessible `glass-chip` "blow" button) cascades the
+  flames out, fires canvas-confetti bursts, releases 3D heart balloons, and reveals
+  the one `btn-primary` door into `/journey`. Tapping the candles again relights them.
+
+**The cake scene contract** (`features/opening/cake/`, lazy chunk, modeled on
+bdaycake.com):
+
+- Fully procedural geometry — no model files, no network: three sponge tiers wearing
+  a sculpted glaze (parametric drip-curtain surface + domed lathe cap per tier), a
+  lathe plate, chocolate curls, gold sparkler, warm-paper name tag (canvas texture in
+  the page's own fonts), pastel gifts, and extruded-heart balloons.
+- **Lighting is environment-only**: a procedural drei `<Environment>` of Lightformer
+  softboxes (warm ceiling key, white front fill, blush/periwinkle sides, lilac rim) —
+  no direct lights except the flickering candle point light. Long lens (fov 30
+  desktop / 38 portrait), transparent canvas over the constellation sky, DPR ≤ 1.5.
+- Sponge is roughness-1 with a canvas crumb map doubling as bump + baked AO; glaze is
+  clearcoat-1 / roughness ~0.13 physical material — that pairing, not geometry alone,
+  is what reads as "real cake". Candles wear spiral-stripe canvas textures and stand
+  on every tier's ledge; flames are GLSL teardrop billboards + additive halos.
+- Interactions: horizontal drag spins the cake (`touch-action: pan-y` keeps scrolling
+  free), movement-guarded taps blow candles, assembly plays once on scroll-into-view
+  (springy `backOut` drops driven by a shared clock ref).
+- Celebration layers: `canvas-confetti` (worker-backed, palette-tinted, hidden under
+  `motion-reduce`) draws on a DOM overlay canvas; heart balloons rise inside the 3D
+  scene so they share the cake's lighting and occlusion.
 
 ## 14. The Chapter Curtain (route transitions)
 
