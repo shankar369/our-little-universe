@@ -1,4 +1,4 @@
-import{n as e,s as t,t as n}from"./jsx-runtime-BseJUIpC.js";import{t as r}from"./animate-P72j_MEl.js";import{f as i,k as a,u as o}from"./index-B6hMZas-.js";import{a as s,s as c,t as l}from"./react-three-fiber.esm-l2P8ZwMF.js";var u=t(e(),1),d=n(),f=o.close+o.hold+o.open,p=`
+import{n as e,s as t,t as n}from"./jsx-runtime-BseJUIpC.js";import{t as r}from"./animate-P72j_MEl.js";import{f as i,k as a,u as o}from"./index-CgdPr9-I.js";import{a as s,s as c,t as l}from"./react-three-fiber.esm-CfyL5INi.js";var u=t(e(),1),d=n(),f=o.close+o.hold+o.open,p=`
   varying vec2 vUv;
   void main() {
     vUv = uv;

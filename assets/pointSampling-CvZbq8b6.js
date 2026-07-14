@@ -1,4 +1,4 @@
-import{$ as e,g as t}from"./react-three-fiber.esm-l2P8ZwMF.js";var n=[`#f4d9a6`,`#f4d9a6`,`#ffe9c4`,`#f7b8d4`,`#f7b8d4`,`#c894fc`],r=`
+import{$ as e,g as t}from"./react-three-fiber.esm-CfyL5INi.js";var n=[`#f4d9a6`,`#f4d9a6`,`#ffe9c4`,`#f7b8d4`,`#f7b8d4`,`#c894fc`],r=`
   uniform float uAlpha;
   uniform float uStretch;
   varying vec3 vColor;
