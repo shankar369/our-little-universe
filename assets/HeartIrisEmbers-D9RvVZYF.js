@@ -1,4 +1,4 @@
-import{n as e,s as t,t as n}from"./jsx-runtime-BseJUIpC.js";import{t as r}from"./animate-P72j_MEl.js";import{k as i}from"./index-CgdPr9-I.js";import{a,d as o,pt as s,rt as c,s as l,t as u,u as d}from"./react-three-fiber.esm-CfyL5INi.js";import{a as f,i as p,n as m,r as h}from"./pointSampling-CvZbq8b6.js";var g=t(e(),1),_=n(),v=`M50,86 C 22,64 10,45 10,30 C 10,17 19,9 30,9 C 39,9 46,16 50,23 C 54,16 61,9 70,9 C 81,9 90,17 90,30 C 90,45 78,64 50,86 Z`,y=900,b=400,x=[.5,0,.22,1],S=1.4,C=.75,w=`
+import{n as e,s as t,t as n}from"./jsx-runtime-BseJUIpC.js";import{t as r}from"./animate-P72j_MEl.js";import{A as i}from"./index-qn6684-L.js";import{a,d as o,pt as s,rt as c,s as l,t as u,u as d}from"./react-three-fiber.esm-hTINBolX.js";import{a as f,i as p,n as m,r as h}from"./pointSampling-BtkX0Heh.js";var g=t(e(),1),_=n(),v=`M50,86 C 22,64 10,45 10,30 C 10,17 19,9 30,9 C 39,9 46,16 50,23 C 54,16 61,9 70,9 C 81,9 90,17 90,30 C 90,45 78,64 50,86 Z`,y=900,b=400,x=[.5,0,.22,1],S=1.4,C=.75,w=`
   attribute vec2 aOutline;
   attribute vec3 aColor;
   attribute float aSize;
