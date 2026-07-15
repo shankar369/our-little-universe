@@ -1,4 +1,4 @@
-import{n as e,s as t}from"./jsx-runtime-BseJUIpC.js";import{$ as n,L as r,a as i,ft as a,g as o,i as s,mt as c,pt as l,s as u}from"./react-three-fiber.esm-hTINBolX.js";function d(){return d=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},d.apply(null,arguments)}var f=t(e()),p=parseInt(`184`.replace(/\D+/g,``)),m=class extends n{constructor(){super({uniforms:{time:{value:0},pixelRatio:{value:1}},vertexShader:`
+import{n as e,s as t}from"./jsx-runtime-BseJUIpC.js";import{$ as n,L as r,a as i,ft as a,g as o,i as s,mt as c,pt as l,s as u}from"./react-three-fiber.esm-D8rhnDGS.js";function d(){return d=Object.assign?Object.assign.bind():function(e){for(var t=1;t<arguments.length;t++){var n=arguments[t];for(var r in n)({}).hasOwnProperty.call(n,r)&&(e[r]=n[r])}return e},d.apply(null,arguments)}var f=t(e()),p=parseInt(`184`.replace(/\D+/g,``)),m=class extends n{constructor(){super({uniforms:{time:{value:0},pixelRatio:{value:1}},vertexShader:`
         uniform float pixelRatio;
         uniform float time;
         attribute float size;  
