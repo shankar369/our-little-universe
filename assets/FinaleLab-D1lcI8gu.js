@@ -1,4 +1,4 @@
-import{n as e,s as t,t as n}from"./jsx-runtime-BseJUIpC.js";import{n as r}from"./createLucideIcon-LXKMqBEJ.js";import{E as i,O as a,S as o,T as s,c,j as l,p as u,y as d}from"./index-B_SsgDrt.js";import{a as f,d as p,dt as m,j as h,nt as g,u as _}from"./react-three-fiber.esm-DK_7eaEJ.js";import{a as v,c as y,i as b,l as x,n as S,o as C,r as w,s as T,t as E,u as D}from"./VelvetScriptFinale-BoRorch2.js";var O=t(e(),1),k=`
+import{n as e,s as t,t as n}from"./jsx-runtime-BseJUIpC.js";import{n as r}from"./createLucideIcon-LXKMqBEJ.js";import{E as i,O as a,S as o,T as s,c,j as l,p as u,y as d}from"./index-zmRRfF3S.js";import{a as f,d as p,dt as m,j as h,nt as g,u as _}from"./react-three-fiber.esm-C5uDhQBr.js";import{a as v,c as y,i as b,l as x,n as S,o as C,r as w,s as T,t as E,u as D}from"./VelvetScriptFinale-BXIsIcEw.js";var O=t(e(),1),k=`
   float amp = 0.012 + uChurn * 0.65;
   p.x += sin(uTime * 1.7 + aSeed * 19.0) * amp * 0.4;
   p.y += cos(uTime * 2.0 + aSeed * 29.0) * amp * 0.34;
